@@ -330,7 +330,7 @@ int vanessa_socket_host_port_sockaddr_inv(const char *host,
 	memset((struct sockaddr *) addr, 0, sizeof(addr));
 
 	if ((hp = gethostbyname(host)) == NULL) {
-		VANESSA_LOGGER_DEBUG_ERRNO("gethostbyname");
+		VANESSA_LOGGER_DEBUG_HERRNO("gethostbyname");
 		return (-1);
 	}
 	while (hp->h_addr_list[++count]);

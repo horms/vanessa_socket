@@ -51,7 +51,7 @@ int vanessa_socket_host_in_addr(const char *host,
 				const vanessa_socket_flag_t flag)
 {
 	struct hostent *hp;
-	extern int errno;
+	extern int h_errno;
 
 	if (host == NULL) {
 		in->s_addr = htonl(INADDR_ANY);
@@ -65,7 +65,8 @@ int vanessa_socket_host_in_addr(const char *host,
 	} else {
 		if ((hp = gethostbyname(host)) == NULL) {
 			VANESSA_LOGGER_DEBUG_UNSAFE("gethostbyname (%s): %s",
-					host, strerror(errno));
+					host, 
+					vanessa_logger_strherror(h_errno));
 			return (-1);
 		}
 		memcpy(in, hp->h_addr, hp->h_length);

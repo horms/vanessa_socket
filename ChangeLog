@@ -5,6 +5,15 @@ Library to simplify handling of TCP sockets
 Copyright (C) 1999-2003  Horms
 ----------------------------------------------------------------------
 
+XXX
+(Horms)
+
+  * XXX
+  - Better logging of faile gethopstbyname() and gethostbyaddr() calls
+
+
+----------------------------------------------------------------------
+
 6th June 2003
 (Horms)
 
