@@ -1,8 +1,15 @@
+vanessa-socket (0.0.5beta7-3) unstable; urgency=low
+
+  * Changed libvanessa-socket-dev from devel to libdevel section
+
+ -- Simon Horman <horms@vergenet.net>  Fri, 18 Apr 2003 17:14:15 +0900
+
 vanessa-socket (0.0.5beta7-2) unstable; urgency=low
 
   * New Upstream
+  * Package: libvanessa-socket-dev
 
- -- Simon Horman <horms@vergenet.net>  Wed, 26 Mar 2003 18:19:27 +0900
+ -- Simon Horman <horms@vergenet.net>  Fri, 18 Apr 2003 17:14:12 +0900
 
 vanessa-socket (0.0.5beta2-1) unstable; urgency=low
 
