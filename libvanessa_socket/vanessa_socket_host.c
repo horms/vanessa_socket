@@ -52,6 +52,7 @@ int vanessa_socket_host_in_addr(
   const vanessa_socket_flag_t flag
 ){
   struct hostent *hp;
+  extern int errno;
 
   if(host==NULL) {
     in->s_addr = htonl(INADDR_ANY);

@@ -50,17 +50,23 @@ typedef unsigned int vanessa_socket_flag_t;
 
 #define VANESSA_SOCKET_NONE      (vanessa_socket_flag_t) 0
 #define VANESSA_SOCKET_NO_LOOKUP (vanessa_socket_flag_t) 1
+#define VANESSA_SOCKET_NO_FROM   (vanessa_socket_flag_t) 2
+
+
+#ifndef INPORT_ANY
+#define INPORT_ANY     ((int)0)
+#endif
+
 
 
 /**********************************************************************
  * vanessa_socket_client_open_sockaddr_in
  * Open a socket connection as a client
- * pre: sockaddr_in: sockaddr structure specifying host and port to
- *      connect to.
- *      flag: ignored
+ * pre: to: sockaddr structure specifying address and port to connect 
+ *          to.
+ *      flag: If VANESSA_SOCKET_NO_LOOKUP then no host and port lookups
+ *            will be performed
  * post: socket is opened
- * flag: If VANESSA_SOCKET_NO_LOOKUP then no host and port lookups
- *       will be performed
  * return: open socket
  *         -1 on error
  **********************************************************************/
@@ -91,6 +97,68 @@ int vanessa_socket_client_open(
 
 
 /**********************************************************************
+ * vanessa_socket_client_open_src_sockaddr_in
+ * Open a socket connection as a client
+ * pre: from: sockaddr structure specifying address and port to connect
+ *            from. 
+ *            If from.sin_addr.s_addr==INADDR_ANY then the operating 
+ *            system will select an appropriate source address.
+ *            If from.sin_port==INPORT_ANY then the operating system 
+ *            will select an appropriate source address.
+ *      to: sockaddr structure specifying address and port to connect 
+ *          to.
+ *      flag: Logical or of VANESSA_SOCKET_NO_LOOKUP and 
+ *            VANESSA_SOCKET_NO_FROM
+ *            If flag&VANESSA_SOCKET_NO_LOOKUP then no host and port 
+ *            lookups will be performed 
+ *            If flag&VANESSA_SOCKET_NO_FROM then the from parameter 
+ *            will not be used and the operating system will select a 
+ *            source address and port
+ * post: socket is opened
+ * return: open socket
+ *         -1 on error
+ **********************************************************************/
+
+int vanessa_socket_client_open_src_sockaddr_in(
+  struct sockaddr_in from,
+  struct sockaddr_in to,
+  const vanessa_socket_flag_t flag
+);
+
+
+/**********************************************************************
+ * vanessa_socket_client_src_open
+ * Open a socket connection as a client
+ * pre: src_host: hostname or ipaddress to open socket to
+ *                If NULL then the operating system will select
+ *                an appropriate source address.
+ *      src_port: name or number to open
+ *                If NULL then the operating system will select
+ *                an appropriate source port.
+ *      dst_host: hostname or ipaddress to open socket to
+ *      dst_port: name or number to open
+ *      flag: Logical or of VANESSA_SOCKET_NO_LOOKUP and 
+ *            VANESSA_SOCKET_NO_FROM
+ *            If flag&VANESSA_SOCKET_NO_LOOKUP then no host and port 
+ *            lookups will be performed 
+ *            If flag&VANESSA_SOCKET_NO_FROM then the from parameter 
+ *            will not be used and the operating system will select a 
+ *            source address and port
+ * post: socket is opened
+ * return: open socket
+ *         -1 on error
+ **********************************************************************/
+
+int vanessa_socket_client_src_open(
+  const char *src_host, 
+  const char *src_port, 
+  const char *dst_host, 
+  const char *dst_port, 
+  const vanessa_socket_flag_t flag
+);
+
+
+/**********************************************************************
  * vanessa_socket_port_portno
  * port number of a service given as a string either
  * the port number or the service name as per /etc/services
@@ -99,10 +167,10 @@ int vanessa_socket_client_open(
  *            no service lookups will be performed. That is the
  *            port given as an argument should be an port number
  * return: port number
- *         0 on error or if port name cannot be found in /etc/services
+ *         -1 on error or if port name cannot be found in /etc/services
  **********************************************************************/
 
-unsigned short int vanessa_socket_port_portno(
+int vanessa_socket_port_portno(
   const char *port, 
   const vanessa_socket_flag_t flag
 );
@@ -208,8 +276,9 @@ int vanessa_socket_pipe_write_bytes(
  *            or an entry from /etc/services
  *      interface_address: If NULL bind to all interfaces, else
  *                         bind to interface(es) with this address.
- *      maximum_connections: maximum number of active connections
- *      to handle. If 0 then an number of connections is unlimited.
+ *      maximum_connections: maximum number of active connections to
+ *                           handle. If 0 then an number of connections 
+ *                           is unlimited.
  *      return_from: pointer to a struct_in addr where the 
  *                   connecting client's IP address will
  *                   be placed. Ignored if NULL
@@ -244,12 +313,10 @@ int vanessa_socket_server_connect(
  *               return the file descriptor that is 
  *               a socket connection to the client
  * In the Server: close the socket to the client and loop
- * pre: port: port to listen to, an ASCII representation of a number
- *            or an entry from /etc/services
- *      interface_address: If NULL bind to all interfaces, else
- *                         bind to interface(es) with this address.
- *      maximum_connections: maximum number of active connections
- *      to handle. If 0 then an number of connections is unlimited.
+ * pre: from: sockaddr_in to bind to
+ *      maximum_connections: maximum number of active connections to
+ *                           handle. If 0 then an number of connections
+ *                           is unlimited.
  *      return_from: pointer to a struct_in addr where the 
  *                   connecting client's IP address will
  *                   be placed. Ignored if NULL

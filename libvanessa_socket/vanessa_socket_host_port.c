@@ -54,6 +54,8 @@ int vanessa_socket_host_port_sockaddr_in(
   struct sockaddr_in *addr,
   const vanessa_socket_flag_t flag
 ){
+  int portno;
+
   bzero((struct sockaddr *)addr, sizeof(addr));
 
   addr->sin_family = AF_INET;  /* Gratuitously assume the address will be
@@ -65,11 +67,12 @@ int vanessa_socket_host_port_sockaddr_in(
     return(-1);
   }
 
-  if( (addr->sin_port=vanessa_socket_port_portno(port, flag))==0 ){
+  if( (portno=vanessa_socket_port_portno(port, flag))<0 ){
     VANESSA_SOCKET_DEBUG("vanessa_socket_host_port_sockaddr_in:"
       " vanessa_socket_port_portno");
     return(-1);
   }
+  addr->sin_port=(unsigned short int)portno;
 
   return(0);
 }

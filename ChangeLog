@@ -4,3 +4,8 @@ vanessa_socket
 Library to simplify handling of TCP sockets
 Copyright (C) 2000  Horms
 ----------------------------------------------------------------------
+
+ - Added vanessa_socket_client_src_open() and
+   vanessa_socket_client_src_open_in_addr() that enable a conection
+   to be openend to a server and optionally have the source port 
+   and/or address specified.

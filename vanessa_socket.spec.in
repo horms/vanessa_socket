@@ -1,4 +1,4 @@
-%define prefix   @prefix@
+%define prefix   /usr
 
 Summary: Simplify TCP socket operations
 Name: vanessa_socket

@@ -37,10 +37,10 @@
  *            no service lookups will be performed. That is the
  *            port given as an argument should be an port number
  * return: port number
- *         0 on error or if port name cannot be found in /etc/services
+ *         -1 on error or if port name cannot be found in /etc/services
  **********************************************************************/
 
-unsigned short int vanessa_socket_port_portno(
+int vanessa_socket_port_portno(
   const char *port, 
   const vanessa_socket_flag_t flag
 ){
@@ -48,19 +48,18 @@ unsigned short int vanessa_socket_port_portno(
   unsigned short int portno;
   
   if(port==NULL){
-    VANESSA_SOCKET_DEBUG("vanessa_socket_port_portno: NULL port");
-    return 0;
+    portno=INPORT_ANY;
   }
-
-  if(flag&VANESSA_SOCKET_NO_LOOKUP || vanessa_socket_str_is_digit(port)){
+  else if(flag&VANESSA_SOCKET_NO_LOOKUP || vanessa_socket_str_is_digit(port)){
     portno=htons(atoi(port));
   }
   else{
     if((ent=getservbyname(port, "tcp"))==NULL){
       return(0);
     }
-    portno=(unsigned short int)ent->s_port;
+    portno=ent->s_port;
   }
+
   return(portno);
 }
 

@@ -31,12 +31,11 @@
 /**********************************************************************
  * vanessa_socket_client_open_sockaddr_in
  * Open a socket connection as a client
- * pre: sockaddr_in: sockaddr structure specifying host and port to
- *      connect to.
- *      flag: ignored
+ * pre: to: sockaddr structure specifying address and port to connect 
+ *          to.
+ *      flag: If VANESSA_SOCKET_NO_LOOKUP then no host and port lookups
+ *            will be performed
  * post: socket is opened
- * flag: If VANESSA_SOCKET_NO_LOOKUP then no host and port lookups
- *       will be performed
  * return: open socket
  *         -1 on error
  **********************************************************************/
@@ -46,16 +45,18 @@ int vanessa_socket_client_open_sockaddr_in(
   const vanessa_socket_flag_t flag
 ){
   int out;
-
-  /* Create socket for 'to' connection */
-  if((out=socket(AF_INET, SOCK_STREAM, 0)) < 0){
-    VANESSA_SOCKET_DEBUG_ERRNO("vanessa_socket_client_open: socket", errno);
-    return(-1);
-  }
+  struct sockaddr_in from;
 
   /* Connect to foreign 'to' server */
-  if(connect(out, (struct sockaddr *)&to, sizeof(to))<0){
-    VANESSA_SOCKET_DEBUG_ERRNO("vanessa_socket_client_open: connect", errno);
+  if((out=vanessa_socket_client_open_src_sockaddr_in(
+    from, 
+    to, 
+    flag|VANESSA_SOCKET_NO_FROM
+  ))<0){
+    VANESSA_SOCKET_DEBUG(
+      "vanessa_socket_client_open_sockaddr_in: "  
+      "vanessa_socket_client_open_src_sockaddr_in"
+    );
     return(-1);
   }
 
@@ -69,9 +70,9 @@ int vanessa_socket_client_open_sockaddr_in(
  * Open a socket connection as a client
  * pre: host: hostname or ipaddress to open socket to
  *      port: name or number to open
+ *      flag: If VANESSA_SOCKET_NO_LOOKUP then no host and port lookups
+ *            will be performed
  * post: socket is opened
- * flag: If VANESSA_SOCKET_NO_LOOKUP then no host and port lookups
- *       will be performed
  * return: open socket
  *         -1 on error
  **********************************************************************/
@@ -84,17 +85,82 @@ int vanessa_socket_client_open(
   int out;
   struct sockaddr_in to;
 
-  /* Fill in port information for 'to' */
-  if(vanessa_socket_host_port_sockaddr_in(host, port, &to, flag)<0){
+  if((out=vanessa_socket_client_src_open(
+    NULL, 
+    NULL, 
+    host, 
+    port, 
+    flag|VANESSA_SOCKET_NO_FROM
+  ))<0){
     VANESSA_SOCKET_DEBUG("vanessa_socket_client_open: "
-      "vanessa_socket_host_port_sockaddr_in");
+		    "vanessa_socket_client_src_open");
     return(-1);
   }
 
-  /* Set up connection */
-  if((out=vanessa_socket_client_open_sockaddr_in(to, flag)) < 0){
-    VANESSA_SOCKET_DEBUG("vanessa_socket_client_open: "
-		    "vanessa_socket_client_open_sockaddr_in");
+  return(out);
+}
+
+
+/**********************************************************************
+ * vanessa_socket_client_open_src_sockaddr_in
+ * Open a socket connection as a client
+ * pre: from: sockaddr structure specifying address and port to connect
+ *            from. 
+ *            If from.sin_addr.s_addr==INADDR_ANY then the operating 
+ *            system will select an appropriate source address.
+ *            If from.sin_port==INPORT_ANY then the operating system 
+ *            will select an appropriate source address.
+ *      to: sockaddr structure specifying address and port to connect 
+ *          to.
+ *      flag: Logical or of VANESSA_SOCKET_NO_LOOKUP and 
+ *            VANESSA_SOCKET_NO_FROM
+ *            If flag&VANESSA_SOCKET_NO_LOOKUP then no host and port 
+ *            lookups will be performed 
+ *            If flag&VANESSA_SOCKET_NO_FROM then the from parameter 
+ *            will not be used and the operating system will select a 
+ *            source address and port
+ * post: socket is opened
+ * return: open socket
+ *         -1 on error
+ **********************************************************************/
+
+int vanessa_socket_client_open_src_sockaddr_in(
+  struct sockaddr_in from,
+  struct sockaddr_in to,
+  const vanessa_socket_flag_t flag
+){
+  int out;
+
+  /* Create socket */
+  if((out=socket(AF_INET, SOCK_STREAM, 0)) < 0){
+    VANESSA_SOCKET_DEBUG_ERRNO(
+      "vanessa_socket_client_open_src_sockaddr_in: socket", 
+      errno
+    );
+    return(-1);
+  }
+
+  /* Bind 'from' to socket */
+  if(
+    !(flag&VANESSA_SOCKET_NO_FROM) || 
+    from.sin_addr.s_addr!=INADDR_ANY || 
+    from.sin_port!=INPORT_ANY
+  ){
+    if(bind(out, (struct sockaddr *)&from, sizeof(struct sockaddr_in))<0){
+      VANESSA_SOCKET_DEBUG_ERRNO(
+	"vanessa_socket_client_open_src_sockaddr_in: bind", 
+	errno
+      );
+      return(-1);
+    }
+  }
+
+  /* Connect to foreign 'to' server */
+  if(connect(out, (struct sockaddr *)&to, sizeof(to))<0){
+    VANESSA_SOCKET_DEBUG_ERRNO(
+      "vanessa_socket_client_open_src_sockaddr_in: connect", 
+      errno
+    );
     return(-1);
   }
 
@@ -103,3 +169,62 @@ int vanessa_socket_client_open(
 
 
 
+/**********************************************************************
+ * vanessa_socket_client_src_open
+ * Open a socket connection as a client
+ * pre: src_host: hostname or ipaddress to open socket to
+ *                If NULL then the operating system will select
+ *                an appropriate source address.
+ *      src_port: name or number to open
+ *                If NULL then the operating system will select
+ *                an appropriate source port.
+ *      dst_host: hostname or ipaddress to open socket to
+ *      dst_port: name or number to open
+ *      flag: Logical or of VANESSA_SOCKET_NO_LOOKUP and 
+ *            VANESSA_SOCKET_NO_FROM
+ *            If flag&VANESSA_SOCKET_NO_LOOKUP then no host and port 
+ *            lookups will be performed 
+ *            If flag&VANESSA_SOCKET_NO_FROM then the from parameter 
+ *            will not be used and the operating system will select a 
+ *            source address and port
+ * post: socket is opened
+ * return: open socket
+ *         -1 on error
+ **********************************************************************/
+
+int vanessa_socket_client_src_open(
+  const char *src_host, 
+  const char *src_port, 
+  const char *dst_host, 
+  const char *dst_port, 
+  const vanessa_socket_flag_t flag
+){
+  int out;
+  struct sockaddr_in to;
+  struct sockaddr_in from;
+
+  /* Fill in port information for 'from' */
+  if(!(flag&VANESSA_SOCKET_NO_FROM)){
+    if(vanessa_socket_host_port_sockaddr_in(src_host, src_port, &from, flag)<0){
+      VANESSA_SOCKET_DEBUG("vanessa_socket_client_src_open: "
+        "vanessa_socket_host_port_sockaddr_in from");
+      return(-1);
+    }
+  }
+
+  /* Fill in port information for 'to' */
+  if(vanessa_socket_host_port_sockaddr_in(dst_host, dst_port, &to, flag)<0){
+    VANESSA_SOCKET_DEBUG("vanessa_socket_client_open: "
+      "vanessa_socket_host_port_sockaddr_in to");
+    return(-1);
+  }
+
+  /* Set up connection */
+  if((out=vanessa_socket_client_open_src_sockaddr_in(from, to, flag)) < 0){
+    VANESSA_SOCKET_DEBUG("vanessa_socket_client_open: "
+		    "vanessa_socket_client_open_sockaddr_in");
+    return(-1);
+  }
+
+  return(out);
+}

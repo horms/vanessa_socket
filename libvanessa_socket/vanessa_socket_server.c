@@ -44,7 +44,8 @@ unsigned int noconnection;
  *      interface_address: If NULL bind to all interfaces, else
  *                         bind to interface(es) with this address.
  *      maximum_connections: maximum number of active connections
- *      to handle. If 0 then an number of connections is unlimited.
+ *                           to handle. If 0 then an number of connections 
+ *                           is unlimited.
  *      return_from: pointer to a struct_in addr where the 
  *                   connecting client's IP address will
  *                   be placed. Ignored if NULL
@@ -102,19 +103,17 @@ int vanessa_socket_server_connect(
 
 
 /**********************************************************************
- * vanessa_socker_servet_connect_sockaddr_in
+ * vanessa_socket_server_connect_sockaddr_in
  * Listen on a tcp port for incoming client connections 
  * When one is received fork
  * In the Child: close the listening file descriptor
  *               return the file descriptor that is 
  *               a socket connection to the client
  * In the Server: close the socket to the client and loop
- * pre: port: port to listen to, an ASCII representation of a number
- *            or an entry from /etc/services
- *      interface_address: If NULL bind to all interfaces, else
- *                         bind to interface(es) with this address.
- *      maximum_connections: maximum number of active connections
- *      to handle. If 0 then an number of connections is unlimited.
+ * pre: from: sockaddr_in to bind to
+ *      maximum_connections: maximum number of active connections to 
+ *                           handle. If 0 then an number of connections 
+ *                           is unlimited.
  *      return_from: pointer to a struct_in addr where the 
  *                   connecting client's IP address will
  *                   be placed. Ignored if NULL
