@@ -173,9 +173,8 @@ int vanessa_socket_server_accept(int listen_socket,
 
 	extern unsigned int noconnection;
 
-	addrlen = sizeof(from);
-
 	for(;;) {
+		addrlen = sizeof(from);
 		g = accept(listen_socket, (struct sockaddr *) &from, &addrlen);
 		if (g  < 0) {
 			if(errno == EINTR || errno == ECONNABORTED) {
