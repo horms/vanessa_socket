@@ -5,6 +5,16 @@ Library to simplify handling of TCP sockets
 Copyright (C) 2000  Horms
 ----------------------------------------------------------------------
 
+19th April 2001
+
+ * 0.0.2
+ - Fixed problem linking so that it is linked against the
+   shared libary libvanessa_logger instead of statically linked
+ - Fixed some (minor) casting problems when using bind() and
+   various popt calls.
+ 
+----------------------------------------------------------------------
+
 5th April 2001
 
  * 0.0.1

@@ -1,3 +1,9 @@
+vanessa-socket (0.0.2-1) unstable; urgency=low
+
+  * Include libvanessa_socket.so in dev package so dynamic linking works
+
+ -- Simon Horman <horms@vergenet.net>  Wed, 18 Apr 2001 17:40:14 -0700
+
 vanessa-socket (0.0.1-1) unstable; urgency=low
 
   * A CVS release.

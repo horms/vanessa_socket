@@ -18,7 +18,7 @@ dnl Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
 AC_INIT(libvanessa_socket/vanessa_socket.h)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(vanessa_socket, 0.0.1)
+AM_INIT_AUTOMAKE(vanessa_socket, 0.0.2)
 
 AM_PROG_LIBTOOL
 AC_PROG_CC
@@ -34,10 +34,12 @@ AC_CHECK_LIB(resolv, inet_aton, [ resolv_lib="-lresolv" ], :)
 AC_MSG_CHECKING("for Linux style shared object linking")
 if test "$host_os" = "linux" -o "$host_os" = "linux-gnu"; then
   AC_MSG_RESULT(Yes)
+  vanessa_logger_libs=""
   extra_libs=""
 else
   AC_MSG_RESULT(No)
-  extra_libs="-lvanessa_logger $socket_lib $nsl_lib $resolv_lib"
+  vanessa_logger_libs="-lvanessa_logger"
+  extra_libs="$socket_lib $nsl_lib $resolv_lib"
 fi
 
 AC_CHECK_LIB(
@@ -86,9 +88,7 @@ AC_FUNC_WAIT3
 AC_CHECK_FUNCS(flim)
 
 AC_SUBST(extra_libs)
-AC_SUBST(socket_lib)
-AC_SUBST(nsl_lib)
-AC_SUBST(resolv_lib)
+AC_SUBST(vanessa_logger_libs)
 AC_SUBST(pipe_dir)
 
 AC_OUTPUT(

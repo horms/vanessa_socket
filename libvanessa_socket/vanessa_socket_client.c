@@ -260,7 +260,7 @@ int vanessa_socket_client_open_src_sockaddr_inv
 	VANESSA_SOCKET_DEBUG_ERRNO
 	  ("vanessa_socket_client_open_src_sockaddr_inv: setsockopt(SO_REUSEADDR)",
 	   errno);
-      if(bind(s, &from, sizeof(from))<0){
+      if(bind(s, (struct sockaddr *) &from, sizeof(from))<0){
 	VANESSA_SOCKET_DEBUG_ERRNO
 	  ("vanessa_socket_client_open_src_sockaddr_inv: bind", 
 	   errno);

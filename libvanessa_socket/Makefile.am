@@ -39,4 +39,4 @@ vanessa_socket_server.c
 
 libvanessa_socket_la_LDFLAGS    = -version-info 0:1:0
 
-libvanessa_socket_la_LIBADD = @extra_libs@
+libvanessa_socket_la_LIBADD = @extra_libs@ -lvanessa_logger

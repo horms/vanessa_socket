@@ -101,10 +101,16 @@ int options(int argc, char **argv, options_t *opt){
   opt_i(opt->quiet,            DEFAULT_QUIET,            OPT_NOT_SET);
   opt_i(opt->timeout,          DEFAULT_TIMEOUT,          OPT_NOT_SET);
 
-  context= poptGetContext("vanessa_socket_pipe", argc, argv, options, 0);
+  context= poptGetContext(
+    "vanessa_socket_pipe", 
+    argc, 
+    (const char **) argv, 
+    options, 
+    0
+  );
 
   while ((c=poptGetNextOpt(context)) >= 0){
-    optarg=poptGetOptArg(context);
+    optarg=(char *)poptGetOptArg(context);
     switch (c){
       case 'c':
 	if(!vanessa_socket_str_is_digit(optarg)){ usage(-1); }

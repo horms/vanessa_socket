@@ -41,8 +41,6 @@ vanessa_socket_pipe_LDADD = \
 -L../libvanessa_socket \
 -L../libvanessa_socket/.libs/ \
 -lvanessa_socket \
--lvanessa_logger \
-@socket_lib@ \
-@nsl_lib@ \
-@resolv_lib@ \
+@extra_libs@ \
+@vanessa_logger_libs@ \
 -lpopt

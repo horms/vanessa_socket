@@ -95,10 +95,8 @@ PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 extra_libs = @extra_libs@
-nsl_lib = @nsl_lib@
 pipe_dir = @pipe_dir@
-resolv_lib = @resolv_lib@
-socket_lib = @socket_lib@
+vanessa_logger_libs = @vanessa_logger_libs@
 
 bin_PROGRAMS = vanessa_socket_pipe
 
@@ -111,7 +109,7 @@ vanessa_socket_pipe_SOURCES =    vanessa_socket_pipe.c   vanessa_socket_pipe_con
 
 INCLUDES = -I$(top_srcdir)/libvanessa_socket
 
-vanessa_socket_pipe_LDADD =  -L../libvanessa_socket -L../libvanessa_socket/.libs/ -lvanessa_socket -lvanessa_logger @socket_lib@ @nsl_lib@ @resolv_lib@ -lpopt
+vanessa_socket_pipe_LDADD =  -L../libvanessa_socket -L../libvanessa_socket/.libs/ -lvanessa_socket @extra_libs@ @vanessa_logger_libs@ -lpopt
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
