@@ -50,11 +50,11 @@ ssize_t vanessa_socket_pipe_fd_read(int fd, void *buf, size_t count,
 
   bytes=read(fd, buf, count);
 
-  if(bytes<=0){
+  if(bytes<0){
     if(errno){
       VANESSA_SOCKET_DEBUG_ERRNO("read");
     }
-    return(bytes==0?0:-1);
+    return(-1);
   }
 
   return(bytes);
@@ -191,7 +191,7 @@ int vanessa_socket_pipe_func(
       *return_b_read_bytes+=(bytes>0)?bytes:0;
     }
     if(bytes<0){
-      VANESSA_SOCKET_DEBUG("vanessa_socket_pipe_read_write");
+      VANESSA_SOCKET_DEBUG("vanessa_socket_pipe_read_write_func");
       return(-1);
     }
     else if(!bytes){
@@ -238,11 +238,14 @@ int vanessa_socket_pipe_read_write_func(
   int bytes;
 
   bytes=read_func(rfd, buffer, buffer_length, rfd_data);
-  if(bytes<=0){
+  if(bytes<0){
     if(errno){
       VANESSA_SOCKET_DEBUG("vanessa_socket_io_read");
     }
-    return(bytes==0?0:-1);
+    return(-1);
+  }
+  else if(bytes==0){
+    return(0);
   }
   if(vanessa_socket_pipe_write_bytes_func(wfd, buffer, bytes, write_func, 
                                           wfd_data)){
