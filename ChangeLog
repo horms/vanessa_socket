@@ -5,7 +5,7 @@ Library to simplify handling of TCP sockets
 Copyright (C) 1999-2002  Horms
 ----------------------------------------------------------------------
 
-11th April 2002
+11th May 2002
 
   * 0.0.4beta4
   - ignore EINTR for accept() in vanessa_socket_server_accept().
