@@ -35,4 +35,5 @@ INSTALL \
 vanessa_socket.spec.in \
 vanessa_socket.spec
 
-m4datadir = $(datadir)/aclocal
+clean-local:
+	rm -f build-stamp

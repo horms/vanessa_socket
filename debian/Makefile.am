@@ -40,7 +40,7 @@ rules \
 dpkg-checkbuild
 
 clean-local:
-	rm -f *.substvars *.debhelper
+	rm -f *.substvars *.debhelper files
 	rm -r -f libvanessa-socket-dev libvanessa-socket0 tmp \
 		libvanessa-socket-pipe
 
