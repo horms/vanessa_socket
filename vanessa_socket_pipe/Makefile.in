@@ -87,15 +87,18 @@ host_triplet = @host@
 AS = @AS@
 CC = @CC@
 DLLTOOL = @DLLTOOL@
+LD = @LD@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
+NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 nsl_lib = @nsl_lib@
 pipe_dir = @pipe_dir@
+resolv_lib = @resolv_lib@
 socket_lib = @socket_lib@
 
 bin_PROGRAMS = vanessa_socket_pipe
@@ -133,7 +136,7 @@ vanessa_socket_pipe_config.h.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/options.P .deps/vanessa_socket_pipe.P
 SOURCES = $(vanessa_socket_pipe_SOURCES)
