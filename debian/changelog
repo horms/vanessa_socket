@@ -6,7 +6,7 @@ vanessa-socket (0.0.4beta3-1) unstable; urgency=low
 
 vanessa-socket (0.0.4beta2-1) unstable; urgency=low
 
-  * include <errno.h> in vanessa_socket_pipe.c.  closes: Bug#108209
+  * include <errno.h> in vanessa_socket_pipe.c.  (closes: Bug#108209)
 
  -- Simon Horman <horms@vergenet.net>  Sun, 24 Mar 2002 10:15:23 +1100
 
