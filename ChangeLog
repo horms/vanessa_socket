@@ -22,6 +22,10 @@ XXX
     vanessa_socket_pipe_write_func()
   - Fixed handling of invalid port lookups
   - Support lookup up UCP port names
+  - If possible vanessa_socket_daemon_process() opens /dev/console as
+    fd 1 and 2. Otherwise /dev/null is opened (which was the previous
+    behaviour). These two file descriptors are then linked to
+    the file handles stdout and stderr respectivley.
 
 
 ----------------------------------------------------------------------

@@ -747,7 +747,7 @@ int vanessa_socket_host_port_sockaddr_in(const char *host,
 
 /**********************************************************************
  * vanessa_socket_daemon_process
- * Close and fork to become a vanessa_socket_daemon.
+ * Close all file descriptors and fork to become a vanessa_socket_daemon.
  * Note: vanessa_socket_daemon_inetd_process should be called if the 
  * process is being run from inetd.
  **********************************************************************/

@@ -46,7 +46,7 @@
 
 /**********************************************************************
  * vanessa_socket_daemon_process
- * Close and fork to become a vanessa_socket_daemon.
+ * Close all file descriptors and fork to become a vanessa_socket_daemon.
  * Note: vanessa_socket_daemon_inetd_process should be called if the 
  * process is being run from inetd.
  **********************************************************************/
@@ -107,22 +107,24 @@ void vanessa_socket_daemon_process(void)
 	 * `/dev/console' as stderr and/or stdout, and `/dev/null' as stdin, or
 	 * any other combination that makes sense for your particular daemon.
 	 */
+
 	if (open("/dev/null", O_RDONLY) < 0) {
-		VANESSA_LOGGER_DEBUG_ERRNO("open");
-		VANESSA_LOGGER_ERR
-		    ("Fatal error Opening /dev/null. Exiting.");
 		vanessa_socket_daemon_exit_cleanly(-1);
 	}
-	if (open("/dev/null", O_WRONLY | O_APPEND) < 0) {
-		VANESSA_LOGGER_DEBUG_ERRNO("open");
-		VANESSA_LOGGER_ERR
-		    ("Fatal error Opening /dev/null. Exiting.");
+	if ((open("/dev/console", O_WRONLY | O_APPEND) < 0) &&
+			open("/dev/null", O_WRONLY | O_APPEND) < 0) {
 		vanessa_socket_daemon_exit_cleanly(-1);
 	}
-	if (open("/dev/null", O_WRONLY | O_APPEND) < 0) {
-		VANESSA_LOGGER_DEBUG_ERRNO("open");
-		VANESSA_LOGGER_ERR
-		    ("Fatal error Opening /dev/null. Exiting.");
+	stdout = fdopen(1, "a");
+	if(!stdout) {
+		vanessa_socket_daemon_exit_cleanly(-1);
+	}
+	if ((open("/dev/console", O_WRONLY | O_APPEND) < 0) &&
+			open("/dev/null", O_WRONLY | O_APPEND) < 0) {
+		vanessa_socket_daemon_exit_cleanly(-1);
+	}
+	stderr = fdopen(2, "a");
+	if(!stderr) {
 		vanessa_socket_daemon_exit_cleanly(-1);
 	}
 }
