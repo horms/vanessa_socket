@@ -651,5 +651,70 @@ extern vanessa_logger_t *vanessa_socket_logger;
 #define vanessa_socket_logger_unset() vanessa_socket_logger_set(NULL)
 
 
+/**********************************************************************
+ * vanessa_socket_daemon_process
+ * Close and fork to become a vanessa_socket_daemon.
+ * Note: vanessa_socket_daemon_inetd_process should be called if the 
+ * process is being run from inetd.
+ **********************************************************************/
+
+void vanessa_socket_daemon_process(void);
+
+
+/**********************************************************************
+ * vanessa_socket_daemon_inetd_process
+ * Chdir to and umask
+ * This is all we really need to do if our process is run from
+ * inetd
+ **********************************************************************/
+
+void vanessa_socket_daemon_inetd_process(void);
+
+
+/**********************************************************************
+ * vanessa_socket_daemon_become_child
+ * Fork and exit from parent process. When we return 
+ * we are our own clild. Very incestuous.
+ **********************************************************************/
+
+void vanessa_socket_daemon_become_child(void);
+
+
+/**********************************************************************
+ * vanessa_socket_daemon_close_fd
+ * Close all the file descriptots a process has
+ **********************************************************************/
+
+void vanessa_socket_daemon_close_fd(void);
+
+
+/**********************************************************************
+ * vanessa_socket_daemon_setid
+ * Set the userid and groupid of the process.
+ * Arguments are the username or the userid as a string and 
+ * the group or the groupid as a string.
+ **********************************************************************/
+
+int vanessa_socket_daemon_setid(const char *user, const char *group);
+
+
+/**********************************************************************
+ * vanessa_socket_daemon_exit_cleanly
+ * If we get a sinal then close everthing, log it and quit
+ **********************************************************************/
+
+void vanessa_socket_daemon_exit_cleanly(int i);
+
+
+/**********************************************************************
+ * vanessa_socket_daemon_noop_handler
+ * A signal handler that does nothing but reinstall itself
+ * as the signal handler for the signal.
+ * pre: sig: signal recieved by the process
+ * post: signal handler reset for signal
+ **********************************************************************/
+
+void vanessa_socket_daemon_noop_handler(int sig);
+
 
 #endif
