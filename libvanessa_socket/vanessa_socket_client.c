@@ -204,6 +204,7 @@ int vanessa_socket_client_src_open(
   struct sockaddr_in from;
 
   /* Fill in port information for 'from' */
+  bzero((struct sockaddr *)from, sizeof(from));
   if(!(flag&VANESSA_SOCKET_NO_FROM)){
     if(vanessa_socket_host_port_sockaddr_in(src_host, src_port, &from, flag)<0){
       VANESSA_SOCKET_DEBUG("vanessa_socket_client_src_open: "
