@@ -1,6 +1,6 @@
 /**********************************************************************
  * vanessa_socket_pipe.c                                    August 2000
- * Horms                                             horms@vergenet.net
+ * Horms                                             horms@verge.net.au
  *
  * Trivial user space TCP pipe that uses libvanessa_socket to
  * do all the hard work.

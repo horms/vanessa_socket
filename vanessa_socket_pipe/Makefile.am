@@ -1,6 +1,6 @@
 ######################################################################
 # Makefile.am                                           September 2000
-# Horms                                             horms@vergenet.net
+# Horms                                             horms@verge.net.au
 #
 # vanessa_socket_pipe
 # Trivial TCP/IP pipe based on libvanessa_socket

@@ -1,12 +1,12 @@
 /**********************************************************************
  * vanessa_socket_client.c                                November 1999
- * Horms                                             horms@vergenet.net
+ * Horms                                             horms@verge.net.au
  *
  * Open a tcp socket to a server (we are the client)
  *
  * vanessa_socket
  * Library to simplify handling of TCP sockets
- * Copyright (C) 1999-2002  Horms
+ * Copyright (C) 1999-2003  Horms
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License

@@ -11,8 +11,8 @@ Description:    vanessa_socket is a library to simplify TCP/IP socket
 		connects makes a connection to a TCP/IP port, possibly on
 		another host. 
 Keywords:       TCP/IP Socket
-Author:         Horms <horms@vergenet.net>
-Maintained-by:  Horms <horms@vergenet.net>
+Author:         Horms <horms@verge.net.au>
+Maintained-by:  Horms <horms@verge.net.au>
 Primary-site:   ftp.vergenet.net /pub/vanessa/vanessa_socket
 Alternate-site: ftp.au.vergenet.net /pub/vanessa/vanessa_socket
 Original-site:  

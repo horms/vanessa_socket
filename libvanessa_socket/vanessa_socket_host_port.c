@@ -1,12 +1,12 @@
 /**********************************************************************
  * vanessa_socket_host_port.c                                 July 2000
- * Horms                                             horms@vergenet.net
+ * Horms                                             horms@verge.net.au
  *
  * Operations on host names and ports
  *
  * vanessa_socket
  * Library to simplify handling of TCP sockets
- * Copyright (C) 1999-2002  Horms
+ * Copyright (C) 1999-2003  Horms
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License

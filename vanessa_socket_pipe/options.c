@@ -1,6 +1,6 @@
 /**********************************************************************
  * options.c                                             September 1999
- * Horms                                             horms@vergenet.net
+ * Horms                                             horms@verge.net.au
  *
  * Read in command line options
  * Code based on man getopt(3), later translated to popt
