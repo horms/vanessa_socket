@@ -21,3 +21,9 @@ cd vanessa_socket-@VERSION@
 ./configure --prefix=/usr
 make distcheck
 rpm -ta vanessa_socket-@VERSION@.tar.gz
+
+
+To Build Debian Packages
+
+dpkg-buildpackage [-uc] [-us]
+
