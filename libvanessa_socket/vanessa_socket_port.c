@@ -75,7 +75,7 @@ long int vanessa_socket_port_portno(const char *port,
 		portno = (long int)ent->s_port;
 	}
 
-	if(portno < 0 || portno >= USHRT_MAX) {
+	if(portno < 0 || portno >= 65535) {
 		VANESSA_LOGGER_DEBUG("port out of range");
 		return(-1);
 	}
