@@ -36,7 +36,8 @@ XXX
     on (at least) FreeBSD. Dounin Maxim <mdounin@rambler-co.ru>
   - Use memset() instead of bzero().
   - Ignore ECONNABORTED for accept(). Maxim Dounin.
-
+  - Treat getsockname() and getpeername() errors as transient.
+    Maxim Dounin
 
 
 ----------------------------------------------------------------------

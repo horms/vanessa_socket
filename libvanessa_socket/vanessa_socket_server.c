@@ -198,8 +198,13 @@ int vanessa_socket_server_accept(int listen_socket,
 			addrlen = sizeof(struct sockaddr_in);
 			if (getsockname (g, (struct sockaddr *) return_to, 
 					&addrlen) < 0) { 
-				VANESSA_LOGGER_DEBUG_ERRNO ("getsockname"); 
-				return (-1);
+				VANESSA_LOGGER_DEBUG_ERRNO (
+						"warning: getsockname"); 
+				/* This is usually (always) a transient
+				 * error so close the connection and
+				 * soldier on */
+				close(g);
+				continue;
 			}
 		}
 
@@ -207,8 +212,13 @@ int vanessa_socket_server_accept(int listen_socket,
 			addrlen = sizeof(struct sockaddr_in);
 			if (getpeername (g, (struct sockaddr *) return_from, 
 					&addrlen) < 0) { 
-				VANESSA_LOGGER_DEBUG_ERRNO ("getpeername"); 
-				return (-1);
+				VANESSA_LOGGER_DEBUG_ERRNO (
+						"warning: getpeername"); 
+				/* This is usually (always) a transient
+				 * error so close the connection and
+				 * soldier on */
+				close(g);
+				continue;
 			}
 		}
 

@@ -51,8 +51,6 @@ void vanessa_socket_handler_reaper(int sig)
 }
 
 
-
-
 /**********************************************************************
  * vanessa_socket_handler_noop
  * A signal handler that does nothing but reinstall itself
