@@ -108,9 +108,9 @@ int main (int argc, char **argv){
   /*
    * Convert the address that a client connected from
    * and the address (local to this host) that the 
-   * client conected to to a string for later reference
+   * client connected to to a string for later reference
    *
-   * N.B. inet_ntoa uses a gloabal buffer which is
+   * N.B. inet_ntoa uses a global buffer which is
    *       why two calls are required, lest the second call
    *       overwrite the result of the first
    */
