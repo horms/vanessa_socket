@@ -5,6 +5,14 @@ Library to simplify handling of TCP sockets
 Copyright (C) 1999-2002  Horms
 ----------------------------------------------------------------------
 
+XXX
+
+  * XXX
+  - Fix bug in reseting signal hander in vanessa_socket_handler_reaper
+
+
+----------------------------------------------------------------------
+
 24th March 2002
 
  * 0.0.4beta2

@@ -44,7 +44,7 @@ void vanessa_socket_handler_reaper(int sig)
 
 	extern unsigned int noconnection;
 
-	signal(signal, (void (*)(int)) vanessa_socket_handler_reaper);
+	signal(sig, (void (*)(int)) vanessa_socket_handler_reaper);
 	while (wait3(&status, WNOHANG, 0) > 0) {
 		noconnection--;
 	}
