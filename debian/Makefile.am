@@ -23,16 +23,17 @@
 #
 ######################################################################
 
-SUBDIRS = libvanessa_socket @pipe_dir@ debian
-
+m4datadir = $(datadir)/aclocal
 EXTRA_DIST = \
-configure \
-configure.in \
-README \
-TODO \
-INSTALL.in \
-INSTALL \
-vanessa_socket.spec.in \
-vanessa_socket.spec
+changelog \
+control \
+copyright \
+libvanessa-socket-dev.dirs \
+libvanessa-socket-dev.files \
+libvanessa-socket-pipe.dirs \
+libvanessa-socket-pipe.files \
+libvanessa-socket.dirs \
+libvanessa-socket.files \
+libvanessa_socket0.postinst
 
 m4datadir = $(datadir)/aclocal

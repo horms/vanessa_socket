@@ -1,0 +1,37 @@
+Source: vanessa-socket
+Section: devel
+Priority: optional
+Maintainer: Horms <horms@vergenet.net>
+Standards-Version: 3.1.1
+
+Package: libvanessa-socket-dev
+Architecture: any
+Depends: libvanessa-socket0 (= ${Source-Version}), libvanessa-logger-dev, libc6-dev
+Description: 
+  Headers and static libraries required to develop against
+  libvanessa_socket.
+
+Package: libvanessa-socket-pipe
+Architecture: any
+Depends: libvanessa-socket0 (= ${Source-Version}), libc6-dev
+Description: 
+  A TCP pipe is a user space programme that listens for TCP connections on
+  port on the local host and when a client connects makes a connection to a
+  TCP port, possibly on another host. Once both connections are established
+  data sent on one connection is relayed to the other, hence forming a
+  bi-directional pipe.
+
+  Uses include enabling connections to specific ports on hosts behind a
+  packet filter.
+
+  This code is intended primarily as an example of how many of the features
+  of libvanessa_socket work.
+
+Package: libvanessa-socket0
+Architecture: any
+Depends: ${shlibs:Depends}, libvanessa-logger0
+Description:
+  Library to simplify TCP socket operations. Includes code to
+  open a socket to a server as a client, to listen on socket for
+  clients as a server and to pipe information between sockets.
+
