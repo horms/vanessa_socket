@@ -191,7 +191,7 @@ int log_options(options_t opt, vanessa_logger_t *vl){
     "no_lookup=%d, "
     "outgoing_host=\"%s\", "
     "outgoing_port=\"%s\", "
-    "quiet=%d, ",
+    "quiet=%d, "
     "timeout=%d,\n",
     opt.connection_limit,
     opt.debug,
