@@ -83,6 +83,11 @@ int main (int argc, char **argv){
    */
   log_options(opt, vl);
 
+  /*
+   * Set a signal handler to clean up zombies
+   */
+  signal(SIGCHLD,   vanessa_socket_handler_reaper);
+
   /* 
    * Listen on a port
    * If you want to make a TCP/IP server that forks on connect

@@ -30,6 +30,8 @@
 
 
 #include <errno.h>
+#include <vanessa_logger.h>
+
 #include "vanessa_socket.h"
 
 extern vanessa_logger_t *vanessa_socket_logger;

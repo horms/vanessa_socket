@@ -289,17 +289,3 @@ void vanessa_socket_daemon_exit_cleanly(int i)
 	vanessa_socket_daemon_close_fd();
 	exit((i > 0) ? 0 : i);
 }
-
-
-/**********************************************************************
- * vanessa_socket_daemon_noop_handler
- * A signal handler that does nothing but reinstall itself
- * as the signal handler for the signal.
- * pre: sig: signal recieved by the process
- * post: signal handler reset for signal
- **********************************************************************/
-
-void vanessa_socket_daemon_noop_handler(int sig)
-{
-	signal(sig, (void (*)(int)) vanessa_socket_daemon_noop_handler);
-}

@@ -119,7 +119,6 @@ int vanessa_socket_server_bind_sockaddr_in(struct sockaddr_in from,
 		return (-1);
 	}
 
-	signal(SIGCHLD, (void (*)(int)) vanessa_socket_server_reaper);
 	listen(s, 5);
 
 	return(s);
@@ -217,6 +216,9 @@ int vanessa_socket_server_accept(int listen_socket,
 				return(-1);
 			}
 			return(g);
+		}
+		else {
+			close(g);
 		}
 	}
 
@@ -326,106 +328,19 @@ int vanessa_socket_server_connect_sockaddr_in(struct sockaddr_in from,
 {
 	int s;
 	int g;
-	int addrlen;
 
-	extern unsigned int noconnection;
-
-	if ((s = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		VANESSA_SOCKET_DEBUG_ERRNO("socket");
+	s = vanessa_socket_server_bind_sockaddr_in(from, flag);
+	if(s < 0) {
+		VANESSA_SOCKET_DEBUG("vanessa_socket_server_bind_sockaddr_in");
 		return (-1);
 	}
 
-	/* 
-	 * Set SO_REUSEADDR on the server socket s. Variable g is used
-	 * as a scratch varable.
-	 */
-	g = 1;
-	if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (void *) &g, sizeof g)
-	    < 0) {
-		VANESSA_SOCKET_DEBUG_ERRNO("setsockopt");
-		return (-1);
-	}
-#ifdef SO_BINDANY
-	g = 1;
-	if (setsockopt(s, SOL_SOCKET, SO_BINDANY, (void *) &g, sizeof g) <
-	    0) {
-		VANESSA_SOCKET_DEBUG_ERRNO("setsockopt");
-		return (-1);
-	}
-#endif
-
-	addrlen = sizeof(struct sockaddr_in);
-
-	if (bind(s, (struct sockaddr *) &from, addrlen) < 0) {
-		VANESSA_SOCKET_DEBUG_ERRNO("bind");
-		return (-1);
+	g = vanessa_socket_server_accept(s, maximum_connections, 
+					 return_from, return_to, 0);
+	if(g < 0) {
+		VANESSA_SOCKET_DEBUG("vanessa_socket_server_accept");
+		return(-1);
 	}
 
-	signal(SIGCHLD, (void (*)(int)) vanessa_socket_server_reaper);
-	listen(s, 5);
-
-	for (;;) {
-		if ((g =
-		     accept(s, (struct sockaddr *) &from,
-			    &addrlen)) >= 0) {
-			if (maximum_connections
-			    && noconnection >= maximum_connections) {
-				close(g);
-				continue;
-			}
-			if (fork() == 0) {
-				if (close(s) < 0) {
-					VANESSA_SOCKET_DEBUG_ERRNO
-					    ("close 1");
-					return (-1);
-				}
-				if (return_to != NULL) {
-					addrlen =
-					    sizeof(struct sockaddr_in);
-					if (getsockname
-					    (g,
-					     (struct sockaddr *) return_to,
-					     &addrlen) < 0) {
-						VANESSA_SOCKET_DEBUG_ERRNO
-						    ("getsockname");
-						return (-1);
-					}
-				}
-				if (return_from != NULL) {
-					*return_from = from;
-				}
-				return (g);
-			} else {
-				noconnection++;
-				if (close(g)) {
-					VANESSA_SOCKET_DEBUG_ERRNO
-					    ("close 2");
-					return (-1);
-				}
-			}
-		}
-	}
-}
-
-
-/**********************************************************************
- * vanessa_socket_server_reaper
- * A signal handler that waits for SIGCHLD and runs wait3 to free
- * the resources of any exited children. This stops zombie processes
- * from hanging around.
- * pre: SIGCHLD is recieved by the process
- * post: Resources of any exited children are freed
- *       Signal Handler for SIGCHLD reset
- **********************************************************************/
-
-void vanessa_socket_server_reaper(void)
-{
-	int status;
-
-	extern unsigned int noconnection;
-
-	signal(SIGCHLD, (void (*)(int)) vanessa_socket_server_reaper);
-	while (wait3(&status, WNOHANG, 0) > 0) {
-		noconnection--;
-	}
+	return(g);
 }

@@ -15,6 +15,9 @@ XXX
  - Allow select() function to be supplied to  vanessa_socket_pipe().
  - Use system variants of read(), write() and select() by default
    in  vanessa_socket_pipe() and friends.
+ - Server code doesn't set SIGCHLD handler to vanessa_socket_server_reaper,
+   this should be done by the aplication. If a non-forking server is being 
+   used, SIGPIPE needs to be set to something, and SIGCHILD is irrelevant.
  
 ----------------------------------------------------------------------
 

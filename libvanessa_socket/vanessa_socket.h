@@ -784,14 +784,26 @@ void vanessa_socket_daemon_exit_cleanly(int i);
 
 
 /**********************************************************************
- * vanessa_socket_daemon_noop_handler
+ * vanessa_socket_handler_noop
  * A signal handler that does nothing but reinstall itself
  * as the signal handler for the signal.
  * pre: sig: signal recieved by the process
  * post: signal handler reset for signal
  **********************************************************************/
 
-void vanessa_socket_daemon_noop_handler(int sig);
+void vanessa_socket_handler_noop(int sig);
 
+
+/**********************************************************************
+ * vanessa_socket_handler_reaper
+ * A signal handler that waits for a signal and runs wait3 to free
+ * the resources of any exited children. This stops zombie processes
+ * from hanging around. Designed to listen for SIGCHLD
+ * pre: sig: signal is recieved by the process
+ * post: Resources of any exited children are freed
+ *       Signal Handler for signal reset
+ **********************************************************************/
+
+void vanessa_socket_handler_reaper(int sig);
 
 #endif
