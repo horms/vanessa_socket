@@ -5,6 +5,19 @@ Library to simplify handling of TCP sockets
 Copyright (C) 2000  Horms
 ----------------------------------------------------------------------
 
+xxx
+
+ * xxx
+ - Fixed problem with -b under BSD ("Erik R. Leo" <erikl@sover.net>)
+ - Fixed problem with client connecting to bizzare address under BSD
+   ("Erik R. Leo" <erikl@sover.net>)
+   
+----------------------------------------------------------------------
+
+9th January 2000
+(Horms)
+
+ * version 0.0.0 
  - Added vanessa_socket_client_src_open() and
    vanessa_socket_client_src_open_in_addr() that enable a conection
    to be openend to a server and optionally have the source port 

@@ -160,6 +160,17 @@ int vanessa_socket_server_connect_sockaddr_in(
     return(-1);
   }
 
+#ifdef SO_BINDANY
+  g = 1;
+  if(setsockopt(s,SOL_SOCKET,SO_BINDANY,(void *)&g,sizeof g) <0){
+    VANESSA_SOCKET_DEBUG_ERRNO(
+      "vanessa_socket_server_connect: setsockopt",
+      errno
+    );
+    return(-1);
+  }
+#endif
+
   addrlen = sizeof(struct sockaddr_in);
 
   if(bind(s, (struct sockaddr *)&from, addrlen)<0){
