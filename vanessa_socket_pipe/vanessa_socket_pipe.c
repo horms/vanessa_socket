@@ -28,6 +28,8 @@
 
 #include "options.h"
 
+#include <errno.h>
+
 #define CONNECT_RETRY 3
 #define ERR_SLEEP 1
 #define IDENT "vanessa_socket_pipe"
