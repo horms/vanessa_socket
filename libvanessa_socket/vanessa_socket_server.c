@@ -121,7 +121,11 @@ int vanessa_socket_server_bind_sockaddr_in(struct sockaddr_in from,
 		return (-1);
 	}
 
+#ifdef SOMAXCONN
+	listen(s, SOMAXCONN);
+#else
 	listen(s, 5);
+#endif
 
 	return(s);
 }

@@ -12,6 +12,7 @@ XXX
   - Better logging of faile gethopstbyname() and gethostbyaddr() calls
   - Reset addrlen correctly in vanessa_socket_server_accept()
     Maxim Dounin
+  - Set lissten() to SOMAXCONN if possible. Maxim Dounin
 
 
 ----------------------------------------------------------------------
