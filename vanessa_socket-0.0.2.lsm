@@ -1,6 +1,6 @@
 Begin3
 Title:          vanessa_socket
-Version:        0.0.1
+Version:        0.0.2
 Entered-date:   09MAY01
 Description:    vanessa_socket is a library to simplify TCP/IP socket
 		operations. Includes code to open a socket to a server as a
@@ -17,5 +17,5 @@ Primary-site:   ftp.vergenet.net /pub/vanessa/vanessa_socket
 Alternate-site: ftp.au.vergenet.net /pub/vanessa/vanessa_socket
 Original-site:  
 Platforms:      Linux
-Copying-policy: Library is LGPL. Sample programme is GPL
+Copying-policy: LGPL
 End

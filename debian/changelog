@@ -1,8 +1,8 @@
-vanessa-socket (0.0.3pre2-1) unstable; urgency=low
+vanessa-socket (0.0.3-1) unstable; urgency=low
 
   * A release
 
- -- Simon Horman <horms@vergenet.net>  Fri, 25 May 2001 12:41:24 +1000
+ -- Simon Horman <horms@vergenet.net>  Thu, 28 Jun 2001 18:29:16 +1000
 
 vanessa-socket (0.0.2-1) unstable; urgency=low
 

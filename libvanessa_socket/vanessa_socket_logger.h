@@ -35,20 +35,34 @@
 extern vanessa_logger_t *vanessa_socket_logger;
 extern int errno;
 
-#define VANESSA_SOCKET_LOG(priority, fmt, args...) \
+
+/*
+ * Hooray for format string problems!
+ *
+ * Each of the logging macros has two versions. The UNSAFE version will
+ * accept a format string. You should _NOT_ use the UNSAFE versions of the
+ * first argument, the format string, is derived from user input. The safe
+ * versions (versions that do not have the "_UNSAFE" suffix) do not accept
+ * a format string and only accept one argument, the string to log. These
+ * should be safe to use with user derived input.
+ */
+
+#define VANESSA_SOCKET_LOG_UNSAFE(priority, fmt, args...) \
   vanessa_logger_log(vanessa_socket_logger, priority, fmt, ## args);
 
-#define VANESSA_SOCKET_INFO(fmt, args...) \
-  VANESSA_SOCKET_LOG(LOG_INFO, fmt, ## args);
+#define VANESSA_SOCKET_LOG(priority, str) \
+  vanessa_logger_log(vanessa_socket_logger, priority, "%s", str)
 
-#define VANESSA_SOCKET_ERR(fmt, args...) \
-  VANESSA_SOCKET_LOG(LOG_ERR, fmt, ## args);
+#define VANESSA_SOCKET_DEBUG_UNSAFE(fmt, args...) \
+  vanessa_logger_log(vanessa_socket_logger, LOG_DEBUG, \
+    __FUNCTION__ ": " fmt, ## args);
 
-#define VANESSA_SOCKET_DEBUG(fmt, args...) \
-  VANESSA_SOCKET_LOG(LOG_DEBUG, __FUNCTION__ ": " fmt, ## args);
+#define VANESSA_SOCKET_DEBUG(str) \
+  vanessa_logger_log(vanessa_socket_logger, LOG_DEBUG, \
+    __FUNCTION__ ": %s", str);
 
 #define VANESSA_SOCKET_DEBUG_ERRNO(s) \
-  VANESSA_SOCKET_LOG(LOG_DEBUG, "%s: %s: %s", __FUNCTION__, s, strerror(errno));
-
+  vanessa_logger_log(vanessa_socket_logger, LOG_DEBUG, "%s: %s: %s", \
+    __FUNCTION__, s, strerror(errno));
 
 #endif

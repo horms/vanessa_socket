@@ -5,6 +5,15 @@ Library to simplify handling of TCP sockets
 Copyright (C) 2000  Horms
 ----------------------------------------------------------------------
 
+29th June 2001
+
+ * 0.0.3
+ - Allow read() and write() functions to be supplied to 
+   vanessa_socket_pipe() and friends.
+ - Tidyied up logging
+ 
+----------------------------------------------------------------------
+
 19th April 2001
 
  * 0.0.2
