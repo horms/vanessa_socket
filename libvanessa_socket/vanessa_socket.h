@@ -355,7 +355,7 @@ extern vanessa_logger_t *vanessa_socket_logger;
 
 /**********************************************************************
  * vanessa_socket_logger_set
- * set the logger funtion to use
+ * set the logger function to use
  * No logging will take place if logger is set to NULL (default)
  * That is you _must_ call this function to enable logging.
  * pre: logger: pointer to a vanessa_logger

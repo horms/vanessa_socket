@@ -33,7 +33,7 @@
 #define IDENT "vanessa_socket_pipe"
 
 /**********************************************************************
- * Muriel the main funtion
+ * Muriel the main function
  **********************************************************************/
 
 int main (int argc, char **argv){

@@ -2,7 +2,7 @@
  * vanessa_socket_logger.c                                     May 2000
  * Horms                                             horms@vergenet.net
  *
- * Logging funtionality
+ * Logging functionality
  *
  * vanessa_socket
  * Library to simplify handling of TCP sockets
