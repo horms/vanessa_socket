@@ -1,4 +1,4 @@
-vanessa-socket (0.0.7release-1) unstable; urgency=low
+vanessa-socket (0.0.7-1) unstable; urgency=low
 
   * New Upstream
     Fixed handling of shlibs
