@@ -9,6 +9,9 @@ XXX
 
   * XXX
   - Fix bug in reseting signal hander in vanessa_socket_handler_reaper
+  - vanessa_socket_host_port_sockaddr_in provides a more infomative 
+    message if conversion of an IP address to binary fails when 
+    VANESSA_SOCKET_NO_LOOKUP is set.
 
 
 ----------------------------------------------------------------------

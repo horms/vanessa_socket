@@ -58,12 +58,15 @@ int vanessa_socket_host_in_addr(const char *host,
 		in->s_addr = htonl(INADDR_ANY);
 	} else if (flag & VANESSA_SOCKET_NO_LOOKUP) {
 		if (inet_aton(host, in) == 0) {
-			VANESSA_SOCKET_DEBUG("invalid address");
+			VANESSA_SOCKET_DEBUG_UNSAFE("invalid IP address (%s): "
+					"Are you trying to resolve a hostname "
+					"with no lookup enabled?", host);
 			return (-1);
 		}
 	} else {
 		if ((hp = gethostbyname(host)) == NULL) {
-			VANESSA_SOCKET_DEBUG_ERRNO("gethostbyname");
+			VANESSA_SOCKET_DEBUG_ERRNO_UNSAFE("gethostbyname (%s)",
+					host);
 			return (-1);
 		}
 		bcopy(hp->h_addr, in, hp->h_length);
