@@ -5,7 +5,16 @@ Library to simplify handling of TCP sockets
 Copyright (C) 1999-2003  Horms
 ----------------------------------------------------------------------
 
+XXX
+(Horms)
+
+  * XXX
+  - Compile time check to see if stdio and stderr can be reassigned.
+
+----------------------------------------------------------------------
+
 7th February 2003
+(Horms)
 
   * 0.0.5beta4
   - Made vanessa_socket_accept resistant to SIGPIPE. Russell Corker.

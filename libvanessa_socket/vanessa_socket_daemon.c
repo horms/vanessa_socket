@@ -115,18 +115,21 @@ void vanessa_socket_daemon_process(void)
 			open("/dev/null", O_WRONLY | O_APPEND) < 0) {
 		vanessa_socket_daemon_exit_cleanly(-1);
 	}
-	stdout = fdopen(1, "a");
-	if(!stdout) {
-		vanessa_socket_daemon_exit_cleanly(-1);
-	}
 	if ((open("/dev/console", O_WRONLY | O_APPEND) < 0) &&
 			open("/dev/null", O_WRONLY | O_APPEND) < 0) {
+		vanessa_socket_daemon_exit_cleanly(-1);
+	}
+
+#ifdef WITH_REASSIGN_IO
+	stdout = fdopen(1, "a");
+	if(!stdout) {
 		vanessa_socket_daemon_exit_cleanly(-1);
 	}
 	stderr = fdopen(2, "a");
 	if(!stderr) {
 		vanessa_socket_daemon_exit_cleanly(-1);
 	}
+#endif /* WITH_REASSIGN_IO */
 }
 
 

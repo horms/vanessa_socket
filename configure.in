@@ -71,6 +71,13 @@ AC_CHECK_LIB(
   pipe_dir="" ;
   sleep 5
 )
+AC_MSG_CHECKING("if stderr and stdio can be reassigned");
+AC_TRY_COMPILE(
+        [#include <stdio.h>],
+        [stdout=fdopen(1, "a");],
+        [AC_MSG_RESULT("yes"); AC_DEFINE(WITH_REASSIGN_IO) ],
+        AC_MSG_RESULT("no")
+)
 
 dnl Checks for header files.
 AC_HEADER_STDC
