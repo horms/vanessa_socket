@@ -55,7 +55,7 @@ binary-arch: build install
 	dh_strip
 	dh_compress
 	dh_fixperms
-	dh_suidregister
+	#dh_suidregister
 	dh_makeshlibs
 	dh_installdeb
 	dh_shlibdeps
