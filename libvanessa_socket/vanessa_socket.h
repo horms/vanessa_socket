@@ -302,11 +302,13 @@ ssize_t vanessa_socket_pipe_fd_write(int fd, const void *buf, size_t count,
  *      return_b_read_bytes: Pointer to int where number
  *                           of bytes read from b will be recorded.
  *      read_func: Function to use for low level reading.
+ *                 If NULL, a simple wrapper around read(2) is used
  *      write_func: Function to use for low level writing.
- *      fd_a_data: opaque data relating to rfd_a and wfd_a, 
- *                 to pass to read_func and write_func
- *      fd_b_data: opaque data relating to rfd_b and wfd_b, 
- *                 to pass to read_func and write_func
+ *                 If NULL, a simple wrapper around write(2) is used
+ *                 If NULL, a simple wrapper around read(2) is used
+ *      select_func: Function to use for select
+ *                 If NULL, a simple wrapper around select(2) is used
+ *      data: opaque data passed to read_func, write_func and select_func
  * post: bytes are read from io_a and written to io_b and vice versa
  * return: -1 on error
  *         1 on idle timeout
@@ -328,7 +330,12 @@ int vanessa_socket_pipe_func(int rfd_a,
 			     ssize_t(*write_func) (int fd, const void *buf,
 						   size_t count,
 						   void *data),
-			     void *fd_a_data, void *fd_b_data);
+			     int(*select_func) (int n, fd_set *readfds,
+				                fd_set *writefds,
+						fd_set *exceptfds,
+						struct timeval *timeout,
+						void *data),
+			     void *data);
 
 
 /**********************************************************************
@@ -374,8 +381,8 @@ int vanessa_socket_pipe_func(int rfd_a,
     idle_timeout,  \
     return_a_read_bytes, \
     return_b_read_bytes,  \
-    vanessa_socket_pipe_fd_read, \
-    vanessa_socket_pipe_fd_write,  \
+    NULL, \
+    NULL, \
     NULL, \
     NULL \
   )
@@ -389,9 +396,10 @@ int vanessa_socket_pipe_func(int rfd_a,
  *      buffer: allocated buffer to store read data in
  *      buffer_length: size of the buffer
  *      read_func: function to use for low level reading
+ *                 If NULL, a simple wrapper around read(2) is used
  *      write_func: function to use for low level writing
- *      rfd_data: opaque data, relating to rfd, to pass to read_func
- *      wfd_data: opaque data, relating to wfd, to pass to write_func
+ *                 If NULL, a simple wrapper around write(2) is used
+ *      data: opaque data passed to read_func and write_func
  * post: at most buffer_length bytes are read from in_fd and written 
  *       to out_fd. 
  * return: bytes read on success
@@ -412,7 +420,7 @@ int vanessa_socket_pipe_read_write_func(int rfd,
 							      *buf,
 							      size_t count,
 							      void *data),
-					void *rfd_data, void *wfd_data);
+					void *data);
 
 
 /**********************************************************************
@@ -445,6 +453,7 @@ int vanessa_socket_pipe_read_write_func(int rfd,
  *      buffer: buffer to write
  *      n: number or bytes to write
  *      write_func: function to use for low level writing
+ *                 If NULL, a simple wrapper around write(2) is used
  *      fd_data: opaque data relating to fd, to pass to write_func
  * Return: -1 on error
  *         0 otherwise

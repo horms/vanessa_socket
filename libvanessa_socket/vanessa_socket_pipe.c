@@ -112,17 +112,28 @@ ssize_t vanessa_socket_pipe_fd_write(int fd, const void *buf, size_t count,
  *      return_b_read_bytes: Pointer to int where number
  *                           of bytes read from b will be recorded.
  *      read_func: Function to use for low level reading.
+ *                 If null, then a simple wrapper around read(2) is used
  *      write_func: Function to use for low level writing.
- *      fd_a_data: opaque data, relating to rfd_a and wfd_a that is passwd
- *                to read_func and write_func
- *      fd_b_data: opaque data, relating to rfd_b and wfd_b that is passwd
- *                to read_func and write_func
+ *                 If null, then a simple wrapper around write(2) is used
+ *      select_func: Function to use for select.
+ *                 If null, then a simple wrapper around select(2) is used
+ *      data: opaque data, passed to read_func, write_func and select_func
  * post: data is read from rfd_a and written to wfd_b and read
  *       from rfd_b and written to wfd_a.
  * return: -1 on error
  *         1 on idle timeout
  *         0 otherwise (one of the file desciptors closes gracefully)
  **********************************************************************/
+
+static ssize_t __vanessa_socket_pipe_dummy_select(int n, fd_set *readfds,
+						 fd_set *writefds,
+						 fd_set *exceptfds,
+						 struct timeval *timeout,
+						 void *data)
+{
+	return(select(n, readfds, writefds, exceptfds, timeout));
+}
+
 
 int vanessa_socket_pipe_func(int rfd_a,
 			     int wfd_a,
@@ -139,7 +150,12 @@ int vanessa_socket_pipe_func(int rfd_a,
 			     ssize_t(*write_func) (int fd, const void *buf,
 						   size_t count,
 						   void *data),
-			     void *fd_a_data, void *fd_b_data)
+			     int(*select_func) (int n, fd_set *readfds,
+				     		fd_set *writefds,
+						fd_set *exceptfds,
+						struct timeval *timeout,
+						void *data),
+			     void *data)
 {
 	fd_set read_template;
 	fd_set except_template;
@@ -147,6 +163,16 @@ int vanessa_socket_pipe_func(int rfd_a,
 	int status;
 	int bytes = 0;
 	int hifd;
+
+	if(read_func == NULL) {
+		read_func = vanessa_socket_pipe_fd_read;
+	}
+	if(write_func == NULL) {
+		write_func = vanessa_socket_pipe_fd_write;
+	}
+	if(select_func == NULL) {
+		select_func = __vanessa_socket_pipe_dummy_select;
+	}
 
 	hifd = (rfd_a > rfd_b) ? rfd_a : rfd_b;
 
@@ -162,11 +188,11 @@ int vanessa_socket_pipe_func(int rfd_a,
 		timeout.tv_sec = idle_timeout;
 		timeout.tv_usec = 0;
 
-		status = select(hifd + 1,
+		status = select_func(hifd + 1,
 				&read_template,
 				NULL,
 				&except_template,
-				idle_timeout ? &timeout : NULL);
+				idle_timeout ? &timeout : NULL, data);
 		if (status < 0) {
 			if (errno != EINTR) {
 				VANESSA_SOCKET_DEBUG_ERRNO("select");
@@ -189,8 +215,7 @@ int vanessa_socket_pipe_func(int rfd_a,
 								buffer_length,
 								read_func,
 								write_func,
-								fd_a_data,
-								fd_b_data);
+								data);
 			*return_a_read_bytes += (bytes > 0) ? bytes : 0;
 		} else if (FD_ISSET(rfd_b, &read_template)) {
 			bytes =
@@ -200,8 +225,7 @@ int vanessa_socket_pipe_func(int rfd_a,
 								buffer_length,
 								read_func,
 								write_func,
-								fd_b_data,
-								fd_a_data);
+								data);
 			*return_b_read_bytes += (bytes > 0) ? bytes : 0;
 		}
 		if (bytes < 0) {
@@ -229,9 +253,10 @@ int vanessa_socket_pipe_func(int rfd_a,
  *      buffer: allocated buffer to store read data in
  *      buffer_length: size of the buffer
  *      read_func: function to use for low level reading
+ *                  If null, then a simple wrapper around read(2) is used
  *      write_func: function to use for low level writing
- *      rfd_data: opaque data, relating to rfd, to pass to read_func
- *      wfd_data: opaque data, relating to wfd, to pass to write_func
+ *                  If null, then a simple wrapper around write(2) is used
+ *      data: opaque data passed to read_func and write_func
  * post: at most buffer_length bytes are read from in_fd and written 
  *       to out_fd. 
  * return: bytes read on success
@@ -252,11 +277,19 @@ int vanessa_socket_pipe_read_write_func(int rfd,
 							      *buf,
 							      size_t count,
 							      void *data),
-					void *rfd_data, void *wfd_data)
+					void *data)
 {
 	int bytes;
 
-	bytes = read_func(rfd, buffer, buffer_length, rfd_data);
+	if(read_func == NULL) {
+		read_func = vanessa_socket_pipe_fd_read;
+	}
+	if(write_func == NULL) {
+		write_func = vanessa_socket_pipe_fd_write;
+	}
+
+
+	bytes = read_func(rfd, buffer, buffer_length, data);
 	if (bytes < 0) {
 		if (errno) {
 			VANESSA_SOCKET_DEBUG("vanessa_socket_io_read");
@@ -266,7 +299,7 @@ int vanessa_socket_pipe_read_write_func(int rfd,
 		return (0);
 	}
 	if (vanessa_socket_pipe_write_bytes_func
-	    (wfd, buffer, bytes, write_func, wfd_data)) {
+	    (wfd, buffer, bytes, write_func, data)) {
 		VANESSA_SOCKET_DEBUG("vanessa_socket_pipe_write_bytes");
 		return (-1);
 	}
@@ -309,6 +342,10 @@ int vanessa_socket_pipe_write_bytes_func(int fd,
 
 	if (n == 0) {
 		return (0);
+	}
+
+	if(write_func == NULL) {
+		write_func = vanessa_socket_pipe_write_bytes_func;
 	}
 
 	offset = 0;

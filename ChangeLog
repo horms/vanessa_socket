@@ -12,6 +12,9 @@ XXX
  - include <errno.h> in vanessa_socket_pipe.c.  closes: Debian Bug#108209
  - Fixed minor .spec file errors 
    Scot W. Hetzel <scot@genroco.com> & Horms
+ - Allow select() function to be supplied to  vanessa_socket_pipe().
+ - Use system variants of read(), write() and select() by default
+   in  vanessa_socket_pipe() and friends.
  
 ----------------------------------------------------------------------
 
