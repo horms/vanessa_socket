@@ -1,3 +1,9 @@
+vanessa-socket (0.0.5beta1-1) unstable; urgency=low
+
+  * New Upstream
+
+ -- Simon Horman <horms@vergenet.net>  Fri, 27 Dec 2002 17:27:54 +0900
+
 vanessa-socket (0.0.4-2) unstable; urgency=low
 
   * Added Build-Depends on libtool and built package from

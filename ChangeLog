@@ -5,9 +5,9 @@ Library to simplify handling of TCP sockets
 Copyright (C) 1999-2002  Horms
 ----------------------------------------------------------------------
 
-XXX
+27th December 2002
 
-  * XXX
+  * 0.0.5beta1
   - Since the introduction of non-forking code the noconnections
     variable has not been incremented. However, the reaper
     signal handler continues to decrement this value, causing
