@@ -9,6 +9,8 @@ XXX
 
  * XXX
  - include <errno.h> in vanessa_socket_pipe.c.  closes: Debian Bug#108209
+ - Fixed minor .spec file errors 
+   Scot W. Hetzel <scot@genroco.com> & Horms
  
 ----------------------------------------------------------------------
 
