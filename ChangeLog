@@ -5,10 +5,10 @@ Library to simplify handling of TCP sockets
 Copyright (C) 1999-2003  Horms
 ----------------------------------------------------------------------
 
-XXX
+26th March 2003
 (Horms)
 
-  * XXX
+  * 0.0.5beta7
   - Compile time check to see if stdio and stderr can be reassigned.
   - Set upper bound of ports to 65535 rather than USHRT_MAX.
     USHRT_MAX doesn't seem to be universal.
