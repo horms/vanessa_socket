@@ -57,8 +57,16 @@ extern int errno;
   vanessa_logger_log(vanessa_socket_logger, LOG_DEBUG, \
     __FUNCTION__ ": " fmt, ## args);
 
+#define VANESSA_SOCKET_INFO_UNSAFE(fmt, args...) \
+  vanessa_logger_log(vanessa_socket_logger, LOG_INFO, \
+    __FUNCTION__ ": " fmt, ## args);
+
 #define VANESSA_SOCKET_DEBUG(str) \
   vanessa_logger_log(vanessa_socket_logger, LOG_DEBUG, \
+    __FUNCTION__ ": %s", str);
+
+#define VANESSA_SOCKET_ERR(str) \
+  vanessa_logger_log(vanessa_socket_logger, LOG_ERR, \
     __FUNCTION__ ": %s", str);
 
 #define VANESSA_SOCKET_DEBUG_ERRNO(s) \
