@@ -26,6 +26,9 @@ XXX
     fd 1 and 2. Otherwise /dev/null is opened (which was the previous
     behaviour). These two file descriptors are then linked to
     the file handles stdout and stderr respectivley.
+  - Cast parameters to calls to isdigit to int in 
+    vanessa_socket_str_is_digit(). Should avoid compiler
+    warnings.
 
 
 ----------------------------------------------------------------------

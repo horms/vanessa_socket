@@ -102,7 +102,7 @@ int vanessa_socket_str_is_digit(const char *str)
 	}
 
 	for (offset = strlen(str) - 1; offset > -1; offset--) {
-		if (!isdigit(*(str + offset))) {
+		if (!isdigit((int) *(str + offset))) {
 			break;
 		}
 	}
