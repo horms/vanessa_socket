@@ -121,7 +121,7 @@ int vanessa_socket_client_open_src_sockaddr_in(struct sockaddr_in from,
 	int out;
 
 	/* Create socket */
-	bzero((struct sockaddr *) &from, sizeof(from));
+	memset((struct sockaddr *) &from, 0, sizeof(from));
 	if ((out = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		VANESSA_LOGGER_DEBUG_ERRNO("socket");
 		return (-1);
@@ -184,7 +184,7 @@ int vanessa_socket_client_src_open(const char *src_host,
 	struct sockaddr_in from;
 
 	/* Fill in port information for 'from' */
-	bzero((struct sockaddr *) &from, sizeof(from));
+	memset((struct sockaddr *) &from, 0, sizeof(from));
 	if (!(flag & VANESSA_SOCKET_NO_FROM)) {
 		if (vanessa_socket_host_port_sockaddr_in
 		    (src_host, src_port, &from, flag) < 0) {
@@ -195,7 +195,7 @@ int vanessa_socket_client_src_open(const char *src_host,
 	}
 
 	/* Fill in port information for 'to' */
-	bzero((struct sockaddr *) &to, sizeof(to));
+	memset((struct sockaddr *) &to, 0, sizeof(to));
 	if (vanessa_socket_host_port_sockaddr_in
 	    (dst_host, dst_port, &to, flag) < 0) {
 		VANESSA_LOGGER_DEBUG
@@ -327,7 +327,7 @@ int vanessa_socket_host_port_sockaddr_inv(const char *host,
 	int i, count = 0;
 	struct hostent *hp;
 
-	bzero((struct sockaddr *) addr, sizeof(addr));
+	memset((struct sockaddr *) addr, 0, sizeof(addr));
 
 	if ((hp = gethostbyname(host)) == NULL) {
 		VANESSA_LOGGER_DEBUG_ERRNO("gethostbyname");

@@ -55,7 +55,7 @@ int vanessa_socket_host_port_sockaddr_in(const char *host,
 {
 	int portno;
 
-	bzero((struct sockaddr *) addr, sizeof(addr));
+	memset((struct sockaddr *) addr, 0, sizeof(*addr));
 
 	/* Gratuitously assume the address will be an AF_INET address */
 	addr->sin_family = AF_INET;

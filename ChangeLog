@@ -29,6 +29,13 @@ XXX
   - Cast parameters to calls to isdigit to int in 
     vanessa_socket_str_is_digit(). Should avoid compiler
     warnings.
+  - Fixed bug in zering of addr data structure in
+    vanessa_socket_host_port_sockaddr_in() where the size
+    to be zeroed was set to the size of a pointer, rather than
+    the structure it points to. This caused host lookup problems
+    on (at least) FreeBSD. Dounin Maxim <mdounin@rambler-co.ru>
+  - Use memset() instead of bzero().
+
 
 
 ----------------------------------------------------------------------
