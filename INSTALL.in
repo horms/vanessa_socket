@@ -19,14 +19,19 @@ make install
 To build RPMS
 -------------
 
-rpm -ta vanessa_socket-@VERSION@.tar.gz
+rpmbuild -ta vanessa_socket-@VERSION@.tar.gz
 
 or
 
 cd vanessa_socket-@VERSION@
 ./configure --prefix=/usr
 make distcheck
-rpm -ta vanessa_socket-@VERSION@.tar.gz
+rpmbuild -ta vanessa_socket-@VERSION@.tar.gz
+
+
+N.B: If you have an older version of rpm you may need to use
+     the "rpm" command instead of "rpmbuild". The command line
+     options should be the same.
 
 
 To Build Debian Packages
@@ -36,7 +41,7 @@ dpkg-buildpackage [-uc] [-us]
 
 
 To install on Solaris 8
----------------------
+-----------------------
 
 You may need to set some envirnoment variables to aid the build process.
 The following worked for me using a bourne shell. Make apropriate
