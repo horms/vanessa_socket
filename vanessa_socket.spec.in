@@ -1,0 +1,98 @@
+%define prefix   @prefix@
+
+Summary: Simplify TCP scoket operations
+Name: vanessa_socket
+Version: @VERSION@
+Release: 1
+Copyright: GNU Lesser Genereal Public Licence (examplese released under the GNU General Public Licence)
+URL: http://vanessa.sourceforge.net/
+Packager: Horms <horms@vergenet.net>
+Group: Development/Libraries
+Source0: ftp://vergenet.net/pub/vanessa_socket/vanessa_socket/%{name}-%{version}.tar.gz
+BuildRoot: /var/tmp/%{name}-%{version}-root
+Docdir: %{prefix}/doc
+Provides: %{name}-%{version}
+BuildRequires: vanessa_logger-devel
+Requires: vanessa_logger
+
+%description
+Library to simplify TCP socket operations. Includes code to
+open a socket to a server as a client, to listen on socket for
+clients as a server and to pipe information between sockets.
+
+
+%package devel
+Summary: Headers and static libaries for development
+Group: Development/Libraries
+Requires: %{name}-%{version} vanessa_logger-devel
+Provides: %{name}-devel-%{version}
+
+%description devel
+Headers and static libraries required to develop against libvanessa_socket.
+
+
+%package pipe
+Summary: Trivial TCP pipe build using libvanessa_adt
+Group:  Applications/System
+Copyright: GNU General Public Licence
+Requires: %{name}-%{version}
+Provides: %{name}-pipe-%{version}
+BuildRequires: popt
+
+%description pipe
+A TCP pipe is a user space programme that listens for TCP connections on
+port on the local host and when a client connects makes a connection to a
+TCP port, possibly on another host. Once both connections are established
+data sent on one connection is relayed to the other, hence forming a
+bi-directional pipe.
+
+Uses include enabling connections to specific ports on hosts behind a
+packet filter.
+
+This code is intended primarily as an example of how many of the
+features of libvanessa_socket work.
+
+%prep
+%setup
+
+%build
+
+%configure
+CFLAGS="${RPM_OPT_FLAGS}" make
+
+
+%install
+rm -rf ${RPM_BUILD_ROOT}
+mkdir -p ${RPM_BUILD_ROOT}/{etc,%{prefix}/{lib,bin,doc}}
+make prefix=$RPM_BUILD_ROOT%{prefix} install
+
+
+%clean
+rm -rf $RPM_BUILD_DIR/%{name}-%{version}
+rm -rf $RPM_BUILD_ROOT
+
+
+%post
+
+%postun
+
+%preun
+
+%files 
+%defattr(-, root, root)
+%{prefix}/lib/*.so*
+
+%files devel
+%defattr(-, root, root)
+%{prefix}/lib/*.*a
+%{prefix}/include/*.h
+%doc README COPYING ChangeLog
+
+%files pipe
+%defattr(-, root, root)
+%{prefix}/bin/*
+%doc vanessa_socket_pipe/COPYING
+
+%changelog
+* Sat Sep 2 2000 Horms <horms@vergenet.net>
+- created for version 0.0.0

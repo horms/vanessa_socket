@@ -1,0 +1,11 @@
+.depend
+libtcp_pipe
+*.swp
+.deps
+Makefile.in
+Makefile
+.libs
+tcp_pipe.lo
+libtcp_pipe.la
+*.lo
+*.la

@@ -1,0 +1,261 @@
+/**********************************************************************
+ * options.c                                             September 1999
+ * Horms                                             horms@vergenet.net
+ *
+ * Read in command line options
+ * Code based on man getopt(3), later translated to popt
+ *
+ * vanessa_socket_pipe
+ * Trivial TCP pipe based on libvanessa_socket
+ * Copyright (C) 1999  Horms
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
+ *
+ **********************************************************************/
+
+#include "options.h"
+
+
+/***********************************************************************
+ * opt_p
+ * Assign an option that is a char *
+ * pre: opt: option to assign
+ *      value: value to copy into opt
+ *      flag:  flags as per options.h
+ * post: Value is copied into opt. Any existing value of opt is freed
+ *       unless f is set to OPT_NOT_SET
+ ***********************************************************************/
+
+#define opt_p(opt, value, flag) \
+  if(!((flag)&OPT_NOT_SET) && opt!=NULL){ free(opt); } \
+  opt=(value==NULL)?NULL:strdup(value); \
+
+
+/***********************************************************************
+ * opt_i
+ * Assign an option that is an int
+ * pre: opt: option to assign
+ *      value: value to assign to opt
+ *      flag:  ignored
+ * post: Value is assigned to opt.
+ ***********************************************************************/
+
+#define opt_i(opt, value, flag) opt=value;
+
+
+
+/**********************************************************************
+ * options
+ * Read in command line options
+ * pre: argc: number or elements in argv
+ *      argv: array of strings with command line-options
+ *      opt:  pointer to options structure to fill in
+ * post: global opt is seeded with values according to argc and argv
+ * return: 0 on success
+ *         -1 on error
+ **********************************************************************/
+
+int options(int argc, char **argv, options_t *opt){
+  int c=0;
+  char *optarg;
+  poptContext context;
+
+
+  static struct poptOption options[] =
+  {
+    {"connection_limit", 'c', POPT_ARG_STRING, NULL, 'c'},
+    {"debug",            'd', POPT_ARG_NONE,   NULL, 'd'},
+    {"help",             'h', POPT_ARG_NONE,   NULL, 'h'},
+    {"listen_host",      'l', POPT_ARG_STRING, NULL, 'l'},
+    {"listen_port",      'L', POPT_ARG_STRING, NULL, 'L'},
+    {"no_lookup",        'n', POPT_ARG_NONE,   NULL, 'n'},
+    {"outgoing_host",    'o', POPT_ARG_STRING, NULL, 'o'},
+    {"outgoing_port",    'O', POPT_ARG_STRING, NULL, 'O'},
+    {"quiet",            'q', 0,               NULL, 'q'},
+    {"timeout",          't', POPT_ARG_STRING, NULL, 't'},
+    {NULL,               0,   0,               NULL, 0  }
+  };
+
+  if(argc==0 || argv==NULL) return(0);
+
+  opt_i(opt->connection_limit, DEFAULT_CONNECTION_LIMIT, OPT_NOT_SET);
+  opt_i(opt->debug,            DEFAULT_DEBUG,            OPT_NOT_SET);
+  opt_p(opt->listen_host,      DEFAULT_LISTEN_HOST,      OPT_NOT_SET);
+  opt_p(opt->listen_port,      DEFAULT_LISTEN_PORT,      OPT_NOT_SET);
+  opt_i(opt->no_lookup,        DEFAULT_NO_LOOKUP,        OPT_NOT_SET);
+  opt_p(opt->outgoing_host,    DEFAULT_OUTGOING_HOST,    OPT_NOT_SET);
+  opt_p(opt->outgoing_port,    DEFAULT_OUTGOING_PORT,    OPT_NOT_SET);
+  opt_i(opt->quiet,            DEFAULT_QUIET,            OPT_NOT_SET);
+  opt_i(opt->timeout,          DEFAULT_TIMEOUT,          OPT_NOT_SET);
+
+  context= poptGetContext("vanessa_socket_pipe", argc, argv, options, 0);
+
+  while ((c=poptGetNextOpt(context)) >= 0){
+    optarg=poptGetOptArg(context);
+    switch (c){
+      case 'c':
+	if(!vanessa_socket_str_is_digit(optarg)){ usage(-1); }
+	opt_i(opt->connection_limit,atoi(optarg), 0);
+	break;
+      case 'd':
+	opt_i(opt->debug, 1, 0);
+	break;
+      case 'h':
+	usage(0);
+	break;
+      case 'l':
+        opt_p(opt->listen_host, optarg, 0);
+	break;
+      case 'L':
+        opt_p(opt->listen_port, optarg, 0);
+	break;
+      case 'n':
+	opt_i(opt->no_lookup, 1, 0);
+	break;
+      case 'o':
+        opt_p(opt->outgoing_host, optarg, 0);
+	break;
+      case 'O':
+        opt_p(opt->outgoing_port, optarg, 0);
+	break;
+      case 'q':
+        opt_i(opt->quiet, 1, 0);
+	break;
+      case 't':
+        if(!vanessa_socket_str_is_digit(optarg)){ usage(-1); }
+	opt_i(opt->timeout, atoi(optarg), 0);
+	break;
+    }
+  }
+
+  if (c < -1) {
+    fprintf(
+      stderr,
+      "options: %s: %s\n",
+      poptBadOption(context, POPT_BADOPTION_NOALIAS),
+      poptStrerror(c)
+    );
+    usage(-1);
+  }
+
+  if(opt->outgoing_host==NULL || opt->listen_port==NULL){
+    usage(-1);
+  }
+  if(opt->outgoing_port==NULL){
+    opt->outgoing_port=opt->listen_port;
+  }
+  
+  poptFreeContext(context);
+
+  return(0);
+}
+
+
+/**********************************************************************
+ * log_options
+ * Log options 
+ * pre: opt: options to log
+ *      vl: logger to log to
+ * post: opt is logged to vl
+ * return: none
+ **********************************************************************/
+
+int log_options(options_t opt, vanessa_logger_t *vl){
+
+  vanessa_logger_log(
+    vl,
+    LOG_DEBUG,
+    "connection_limit=%d, "
+    "debug=%d, "
+    "listen_host=\"%s\", "
+    "listen_port=\"%s\", "
+    "no_lookup=%d, "
+    "outgoing_host=\"%s\", "
+    "outgoing_port=\"%s\", "
+    "quiet=%d, ",
+    "timeout=%d,\n",
+    opt.connection_limit,
+    opt.debug,
+    str_null_safe(opt.listen_host),
+    str_null_safe(opt.listen_port),
+    opt.no_lookup,
+    str_null_safe(opt.outgoing_host),
+    str_null_safe(opt.outgoing_port),
+    opt.quiet,
+    opt.timeout
+  );
+
+  return(0);
+}
+
+
+/**********************************************************************
+ * usage
+ * Display usage information
+ * pre: exit_status: exit status to exit with
+ * post: Usage information printed to stdout if exit_status=0, 
+ *       stderr otherwise
+ *       Exit with exit_status
+ * return: does not return
+ **********************************************************************/
+
+void usage(int exit_status){
+  FILE *stream;
+
+  stream=(exit_status)?stderr:stdout;
+  
+  fprintf(
+    stream, 
+    "vanessa_socket_pipe version %s Copyright Horms\n"
+    "\n"
+    "TCP pipe based on libvanessa_socket\n"
+    "\n"
+    "Usage: vanessa_socket_pipe [options]\n"
+    "  options:\n"
+    "     -c|--connection_limit:\n"
+    "                         Maximum number of connections to accept\n"
+    "                         simultaneously. A value of zero sets\n"
+    "                         no limit on the number of simultaneous\n"
+    "                         connections.\n"
+    "                         (default %d)\n"
+    "     -d|--debug:         Turn on verbose debuging to stderr.\n"
+    "     -h|--help:          Display this message\n"
+    "     -L|--listen_port:   Port to listen on. (mandatory)\n"
+    "     -l|--listen_host:   Address to listen on.\n"
+    "                         May be a hostname or an IP address.\n"
+    "                         If not defined then listen on all local\n"
+    "                         addresses.\n"
+    "     -n|--no_lookup:     Turn off lookup of hostnames and portnames.\n"
+    "                         That is, hosts must be given as IP addresses\n"
+    "                         and ports must be given as numbers.\n"
+    "     -O|--outgoing_port: Define a port to connect to.\n"
+    "                         If not specified -l|--listen_port will be used\n"
+    "     -o|--outgoing_host: Define host to connect to.\n"
+    "                         May be a hostname or an IP address. (mandatory)\n"
+    "     -q|--quiet:         Only log errors. Overriden by -d|--debug.\n"
+    "     -t|--timeout:       Idle timeout in seconds.\n"
+    "                         Value of zero sets infinite timeout.\n"
+    "                         (default %d)\n"
+    "\n"
+    "     Note: default value for binary flags is off\n"
+    "           -L|--listen_port and -o|--outgoing_host must be defined\n",
+    VERSION,
+    DEFAULT_CONNECTION_LIMIT,
+    DEFAULT_TIMEOUT
+  );
+
+  exit(exit_status);
+}

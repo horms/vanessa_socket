@@ -1,0 +1,61 @@
+# Borrowed from Raster
+
+export ARCH=`uname -m`"."`uname -p`"."`uname -s`
+###############################################################################
+# Compiler options
+# my preferred compiler
+export CC="egcs"
+# compiler optimisation flags
+OPTLV=""; OPTLV="-O6"
+OPT01=""; #OPT01="-fforce-mem"
+OPT02=""; #OPT02="-fforce-addr"
+OPT03=""; #OPT03="-finline-functions"
+OPT04=""; #OPT04="-fkeep-inline-functions"
+OPT05=""; #OPT05="-ffast-math"
+OPT06=""; #OPT06="-fstrength-reduce"
+OPT07=""; #OPT07="-fthread-jumps"
+OPT08=""; #OPT08="-fcse-follow-jumps"
+OPT09=""; #OPT09="-fcse-skip-blocks"
+OPT10=""; #OPT10="-frerun-cse-after-loop"
+OPT11=""; #OPT11="-frerun-loop-opt"
+OPT12=""; #OPT12="-fexpensive-optimizations"
+OPT13=""; ######OPT13="-fdelayed-branch"
+OPT14=""; #OPT14="-fschedule-insns2"
+OPT15=""; #OPT15="-fcaller-saves"
+OPT16=""; #OPT16="-funroll-loops"
+OPT17=""; #OPT17="-fmove-all-movables"
+OPT18=""; ###OPT18="-fprofile-arcs"
+OPT19=""; ###OPT19="-fbranch-probabilities"
+OPT20=""; #OPT20="-fomit-frame-pointer"
+# compiler architecture optimisation flags
+# if on intel ... then use these
+case "$ARCH" in
+  i?86.*.*)
+    OPT21=""; OPT21="-mpentium"
+    OPT22=""; OPT22="-mcpu=pentium"
+    OPT23=""; OPT23="-march=pentium"
+    OPT24=""; OPT24="-malign-loops=2"
+    OPT25=""; OPT25="-malign-jumps=2"
+    OPT26=""; OPT26="-malign-functions=2"
+    ;;
+  *)
+esac
+# debugging and profiling flags
+OPT27=""; OPT27="-g"
+#OPT28=""; OPT28="-pg"
+# warning flags
+OPT29=""; OPT29="-W"
+OPT30=""; OPT30="-Wall"
+OPT31=""; OPT31="-Wmissing-prototypes"
+OPT32=""; OPT32="-Wmissing-declarations"
+OPT33=""; OPT33="-Wpointer-arith"
+OPT34=""; #OPT34="-pedantic"
+OPT35=""; #OPT35="-ansi -D_POSIX_SOURCE -D_SVID_SOURCE -D_XOPEN_SOURCE"
+# export those clfags...
+export CFLAGS=\
+"$OPTLV \
+$OPT01 $OPT02 $OPT03 $OPT04 $OPT05 $OPT06 $OPT07 $OPT08 $OPT09 $OPT10 \
+$OPT11 $OPT12 $OPT13 $OPT14 $OPT15 $OPT16 $OPT17 $OPT18 $OPT19 $OPT20 \
+$OPT21 $OPT22 $OPT23 $OPT24 $OPT25 $OPT26 $OPT27 $OPT28 $OPT29 $OPT30 \
+$OPT31 $OPT32 $OPT33 $OPT34 $OPT35 \
+"

@@ -1,0 +1,87 @@
+dnl vanessa_socket
+dnl Library to simplify handling of TCP sockets
+dnl Copyright (C) 2000  Horms
+dnl 
+dnl This library is free software; you can redistribute it and/or modify it
+dnl under the terms of the GNU Lesser General Public License as published by
+dnl the Free Software Foundation; either version 2 of the License, or (at
+dnl your option) any later version.
+dnl 
+dnl This library is distributed in the hope that it will be useful, but
+dnl WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser
+dnl General Public License for more details.
+dnl 
+dnl You should have received a copy of the GNU Lesser General Public License
+dnl along with this library; if not, write to the Free Software Foundation,
+dnl Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+
+AC_INIT(libvanessa_socket/vanessa_socket.h)
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(vanessa_socket, 0.0.0)
+
+AM_PROG_LIBTOOL
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AC_PROG_RANLIB
+
+dnl Checks for libraries.
+AC_CHECK_LIB(socket, socket, [ socket_lib="-lsocket" ], [ socket_lib="" ])
+AC_CHECK_LIB(nsl, gethostbyname, [ nsl_lib="-lnsl" ], [ nsl_lib="" ])
+AC_CHECK_LIB(
+  vanessa_logger,
+  vanessa_logger_closelog,
+  ,
+  AC_MSG_ERROR(
+    ""
+    "**********************************************************************"
+    "* libvanessa_socket requires the vanessa_logger generic loging library"
+    "* available from ftp://vergenet.net/pub/vanessa_logger/ and mirrors."
+    "* libvanessa_socket will _not_ be built. "
+    "**********************************************************************"
+  ) ;\
+)
+
+AC_CHECK_LIB(
+  popt,
+  poptGetContext,
+  pipe_dir="vanessa_socket_pipe",
+  AC_MSG_WARN(
+    ""
+    "**********************************************************************"
+    "* vanessa_socket_pipe requires the popt options parsing library"
+    "* available from ftp://ftp.redhat.com/pub/redhat/code/popt/ and mirrors."
+    "* vanessa_socket_pipe will _not_ be built. "
+    "* Proceeding with build of libvanessa_socket."
+    "**********************************************************************"
+  ) ;\
+  pipe_dir=""
+)
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_HEADER_SYS_WAIT
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_TYPE_UID_T
+AC_TYPE_SIZE_T
+
+dnl Checks for library functions.
+AC_TYPE_SIGNAL
+AC_FUNC_WAIT3
+AC_CHECK_FUNCS(flim)
+
+AC_SUBST(socket_lib)
+AC_SUBST(nsl_lib)
+AC_SUBST(pipe_dir)
+
+AC_OUTPUT(
+libvanessa_socket/Makefile 
+vanessa_socket_pipe/Makefile 
+vanessa_socket_pipe/vanessa_socket_pipe_config.h 
+Makefile
+vanessa_socket.spec
+)
