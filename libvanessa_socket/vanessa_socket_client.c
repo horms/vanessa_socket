@@ -83,7 +83,6 @@ int vanessa_socket_client_open(
   const vanessa_socket_flag_t flag
 ){
   int out;
-  struct sockaddr_in to;
 
   if((out=vanessa_socket_client_src_open(
     NULL, 
@@ -132,6 +131,7 @@ int vanessa_socket_client_open_src_sockaddr_in(
   int out;
 
   /* Create socket */
+  bzero((struct sockaddr *)&from, sizeof(from));
   if((out=socket(AF_INET, SOCK_STREAM, 0)) < 0){
     VANESSA_SOCKET_DEBUG_ERRNO(
       "vanessa_socket_client_open_src_sockaddr_in: socket", 
@@ -204,7 +204,7 @@ int vanessa_socket_client_src_open(
   struct sockaddr_in from;
 
   /* Fill in port information for 'from' */
-  bzero((struct sockaddr *)from, sizeof(from));
+  bzero((struct sockaddr *)&from, sizeof(from));
   if(!(flag&VANESSA_SOCKET_NO_FROM)){
     if(vanessa_socket_host_port_sockaddr_in(src_host, src_port, &from, flag)<0){
       VANESSA_SOCKET_DEBUG("vanessa_socket_client_src_open: "
@@ -265,18 +265,18 @@ int vanessa_socket_client_open_src_sockaddr_inv
 	   errno);
 	goto out;
       }
-      if(connect(s, (struct sockaddr *)(to + i), sizeof(*to)) < 0 &&
-	errno != EINPROGRESS) {
-	VANESSA_SOCKET_DEBUG_ERRNO
-	  ("vanessa_socket_client_open_src_sockaddr_inv: connect", 
-	   errno);
-	goto out;
-      }
     }
     if(fcntl(s, F_SETFL, O_NDELAY))
       VANESSA_SOCKET_DEBUG_ERRNO
 	("vanessa_socket_client_open_src_sockaddr_inv: fcntl(O_NDELAY)",
 	 errno);
+    if(connect(s, (struct sockaddr *)(to + i), sizeof(*to)) < 0 &&
+      errno != EINPROGRESS) {
+      VANESSA_SOCKET_DEBUG_ERRNO
+	("vanessa_socket_client_open_src_sockaddr_inv: connect", 
+	 errno);
+      goto out;
+    }
     FD_SET(s, &connections);
     if(s > hifd)
       hifd = s;
@@ -313,14 +313,15 @@ int vanessa_socket_client_open_src_sockaddr_inv
       int serr, serrlen;
       
       serrlen = sizeof(serr);
-      if((FD_ISSET(j, &wfds) || FD_ISSET(j, &rfds)) &&
-	!getsockopt(j, SOL_SOCKET, SO_ERROR, &serr, &serrlen) &&
-	!serr) {
-	ret = j;
-	goto out;
+      if(FD_ISSET(j, &wfds) || FD_ISSET(j, &rfds)) {
+        if(!getsockopt(j, SOL_SOCKET, SO_ERROR, &serr, &serrlen) &&
+         !serr) {
+           ret = j;
+           goto out;
+        }
+        close(j);
+        FD_CLR(j, &connections);
       }
-      close(j);
-      FD_CLR(j, &connections);
     }
   }
 
@@ -337,5 +338,43 @@ int vanessa_socket_client_open_src_sockaddr_inv
 	("vanessa_socket_client_open_src_sockaddr_inv: fcntl(O_NDELAY)",
 	 errno);
   return ret;
+}
+
+
+int vanessa_socket_host_port_sockaddr_inv(
+  const char *host,
+  const char *port,
+  struct sockaddr_in **addr,
+  int *addrcount,
+  const vanessa_socket_flag_t flag
+){
+  int portno;
+  int i, count = 0;
+  struct hostent *hp;
+  
+  bzero((struct sockaddr *)addr, sizeof(addr));
+  
+  if((hp=gethostbyname(host))==NULL){
+    VANESSA_SOCKET_DEBUG_ERRNO(
+      "mod_vanessa_socket_connection_open: gethostbyname",
+      errno
+    );
+    return(-1);
+  }
+  while(hp->h_addr_list[++count]);
+  *addr = malloc(sizeof(**addr) * count);
+  
+  if( (portno=vanessa_socket_port_portno(port, flag))<0 ){
+    VANESSA_SOCKET_DEBUG("vanessa_socket_host_port_sockaddr_in:"
+      " vanessa_socket_port_portno");
+    return(-1);
+  }
+  for(i = 0; i < count; i++) {
+    (*addr)[i].sin_family = AF_INET;
+    (*addr)[i].sin_port = portno;
+    memcpy(&(*addr)[i].sin_addr.s_addr, hp->h_addr_list[i], hp->h_length);
+  }
+  *addrcount = count;
+  return 0;
 }
 
