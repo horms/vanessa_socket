@@ -192,8 +192,7 @@ int vanessa_socket_pipe_func(int rfd_a, int wfd_a, int rfd_b, int wfd_b,
 			VANESSA_LOGGER_DEBUG("except_template set");
 			return (-1);
 		} else if (status == 0) {
-			VANESSA_LOGGER_DEBUG("select returned 0");
-			return (-1);
+			return (1);
 		} else if (FD_ISSET(rfd_a, &read_template)) {
 			bytes = vanessa_socket_pipe_read_write_func(rfd_a, 
 					wfd_b, buffer, buffer_length, 

@@ -178,8 +178,8 @@ int vanessa_socket_server_accept(int listen_socket,
 	for(;;) {
 		g = accept(listen_socket, (struct sockaddr *) &from, &addrlen);
 		if (g  < 0) {
-			if(errno == EINTR) {
-				continue; /* Ignore EINTR */
+			if(errno == EINTR || errno == ECONNABORTED) {
+				continue; /* Ignore EINTR  and ECONNABORTED */
 			}
 			VANESSA_LOGGER_DEBUG_ERRNO("accept");
 			return(-1);

@@ -35,6 +35,7 @@ XXX
     the structure it points to. This caused host lookup problems
     on (at least) FreeBSD. Dounin Maxim <mdounin@rambler-co.ru>
   - Use memset() instead of bzero().
+  - Ignore ECONNABORTED for accept(). Maxim Dounin.
 
 
 
