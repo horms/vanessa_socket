@@ -208,26 +208,24 @@ int vanessa_socket_server_accept(int listen_socket,
 			}
 		}
 
-		if (return_to != NULL) {
-			addrlen = sizeof(struct sockaddr_in);
-			if (getsockname (g, (struct sockaddr *) return_to, 
-					&addrlen) < 0) { 
-				VANESSA_LOGGER_DEBUG_ERRNO (
-						"warning: getsockname"); 
-				/* This is usually (always) a transient
-			 	 * error so close the connection and
-			 	 * soldier on */
-				close(g);
-				continue;
-			}
-		}
-	
-		if (return_from != NULL) {
-			memcpy(return_from, &from, sizeof(from));
-		}
-
 		break;
 	}
+
+	if (return_to) {
+		addrlen = sizeof(struct sockaddr_in);
+		if (getsockname (g, (struct sockaddr *) return_to, 
+				&addrlen) < 0) { 
+			VANESSA_LOGGER_DEBUG_ERRNO ("warning: getsockname"); 
+			/* This is usually (always) a transient error so
+			 * close the connection and soldier on */
+			vanessa_socket_daemon_exit_cleanly(0);
+		}
+	}
+
+	if (return_from) {
+		memcpy(return_from, &from, sizeof(from));
+	}
+
 
 	return(g);
 }
