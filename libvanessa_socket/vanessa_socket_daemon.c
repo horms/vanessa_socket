@@ -234,7 +234,10 @@ int vanessa_socket_daemon_setid(const char *user, const char *group)
 		gid = (gid_t) atoi(group);
 	} else {
 		if ((gr = getgrnam(group)) == NULL) {
-			VANESSA_LOGGER_DEBUG_ERRNO("getgrnam");
+			if (errno)
+				VANESSA_LOGGER_DEBUG_ERRNO("getgrnam");
+			VANESSA_LOGGER_DEBUG_UNSAFE("getgrnam: error finding "
+					"group \"%s\"", group);
 			return (-1);
 		}
 		gid = gr->gr_gid;
@@ -250,7 +253,10 @@ int vanessa_socket_daemon_setid(const char *user, const char *group)
 		uid = (uid_t) atoi(user);
 	} else {
 		if ((pw = getpwnam(user)) == NULL) {
-			VANESSA_LOGGER_DEBUG_ERRNO("getpwnam");
+			if (errno)
+				VANESSA_LOGGER_DEBUG_ERRNO("getpwnam");
+			VANESSA_LOGGER_DEBUG_UNSAFE("getpwnam: error finding "
+					"user \"%s\"", user);
 			return (-1);
 		}
 		uid = pw->pw_uid;

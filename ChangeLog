@@ -13,6 +13,8 @@ XXX
   - Reset addrlen correctly in vanessa_socket_server_accept()
     Maxim Dounin
   - Set lissten() to SOMAXCONN if possible. Maxim Dounin
+  - Better logging of errors looking user or group in
+    vanessa_socket_daemon_setid()
 
 
 ----------------------------------------------------------------------
