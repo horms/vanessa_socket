@@ -228,3 +228,106 @@ int vanessa_socket_client_src_open(
 
   return(out);
 }
+
+
+
+/* Code below this line is Experimental */
+
+
+int vanessa_socket_client_open_src_sockaddr_inv
+(	struct sockaddr_in *from, int fromcount, struct sockaddr_in to,
+	const vanessa_socket_flag_t flag )
+{
+  int s, i, hifd = 0, remaining = 0, ret = -1;
+  fd_set connections;
+  long opt = 1;
+  struct timeval tv;
+  
+  FD_ZERO(&connections);
+  tv.tv_sec = 120;
+  tv.tv_usec = 0;
+  
+  for(i = 0; i < fromcount; i++) {
+    if((s = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
+      VANESSA_SOCKET_DEBUG_ERRNO
+	("vanessa_socket_client_open_src_sockaddr_inv: socket", 
+	 errno);
+      goto out;
+    }
+    if(!(flag & VANESSA_SOCKET_NO_FROM)) {
+      if(setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
+	VANESSA_SOCKET_DEBUG_ERRNO
+	  ("vanessa_socket_client_open_src_sockaddr_inv: setsockopt(SO_REUSEADDR)",
+	   errno);
+      if(bind(s, (struct sockaddr *)(from + i), sizeof(*from))<0){
+	VANESSA_SOCKET_DEBUG_ERRNO
+	  ("vanessa_socket_client_open_src_sockaddr_inv: bind", 
+	   errno);
+	goto out;
+      }
+    }
+    if(fcntl(s, F_SETFL, O_NDELAY))
+      VANESSA_SOCKET_DEBUG_ERRNO
+	("vanessa_socket_client_open_src_sockaddr_inv: fcntl(O_NDELAY)",
+	 errno);
+    FD_SET(s, &connections);
+    if(s > hifd)
+      hifd = s;
+    remaining++;
+  }
+  
+  while(tv.tv_sec > 0 || tv.tv_usec > 0) {
+    struct timeval now, then, timeout;
+    int j;
+    fd_set rfds, wfds;
+    
+    memcpy(&timeout, &tv, sizeof(tv));
+    FD_ZERO(&rfds);
+    FD_ZERO(&wfds);
+    for(i = 0; i <= hifd; i++) 
+      if(FD_ISSET(i, &connections)) {
+	FD_SET(i, &rfds);
+	FD_SET(i, &wfds);
+      }
+    gettimeofday(&now, NULL);
+    i = select(hifd + 1, &rfds, &wfds, NULL, &timeout);
+    if(i < 0) {
+      VANESSA_SOCKET_DEBUG_ERRNO
+	("vanessa_socket_client_open_src_sockaddr_inv: select",
+	 errno);
+      goto out;
+    }
+    if(!i)
+      goto out;
+    gettimeofday(&then, NULL);
+    timeradd(&tv, &now, &tv);
+    timersub(&tv, &then, &tv);
+    for(j = 0; j <= hifd; j++) {
+      int serr, serrlen;
+      
+      serrlen = sizeof(serr);
+      if((FD_ISSET(j, &wfds) || FD_ISSET(j, &rfds)) &&
+	!getsockopt(j, SOL_SOCKET, SO_ERROR, &serr, &serrlen) &&
+	!serr) {
+	ret = j;
+	goto out;
+      }
+      close(j);
+      FD_CLR(j, &connections);
+    }
+  }
+
+  out:
+  for(i = 0; i <= hifd; i++) {
+    if(i == ret)
+      continue;
+    if(FD_ISSET(i, &connections))
+      close(i);
+  }
+  if(ret >= 0)
+    if(fcntl(ret, F_SETFL, O_NDELAY))
+      VANESSA_SOCKET_DEBUG_ERRNO
+	("vanessa_socket_client_open_src_sockaddr_inv: fcntl(O_NDELAY)",
+	 errno);
+  return ret;
+}

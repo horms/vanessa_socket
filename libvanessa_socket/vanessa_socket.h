@@ -41,6 +41,7 @@
 #include <sys/time.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <arpa/inet.h>
 #include <syslog.h>
 
