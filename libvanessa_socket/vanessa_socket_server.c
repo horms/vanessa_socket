@@ -142,6 +142,7 @@ int vanessa_socket_server_bind_sockaddr_in(struct sockaddr_in from,
  *      maximum_connections: maximum number of active connections
  *                           to handle. If 0 then an number of connections 
  *                           is unlimited.
+ *                           Not used if flat is VANESSA_SOCKET_NO_FORK
  *      return_from: pointer to a struct_in addr where the 
  *                   connecting client's IP address will
  *                   be placed. Ignored if NULL
@@ -182,7 +183,7 @@ int vanessa_socket_server_accept(int listen_socket,
 			return(-1);
 		}
 
-		if (maximum_connections && 
+		if ( !(flag&VANESSA_SOCKET_NO_FORK) && maximum_connections && 
 				noconnection >= maximum_connections) {
 			close(g);
 			g=-1;
@@ -221,6 +222,7 @@ int vanessa_socket_server_accept(int listen_socket,
 			return(g);
 		}
 		else {
+			noconnection--;
 			close(g);
 		}
 	}

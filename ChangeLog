@@ -5,6 +5,20 @@ Library to simplify handling of TCP sockets
 Copyright (C) 1999-2002  Horms
 ----------------------------------------------------------------------
 
+XXX
+
+  * XXX
+  - Since the introduction of non-forking code the noconnections
+    variable has not been incremented. However, the reaper
+    signal handler continues to decrement this value, causing
+    a wraparound. This has been resolved, and maximum connection
+    tracking now impliclty works with when vanessa_socket_server_accept()
+    is in forking mode. Thanks to Chris Stratford for spotting this
+    problem.
+
+
+----------------------------------------------------------------------
+
 17th May 2002
 
   * 0.0.4
