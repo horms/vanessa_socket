@@ -11,7 +11,7 @@
  * started by `inetd'.  In that case, stdin, stdout and stderr are all set up
  * for you to refer to the network connection, and the `fork()'s and session
  * manipulation should *not* be done (to avoid confusing `inetd').  Only the
- * `chdir()' and `umask()' steps remain as useful.
+ * `chdir()' step remains useful.
  * 
  * vanessa_socket
  * Library to simplify handling of TCP sockets
@@ -83,7 +83,7 @@ void vanessa_socket_daemon_process(void)
 	 */
 	vanessa_socket_daemon_become_child();
 
-	/* chdir() and umask() */
+	/* chdir() */
 	vanessa_socket_daemon_inetd_process();
 
 	/*
@@ -135,7 +135,7 @@ void vanessa_socket_daemon_process(void)
 
 /**********************************************************************
  * vanessa_socket_daemon_inetd_process
- * Chdir to / and set umask to 0
+ * Chdir to /
  * This is all we really need to do if our process is run from
  * inetd
  **********************************************************************/
@@ -153,12 +153,6 @@ void vanessa_socket_daemon_inetd_process(void)
 		    ("Fatal error changing directory to /. Exiting.");
 		vanessa_socket_daemon_exit_cleanly(-1);
 	}
-
-	/*
-	 * `umask(0)' so that we have complete control over the permissions of
-	 * anything we write. We don't know what umask we may have inherited.
-	 */
-	umask(0);
 }
 
 

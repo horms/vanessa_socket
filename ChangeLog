@@ -15,7 +15,8 @@ Copyright (C) 1999-2003  Horms
   - Set listen() to SOMAXCONN if possible. Maxim Dounin
   - Better logging of errors looking user or group in
     vanessa_socket_daemon_setid()
-
+  - Don't call umask in daemon code in vanessa_socket_daemon_process()
+    or vanessa_socket_daemon_inetd_process().
 
 ----------------------------------------------------------------------
 
