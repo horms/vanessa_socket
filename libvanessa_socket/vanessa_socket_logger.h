@@ -25,17 +25,30 @@
  *
  **********************************************************************/
 
+#ifndef VANESSA_SOCKET_LOGGER_FLIM
+#define VANESSA_SOCKET_LOGGER_FLIM
+
+
+#include <errno.h>
 #include "vanessa_socket.h"
-#include "vanessa_socket_logger.h"
 
-/*
- * Its all about this gloabal
- */
-vanessa_logger_t *vanessa_socket_logger=NULL;
+extern vanessa_logger_t *vanessa_socket_logger;
+extern int errno;
+
+#define VANESSA_SOCKET_LOG(priority, fmt, args...) \
+  vanessa_logger_log(vanessa_socket_logger, priority, fmt, ## args);
+
+#define VANESSA_SOCKET_INFO(fmt, args...) \
+  VANESSA_SOCKET_LOG(LOG_INFO, fmt, ## args);
+
+#define VANESSA_SOCKET_ERR(fmt, args...) \
+  VANESSA_SOCKET_LOG(LOG_ERR, fmt, ## args);
+
+#define VANESSA_SOCKET_DEBUG(fmt, args...) \
+  VANESSA_SOCKET_LOG(LOG_DEBUG, __FUNCTION__ ": " fmt, ## args);
+
+#define VANESSA_SOCKET_DEBUG_ERRNO(s) \
+  VANESSA_SOCKET_LOG(LOG_DEBUG, "%s: %s: %s", __FUNCTION__, s, strerror(errno));
 
 
-/**********************************************************************
- * Note:
- * vanessa_socket_logger_set and vanessa_socket_logger_unset
- * are macros defined elsewhere
- **********************************************************************/
+#endif

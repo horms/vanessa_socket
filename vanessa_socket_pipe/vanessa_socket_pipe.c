@@ -37,6 +37,8 @@
  **********************************************************************/
 
 int main (int argc, char **argv){
+  int client;
+  int server;
   struct sockaddr_in from;
   struct sockaddr_in to;
   unsigned char *buffer;
@@ -47,8 +49,6 @@ int main (int argc, char **argv){
   char to_str[17];
   int bytes_written=0;
   int bytes_read=0;
-  int client=-1;
-  int server=-1;
   int timeout=0;
 
   extern int errno;
@@ -191,6 +191,8 @@ int main (int argc, char **argv){
     bytes_written
   );
 
+  close(server);
+  close(client);
   vanessa_socket_logger_unset();
 
   return(0);

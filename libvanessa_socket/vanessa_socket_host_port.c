@@ -26,6 +26,7 @@
  **********************************************************************/
 
 #include "vanessa_socket.h"
+#include "vanessa_socket_logger.h"
 
 
 /**********************************************************************
@@ -62,14 +63,12 @@ int vanessa_socket_host_port_sockaddr_in(
                                * an AF_INET address */
 
   if(vanessa_socket_host_in_addr(host, &(addr->sin_addr), flag)<0){
-    VANESSA_SOCKET_DEBUG("vanessa_socket_host_port_sockaddr_in: "
-      " vanessa_socket_host_in_addr");
+    VANESSA_SOCKET_DEBUG("vanessa_socket_host_in_addr");
     return(-1);
   }
 
   if( (portno=vanessa_socket_port_portno(port, flag))<0 ){
-    VANESSA_SOCKET_DEBUG("vanessa_socket_host_port_sockaddr_in:"
-      " vanessa_socket_port_portno");
+    VANESSA_SOCKET_DEBUG("vanessa_socket_port_portno");
     return(-1);
   }
   addr->sin_port=(unsigned short int)portno;

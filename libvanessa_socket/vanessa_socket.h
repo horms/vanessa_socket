@@ -29,12 +29,12 @@
 #define TCP_PIPE_NYM
 
 #include <ctype.h>
-#include <errno.h>
 #include <netdb.h>
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <signal.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -214,14 +214,93 @@ int vanessa_socket_port_portno(
 int vanessa_socket_str_is_digit(const char *str);
 
 
+
 /**********************************************************************
- * vanessa_socket_pipe
- * pipe data between two file descriptors until there is an error,
- * timeout or one or both the file descriptors are closed.
- * pre: fd_a_in:  one of the file descriptors to read from
- *      fd_a_out: one of the file descriptors to write to
- *      fd_b_in:  one of the file descriptors to read from
- *      fd_b_out: one of the file descriptors to write to
+ * Notes on read_func and write_func
+ *
+ * The vanessa_socket_pipe_*func() group of functions take 
+ * read_func, write_func and data arguments. read_func and write_func
+ * are intended to allow the application to provide its own low
+ * level reading and writing routines, for instance to allow
+ * reading and writing to SSL/TLS. The data argument is intended
+ * to be an opaque data type which may be used by read_func and
+ * write_func. These functions should behave as follows.
+ * vanessa_socket_pipe_fd_read and vanessa_socket_pipe_fd_write
+ * are examples of implementations of these functions that
+ * allow reading and writing using read(2) and write(2).
+ *
+ * read_func
+ * pre: fd: file descriptor to read bytes from
+ *      buf: buffer to read bytes into
+ *      count: maximum number of bytes to read
+ *      data: opaque data that may be passed from the application and
+ *            used by read_func
+ * post: A maximum of count bytes are read into buf.
+ *       If an error occurs then it may be logged by this function.
+ * return: Number of bytes read (may be zero)
+ *         -1 on error
+ *
+ * write_func
+ * pre: fd: file descriptor to write bytes to
+ *      buf: buffer to write bytes from
+ *      count: maximum number of bytes to write
+ *      data: opaque data that may be passed from the application and
+ *            used by write_func
+ * post: A maximum of count bytes are written from buf
+ *       If an error occurs then it may be logged by this function.
+ *       installed logger. See vanessa_socket_logger_set().
+ * return: Number of bytes read (may be zero)
+ *         -1 on error
+ **********************************************************************/
+
+
+
+/**********************************************************************
+ * vanessa_socket_pipe_fd_read
+ * Read bytes from fd
+ * Intended to be passed to vanessa_socket_pipe_*func()
+ * pre: fd: file descriptor to read bytes from
+ *      buf: buffer to read bytes into
+ *      count: maximum number of bytes to read
+ *      data: not used
+ * post: A maximum of count bytes are read into buf from fd using read(2)
+ *       If an error occurs the errno is read and logged using the
+ *       installed logger. See vanessa_socket_logger_set().
+ * return: Number of bytes read (may be zero)
+ *         -1 on error
+ **********************************************************************/
+
+ssize_t vanessa_socket_pipe_fd_read(int fd, void *buf, size_t count, 
+                                    void *data);
+
+
+/**********************************************************************
+ * vanessa_socket_pipe_fd_write
+ * Write bytes to fd
+ * Intended to be passed to vanessa_socket_pipe_*func()
+ * pre: fd: file descriptor to write bytes to
+ *      buf: buffer to write bytes from
+ *      count: maximum number of bytes to write
+ *      data: not used
+ * post: A maximum of count bytes are written to fd from buf using write(2)
+ *       If an error occurs the errno is read and logged using the
+ *       installed logger. See vanessa_socket_logger_set().
+ * return: Number of bytes read (may be zero)
+ *         -1 on error
+ **********************************************************************/
+
+ssize_t vanessa_socket_pipe_fd_write(int fd, const void *buf, size_t count, 
+                                      void *data);
+
+
+/**********************************************************************
+ * vanessa_socket_pipe_func
+ * pipe data between two pairs of file descriptors until there is an 
+ * error, timeout or one or both the file descriptors are closed.
+ * pre: rfd_a: one of the read file descriptors
+ *      wfd_a: one of the write file descriptors
+ *      rfd_b: the other read file descriptor
+ *      wfd_b: the other write file descriptor
  *      buffer:   allocated buffer to read data into
  *      buffer_length: size of buffer in bytes
  *      idle_timeout:  timeout in seconds to wait for input
@@ -230,31 +309,120 @@ int vanessa_socket_str_is_digit(const char *str);
  *                           of bytes read from a will be recorded.
  *      return_b_read_bytes: Pointer to int where number
  *                           of bytes read from b will be recorded.
- * post: data is read from fd_a_in and written to fd_b_out and
- *       data is read from fd_b_in and written to fd_a_out.
+ *      read_func: Function to use for low level reading.
+ *      write_func: Function to use for low level writing.
+ *      fd_a_data: opaque data relating to rfd_a and wfd_a, 
+ *                 to pass to read_func and write_func
+ *      fd_b_data: opaque data relating to rfd_b and wfd_b, 
+ *                 to pass to read_func and write_func
+ * post: bytes are read from io_a and written to io_b and vice versa
  * return: -1 on error
  *         1 on idle timeout
- *         0 otherwise (one of fd_a_in or fd_b_in closes gracefully)
+ *         0 otherwise (one of io_a or io_b closes gracefully)
  **********************************************************************/
 
-int vanessa_socket_pipe(
-  int fd_a_in, 
-  int fd_a_out, 
-  int fd_b_in, 
-  int fd_b_out, 
+int vanessa_socket_pipe_func(
+  int rfd_a,
+  int wfd_a,
+  int rfd_b,
+  int wfd_b,
   unsigned char *buffer, 
   int buffer_length,
-  int timeout,
+  int idle_timeout,
   int *return_a_read_bytes,
-  int *return_b_read_bytes
+  int *return_b_read_bytes,
+  ssize_t (*read_func)(int fd, void *buf, size_t count, void *data),
+  ssize_t (*write_func)(int fd, const void *buf, size_t count, void *data),
+  void *fd_a_data,
+  void *fd_b_data
+);
+
+
+/**********************************************************************
+ * vanessa_socket_pipe
+ * pipe data between two pairs of file descriptors until there is an 
+ * error, timeout or one or both the file descriptors are closed.
+ * pre: rfd_a: one of the read file descriptors
+ *      wfd_a: one of the write file descriptors
+ *      rfd_b: the other read file descriptor
+ *      wfd_b: the other write file descriptor
+ *      buffer:   allocated buffer to read data into
+ *      buffer_length: size of buffer in bytes
+ *      idle_timeout:  timeout in seconds to wait for input
+ *                     timeout of 0 = infinite timeout
+ *      return_a_read_bytes: Pointer to int where number
+ *                           of bytes read from a will be recorded.
+ *      return_b_read_bytes: Pointer to int where number
+ *                           of bytes read from b will be recorded.
+ * post: bytes are read from io_a and written to io_b and vice versa
+ * return: -1 on error
+ *         1 on idle timeout
+ *         0 otherwise (one of io_a or io_b closes gracefully)
+ **********************************************************************/
+
+#define vanessa_socket_pipe( \
+  rfd_a,  \
+  wfd_a,  \
+  rfd_b,  \
+  wfd_b,  \
+  buffer, \
+  buffer_length, \
+  idle_timeout, \
+  return_a_read_bytes, \
+  return_b_read_bytes \
+) \
+  vanessa_socket_pipe_func( \
+    rfd_a,  \
+    wfd_a,  \
+    rfd_b,  \
+    wfd_b,  \
+    buffer, \
+    buffer_length,  \
+    idle_timeout,  \
+    return_a_read_bytes, \
+    return_b_read_bytes,  \
+    vanessa_socket_pipe_fd_read, \
+    vanessa_socket_pipe_fd_write,  \
+    NULL, \
+    NULL \
+  )
+
+
+/**********************************************************************
+ * vanessa_socket_pipe_read_write_func
+ * Read data from one file io_t and write to another
+ * pre: rfd: file descriptor to read from
+ *      wfd: file descriptor to write to
+ *      buffer: allocated buffer to store read data in
+ *      buffer_length: size of the buffer
+ *      read_func: function to use for low level reading
+ *      write_func: function to use for low level writing
+ *      rfd_data: opaque data, relating to rfd, to pass to read_func
+ *      wfd_data: opaque data, relating to wfd, to pass to write_func
+ * post: at most buffer_length bytes are read from in_fd and written 
+ *       to out_fd. 
+ * return: bytes read on success
+ *         0 on EOF
+ *         -1 on error
+ **********************************************************************/
+
+int vanessa_socket_pipe_read_write_func(
+  int rfd, 
+  int wfd, 
+  unsigned char *buffer, 
+  int buffer_length,
+  ssize_t (*read_func)(int fd, void *buf, size_t count, void *data),
+  ssize_t (*write_func)(int fd, const void *buf, size_t count, void *data),
+  void *rfd_data,
+  void *wfd_data
 );
 
 
 /**********************************************************************
  * vanessa_socket_pipe_read_write
- * Read data from one file descriptor (socket) and write it to another
- * pre: in_fd: file descriptor to read from
- *      out_fd: file descriptor to write to
+ * Read data from one file io_t and write to another
+ * pre: rfd: file descriptor to read from
+ *      wfd: file descriptor to write to
  *      buffer: allocated buffer to store read data in
  *      buffer_length: size of the buffer
  * post: at most buffer_length bytes are read from in_fd and written 
@@ -264,29 +432,49 @@ int vanessa_socket_pipe(
  *         -1 on error
  **********************************************************************/
 
-int vanessa_socket_pipe_read_write(
-  int in_fd, 
-  int out_fd, 
-  unsigned char *buffer,
-  int buffer_length
+#define vanessa_socket_pipe_read_write(rfd, wfd, buffer, buffer_length) \
+  vanessa_socket_pipe_read_write_func(\
+    rfd, wfd, \
+    buffer, buffer_length, \
+    vanessa_socket_pipe_fd_read, vanessa_socket_pipe_fd_write, \
+    NULL, NULL \
+  )
+
+
+/**********************************************************************
+ * vanessa_socket_pipe_write_bytes_func
+ * write a n bytes of a buffer to fd
+ * Pre: fd: file descriptor to write to
+ *      buffer: buffer to write
+ *      n: number or bytes to write
+ *      write_func: function to use for low level writing
+ *      fd_data: opaque data relating to fd, to pass to write_func
+ * Return: -1 on error
+ *         0 otherwise
+ **********************************************************************/
+
+int vanessa_socket_pipe_write_bytes_func(
+  int fd,
+  const unsigned char *buffer, 
+  const ssize_t n,
+  ssize_t (*write_func)(int fd, const void *buf, size_t count, void *data),
+  void *fd_data
 );
 
 
 /**********************************************************************
  * vanessa_socket_pipe_write_bytes
  * write a n bytes of a buffer to fd
- * Pre: fd: File descriptor to write to
+ * Pre: fd: file descriptor to write to
  *      buffer: buffer to write
  *      n: number or bytes to write
  * Return: -1 on error
  *         0 otherwise
  **********************************************************************/
 
-int vanessa_socket_pipe_write_bytes(
-  const int fd, 
-  const unsigned char *buffer, 
-  const ssize_t n
-);
+#define vanessa_socket_pipe_write_bytes(fd, buffer, n) \
+  vanessa_socket_pipe_write_bytes_func(fd, buffer, n, \
+    vanessa_socket_pipe_fd_write, NULL)
 
 
 /**********************************************************************
@@ -438,13 +626,6 @@ int vanessa_socket_host_port_sockaddr_in(
 
 extern vanessa_logger_t *vanessa_socket_logger;
 
-#define VANESSA_SOCKET_DEBUG_ERRNO(s, e) \
-  vanessa_logger_log(vanessa_socket_logger,LOG_DEBUG,"%s: %s",s,strerror(e));
-
-#define VANESSA_SOCKET_DEBUG(s) \
-  vanessa_logger_log(vanessa_socket_logger, LOG_DEBUG, s);
-
-
 /**********************************************************************
  * vanessa_socket_logger_set
  * set the logger function to use
@@ -468,6 +649,7 @@ extern vanessa_logger_t *vanessa_socket_logger;
  **********************************************************************/
 
 #define vanessa_socket_logger_unset() vanessa_socket_logger_set(NULL)
+
 
 
 #endif

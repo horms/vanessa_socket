@@ -26,6 +26,7 @@
  **********************************************************************/
 
 #include "vanessa_socket.h"
+#include "vanessa_socket_logger.h"
 
 /*Keep track of the total number of connections in the parent process*/
 unsigned int noconnection;
@@ -58,7 +59,7 @@ unsigned int noconnection;
  *       In the parent process the function doesn't exit, other 
  *       than on error.
  *       if return_from is non-null, it is seeded with cleints address
- * return: open client socket, if connection is accepted.
+ * return: client socket, if connection is accepted.
  *         -1 on error
  **********************************************************************/
 
@@ -71,7 +72,7 @@ int vanessa_socket_server_connect(
   vanessa_socket_flag_t flag
 ){
   struct sockaddr_in from;
-  int con;
+  int s;
 
   /* Fill in informtaion for 'from' */
   if(vanessa_socket_host_port_sockaddr_in(
@@ -80,25 +81,23 @@ int vanessa_socket_server_connect(
     &from, 
     flag
   )<0){
-    VANESSA_SOCKET_DEBUG("vanessa_socket_server_connect: "
-		    "vanessa_socket_host_port_sockaddr_in");
+    VANESSA_SOCKET_DEBUG("vanessa_socket_host_port_sockaddr_in");
     return(-1);
   }
 
   /* Make the connection */
-  if((con=vanessa_socket_server_connect_sockaddr_in(
+  if((s=vanessa_socket_server_connect_sockaddr_in(
     from,
     maximum_connections,
     return_from,
     return_to,
     flag
   ))<0){
-   VANESSA_SOCKET_DEBUG("vanessa_socket_server_connect: "
-		   "vanessa_socket_server_connect_sockaddr_in");
+   VANESSA_SOCKET_DEBUG("vanessa_socket_server_connect_sockaddr_in");
    return(-1);
   }
 
-  return(con);
+  return(s);
 }
 
 
@@ -143,7 +142,7 @@ int vanessa_socket_server_connect_sockaddr_in(
   extern unsigned int noconnection;
 
   if((s=socket(AF_INET, SOCK_STREAM, 0)) < 0){
-    VANESSA_SOCKET_DEBUG_ERRNO("vanessa_socket_server_connect: socket", errno);
+    VANESSA_SOCKET_DEBUG_ERRNO("socket");
     return(-1);
   }
 
@@ -153,20 +152,14 @@ int vanessa_socket_server_connect_sockaddr_in(
    */
   g = 1;
   if(setsockopt(s,SOL_SOCKET,SO_REUSEADDR,(void *)&g,sizeof g) <0){
-    VANESSA_SOCKET_DEBUG_ERRNO(
-      "vanessa_socket_server_connect: setsockopt", 
-      errno
-    );
+    VANESSA_SOCKET_DEBUG_ERRNO("setsockopt");
     return(-1);
   }
 
 #ifdef SO_BINDANY
   g = 1;
   if(setsockopt(s,SOL_SOCKET,SO_BINDANY,(void *)&g,sizeof g) <0){
-    VANESSA_SOCKET_DEBUG_ERRNO(
-      "vanessa_socket_server_connect: setsockopt",
-      errno
-    );
+    VANESSA_SOCKET_DEBUG_ERRNO("setsockopt");
     return(-1);
   }
 #endif
@@ -174,7 +167,7 @@ int vanessa_socket_server_connect_sockaddr_in(
   addrlen = sizeof(struct sockaddr_in);
 
   if(bind(s, (struct sockaddr *)&from, addrlen)<0){
-    VANESSA_SOCKET_DEBUG_ERRNO("vanessa_socket_server_connect: bind", errno);
+    VANESSA_SOCKET_DEBUG_ERRNO("bind");
     return(-1);
   }
 
@@ -189,19 +182,13 @@ int vanessa_socket_server_connect_sockaddr_in(
       }
       if(fork()==0){
         if(close(s)<0){
-	  VANESSA_SOCKET_DEBUG_ERRNO(
-	    "vanessa_socket_server_connect: close 1", 
-	    errno
-	  );
+	  VANESSA_SOCKET_DEBUG_ERRNO("close 1");
           return(-1);
         }
         if(return_to!=NULL){
           addrlen=sizeof(struct sockaddr_in);
           if(getsockname(g, (struct sockaddr *)return_to, &addrlen)<0){
-	    VANESSA_SOCKET_DEBUG_ERRNO(
-	      "vanessa_socket_server_connect: getsockname", 
-	      errno
-	    );
+	    VANESSA_SOCKET_DEBUG_ERRNO("getsockname");
             return(-1);
           }
         }
@@ -213,10 +200,7 @@ int vanessa_socket_server_connect_sockaddr_in(
       else{
         noconnection++;
         if(close(g)){
-	  VANESSA_SOCKET_DEBUG_ERRNO(
-	    "vanessa_socket_server_connect: close 2", 
-	    errno
-	  );
+	  VANESSA_SOCKET_DEBUG_ERRNO("close 2");
           return(-1);
         }
       }

@@ -26,6 +26,7 @@
  **********************************************************************/
 
 #include "vanessa_socket.h"
+#include "vanessa_socket_logger.h"
 
 
 /**********************************************************************
@@ -59,16 +60,13 @@ int vanessa_socket_host_in_addr(
   }
   else if(flag&VANESSA_SOCKET_NO_LOOKUP){
     if(inet_aton(host, in)==0){
-      VANESSA_SOCKET_DEBUG("vanessa_socket_host_in_addr: invalid address\n");
+      VANESSA_SOCKET_DEBUG("invalid address");
       return(-1);
     }
   }
   else {
     if((hp=gethostbyname(host))==NULL){
-      VANESSA_SOCKET_DEBUG_ERRNO(
-	"mod_vanessa_socket_connection_open: gethostbyname", 
-	errno
-      );
+      VANESSA_SOCKET_DEBUG_ERRNO("gethostbyname");
       return(-1);
     }
     bcopy(hp->h_addr, in, hp->h_length);

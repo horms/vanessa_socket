@@ -40,7 +40,7 @@ install: build
 	  $(pwd)/debian/tmp/usr/share/doc/libvanessa-socket-dev/changelog
 	gzip --best $(pwd)/debian/tmp/usr/share/doc/libvanessa-socket-dev/changelog
 	install -c -m 644 README \
-	  $(pwd)/debian/tmp/usr/share/doc/libvanessa-socket-dev/ 
+	  $(pwd)/debian/tmp/usr/share/doc/libvanessa-socket-dev/README
 
 	dh_movefiles --source=debian/tmp
 
