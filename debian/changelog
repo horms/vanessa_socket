@@ -1,3 +1,9 @@
+vanessa-socket (0.0.5release-1) unstable; urgency=low
+
+  * New Upstream
+
+ -- Simon Horman <horms@vergenet.net>  Fri,  6 Jun 2003 12:46:31 +0900
+
 vanessa-socket (0.0.5beta7-4) unstable; urgency=low
 
   * Added versioned dependancy on libvanessa-logger-dev (closes: Bug#189580)
