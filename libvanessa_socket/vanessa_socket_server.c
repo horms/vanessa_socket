@@ -222,7 +222,7 @@ int vanessa_socket_server_accept(int listen_socket,
 			return(g);
 		}
 		else {
-			noconnection--;
+			noconnection++;
 			close(g);
 		}
 	}
