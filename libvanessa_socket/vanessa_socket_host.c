@@ -65,8 +65,8 @@ int vanessa_socket_host_in_addr(const char *host,
 		}
 	} else {
 		if ((hp = gethostbyname(host)) == NULL) {
-			VANESSA_SOCKET_DEBUG_ERRNO_UNSAFE("gethostbyname (%s)",
-					host);
+			VANESSA_SOCKET_DEBUG_UNSAFE("gethostbyname (%s): %s",
+					host, strerror(errno));
 			return (-1);
 		}
 		bcopy(hp->h_addr, in, hp->h_length);
