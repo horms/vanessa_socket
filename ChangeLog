@@ -5,6 +5,15 @@ Library to simplify handling of TCP sockets
 Copyright (C) 1999-2002  Horms
 ----------------------------------------------------------------------
 
+XXX
+
+  * XXX
+  - ignore EINTR for accept() in vanessa_socket_server_accept().
+    This will occur as a child process exits.
+
+
+----------------------------------------------------------------------
+
 30th April 2002
 
   * 0.0.4beta3
@@ -14,8 +23,6 @@ Copyright (C) 1999-2002  Horms
     VANESSA_SOCKET_NO_LOOKUP is set.
   - include errno.h in vanessa_socket_pipe to allow it to compile
     on GNU/Hurd
-  - ignore EINTR for accept() in vanessa_socket_server_accept().
-    This will occur as a child process exits.
 
 
 ----------------------------------------------------------------------
