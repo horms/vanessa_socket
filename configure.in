@@ -18,7 +18,7 @@ dnl Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
 AC_INIT(libvanessa_socket/vanessa_socket.h)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(vanessa_socket, 0.0.4beta1)
+AM_INIT_AUTOMAKE(vanessa_socket, 0.0.4beta2)
 
 AM_PROG_LIBTOOL
 AC_PROG_CC
@@ -63,7 +63,7 @@ AC_CHECK_LIB(
     ""
     "**********************************************************************"
     "* vanessa_socket_pipe requires the popt options parsing library"
-    "* available from ftp://ftp.redhat.com/pub/redhat/code/popt/ and mirrors."
+    "* available from ftp://ftp.rpm.org/pub/rpm/ and mirrors."
     "* vanessa_socket_pipe will _not_ be built. "
     "* Proceeding with build of libvanessa_socket."
     "**********************************************************************"
