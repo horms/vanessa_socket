@@ -233,9 +233,8 @@ int vanessa_socket_client_src_open(
 
 /* Code below this line is Experimental */
 
-
 int vanessa_socket_client_open_src_sockaddr_inv
-(	struct sockaddr_in *from, int fromcount, struct sockaddr_in to,
+(	struct sockaddr_in from, struct sockaddr_in *to, int tocount,
 	const vanessa_socket_flag_t flag )
 {
   int s, i, hifd = 0, remaining = 0, ret = -1;
@@ -247,7 +246,7 @@ int vanessa_socket_client_open_src_sockaddr_inv
   tv.tv_sec = 120;
   tv.tv_usec = 0;
   
-  for(i = 0; i < fromcount; i++) {
+  for(i = 0; i < tocount; i++) {
     if((s = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
       VANESSA_SOCKET_DEBUG_ERRNO
 	("vanessa_socket_client_open_src_sockaddr_inv: socket", 
@@ -259,9 +258,16 @@ int vanessa_socket_client_open_src_sockaddr_inv
 	VANESSA_SOCKET_DEBUG_ERRNO
 	  ("vanessa_socket_client_open_src_sockaddr_inv: setsockopt(SO_REUSEADDR)",
 	   errno);
-      if(bind(s, (struct sockaddr *)(from + i), sizeof(*from))<0){
+      if(bind(s, &from, sizeof(from))<0){
 	VANESSA_SOCKET_DEBUG_ERRNO
 	  ("vanessa_socket_client_open_src_sockaddr_inv: bind", 
+	   errno);
+	goto out;
+      }
+      if(connect(s, (struct sockaddr *)(to + i), sizeof(*to)) < 0 &&
+	errno != EINPROGRESS) {
+	VANESSA_SOCKET_DEBUG_ERRNO
+	  ("vanessa_socket_client_open_src_sockaddr_inv: connect", 
 	   errno);
 	goto out;
       }
@@ -331,3 +337,4 @@ int vanessa_socket_client_open_src_sockaddr_inv
 	 errno);
   return ret;
 }
+
