@@ -2,23 +2,35 @@ ChangeLog
 
 vanessa_socket
 Library to simplify handling of TCP sockets
-Copyright (C) 2000  Horms
+Copyright (C) 1999-2002  Horms
 ----------------------------------------------------------------------
 
-XXX
+24th March 2002
 
- * XXX
+ * 0.0.4beta2
+ - Server code doesn't set SIGCHLD handler to vanessa_socket_server_reaper,
+   this should be done by the aplication. If a non-forking server is being 
+   used, SIGPIPE needs to be set to something, and SIGCHILD is irrelevant.
+ - vanessa_socket_server_open() and freinds use 
+   vanessa_socket_server_bind() amd vanessa_socket_server_accept()
+ 
+
+----------------------------------------------------------------------
+
+14th March 2002
+
+ * 0.0.4beta1
  - Added code to detatch from the terminal to become a daemon.
  - include <errno.h> in vanessa_socket_pipe.c.  closes: Debian Bug#108209
  - Fixed minor .spec file errors 
    Scot W. Hetzel <scot@genroco.com> & Horms
+ - Added vanessa_socket_server_bind(), vanessa_socket_server_accept()
+   and friends
  - Allow select() function to be supplied to  vanessa_socket_pipe().
  - Use system variants of read(), write() and select() by default
    in  vanessa_socket_pipe() and friends.
- - Server code doesn't set SIGCHLD handler to vanessa_socket_server_reaper,
-   this should be done by the aplication. If a non-forking server is being 
-   used, SIGPIPE needs to be set to something, and SIGCHILD is irrelevant.
  
+
 ----------------------------------------------------------------------
 
 29th June 2001
@@ -28,6 +40,7 @@ XXX
    vanessa_socket_pipe() and friends.
  - Tidyied up logging
  
+
 ----------------------------------------------------------------------
 
 19th April 2001
@@ -38,6 +51,7 @@ XXX
  - Fixed some (minor) casting problems when using bind() and
    various popt calls.
  
+
 ----------------------------------------------------------------------
 
 5th April 2001
@@ -54,6 +68,7 @@ XXX
    (Chris Stratford <Chris.Stratford@uk.uu.net>)
  - Cleaned up Debian packages
    
+
 ----------------------------------------------------------------------
 
 9th January 2000

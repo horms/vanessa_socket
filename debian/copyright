@@ -1,7 +1,7 @@
 
 vanessa_socket
 Library to simplify handling of TCP sockets
-Copyright (C) 2000  Horms <horms@vergenet.net>
+Copyright (C) 1999-2002  Horms <horms@vergenet.net>
 
 This copyright covers all materials supplied with vanessa_socket other than
 the vanessa_socket_pipe programme.  This includes includes, but not limited

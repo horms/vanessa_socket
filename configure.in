@@ -1,6 +1,6 @@
 dnl vanessa_socket
 dnl Library to simplify handling of TCP sockets
-dnl Copyright (C) 2000  Horms
+dnl Copyright (C) 1999-2002  Horms
 dnl 
 dnl This library is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU Lesser General Public License as published by
