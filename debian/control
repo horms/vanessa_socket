@@ -20,10 +20,8 @@ Description:
   TCP port, possibly on another host. Once both connections are established
   data sent on one connection is relayed to the other, hence forming a
   bi-directional pipe.
-
   Uses include enabling connections to specific ports on hosts behind a
   packet filter.
-
   This code is intended primarily as an example of how many of the features
   of libvanessa_socket work.
 
