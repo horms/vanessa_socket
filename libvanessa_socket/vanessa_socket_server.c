@@ -194,6 +194,20 @@ int vanessa_socket_server_accept(int listen_socket,
 			}
 		}
 
+		if (!(flag&VANESSA_SOCKET_NO_FORK)) {
+			if(fork() == 0) {
+				if(close(listen_socket) < 0) {
+					VANESSA_LOGGER_DEBUG_ERRNO("close");
+					return(-1);
+				}
+			}
+			else {
+				noconnection++;
+				close(g);
+				continue;
+			}
+		}
+
 		if (return_to != NULL) {
 			addrlen = sizeof(struct sockaddr_in);
 			if (getsockname (g, (struct sockaddr *) return_to, 
@@ -201,42 +215,18 @@ int vanessa_socket_server_accept(int listen_socket,
 				VANESSA_LOGGER_DEBUG_ERRNO (
 						"warning: getsockname"); 
 				/* This is usually (always) a transient
-				 * error so close the connection and
-				 * soldier on */
+			 	 * error so close the connection and
+			 	 * soldier on */
 				close(g);
 				continue;
 			}
 		}
-
+	
 		if (return_from != NULL) {
-			addrlen = sizeof(struct sockaddr_in);
-			if (getpeername (g, (struct sockaddr *) return_from, 
-					&addrlen) < 0) { 
-				VANESSA_LOGGER_DEBUG_ERRNO (
-						"warning: getpeername"); 
-				/* This is usually (always) a transient
-				 * error so close the connection and
-				 * soldier on */
-				close(g);
-				continue;
-			}
+			memcpy(return_from, &from, sizeof(from));
 		}
 
-		if(flag&VANESSA_SOCKET_NO_FORK) {
-			break;
-		}
-
-		if(fork() == 0) {
-			if(close(listen_socket) < 0) {
-				VANESSA_LOGGER_DEBUG_ERRNO("close");
-				return(-1);
-			}
-			return(g);
-		}
-		else {
-			noconnection++;
-			close(g);
-		}
+		break;
 	}
 
 	return(g);
