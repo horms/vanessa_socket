@@ -1,21 +1,17 @@
-Begin3
+Begin4
 Title:          vanessa_socket
 Version:        0.0.6
 Entered-date:   15DEC03
 Description:    vanessa_socket is a library to simplify TCP/IP socket
-		operations. Includes code to open a socket to a server as a
-		client, to listen on socket for clients as a server and to
-		pipe information between sockets. Includes a sample TCP/IP
-		pipe, a user space programme that listens for TCP/IP
-		connections on port on the local host and when a client
-		connects makes a connection to a TCP/IP port, possibly on
-		another host. 
+operations. Includes code to open a socket to a server as a client, to
+listen on socket for clients as a server and to pipe information between
+sockets. Includes a sample TCP/IP pipe, a user space programme that listens
+for TCP/IP connections on port on the local host and when a client connects
+makes a connection to a TCP/IP port, possibly on another host. 
 Keywords:       TCP/IP Socket
 Author:         Horms <horms@verge.net.au>
 Maintained-by:  Horms <horms@verge.net.au>
-Primary-site:   www.vergenet.net /linux/vanessa/download/vanessa_socket/
-Alternate-site: 
-Original-site:  
-Platforms:      Linux Solaris FreeBSD AIX
-Copying-policy: LGPL
+Primary-site:   http://www.vergenet.net/linux/vanessa/download/vanessa_logger/
+Platforms:      Known to work on Linux, Solaris, FreeBSD and AIX
+Copying-policy: GNU Lesser General Public License (GLPL) 2.1 or later
 End
