@@ -69,7 +69,7 @@ int vanessa_socket_host_in_addr(const char *host,
 					host, strerror(errno));
 			return (-1);
 		}
-		bcopy(hp->h_addr, in, hp->h_length);
+		memcpy(in, hp->h_addr, hp->h_length);
 	}
 
 	return (0);
