@@ -6,7 +6,7 @@
  * do all the hard work.
  *
  * vanessa_socket_pipe
- * Trivial TCP pipe based on libvanessa_socket
+ * Trivial TCP/IP pipe based on libvanessa_socket
  * Copyright (C) 1999  Horms
  * 
  * This program is free software; you can redistribute it and/or

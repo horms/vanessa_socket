@@ -32,8 +32,10 @@ libvanessa-socket-dev.dirs \
 libvanessa-socket-dev.files \
 libvanessa-socket-pipe.dirs \
 libvanessa-socket-pipe.files \
-libvanessa-socket.dirs \
-libvanessa-socket.files \
-libvanessa_socket0.postinst
+libvanessa-socket0.dirs \
+libvanessa-socket0.files \
+libvanessa-socket0.postinst \
+shlibs.local \
+rules
 
 m4datadir = $(datadir)/aclocal

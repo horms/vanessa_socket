@@ -6,7 +6,7 @@
  * Code based on man getopt(3), later translated to popt
  *
  * vanessa_socket_pipe
- * Trivial TCP pipe based on libvanessa_socket
+ * Trivial TCP/IP pipe based on libvanessa_socket
  * Copyright (C) 1999  Horms
  * 
  * This program is free software; you can redistribute it and/or
@@ -221,7 +221,7 @@ void usage(int exit_status){
     stream, 
     "vanessa_socket_pipe version %s Copyright Horms\n"
     "\n"
-    "TCP pipe based on libvanessa_socket\n"
+    "TCP/IP pipe based on libvanessa_socket\n"
     "\n"
     "Usage: vanessa_socket_pipe [options]\n"
     "  options:\n"
@@ -232,7 +232,7 @@ void usage(int exit_status){
     "                         connections.\n"
     "                         (default %d)\n"
     "     -d|--debug:         Turn on verbose debuging to stderr.\n"
-    "     -h|--help:          Display this message\n"
+    "     -h|--help:          Display this message.\n"
     "     -L|--listen_port:   Port to listen on. (mandatory)\n"
     "     -l|--listen_host:   Address to listen on.\n"
     "                         May be a hostname or an IP address.\n"
@@ -250,8 +250,8 @@ void usage(int exit_status){
     "                         Value of zero sets infinite timeout.\n"
     "                         (default %d)\n"
     "\n"
-    "     Note: default value for binary flags is off\n"
-    "           -L|--listen_port and -o|--outgoing_host must be defined\n",
+    "     Notes: Default value for binary flags is off.\n"
+    "            -L|--listen_port and -o|--outgoing_host must be defined.\n",
     VERSION,
     DEFAULT_CONNECTION_LIMIT,
     DEFAULT_TIMEOUT

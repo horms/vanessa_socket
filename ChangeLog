@@ -17,6 +17,7 @@ xxx
    under solaris (Chris Stratford <Chris.Stratford@uk.uu.net>)
  - Added timeradd and timersub compatibility for Solaris
    (Chris Stratford <Chris.Stratford@uk.uu.net>)
+ - Cleaned up Debian packages
    
 ----------------------------------------------------------------------
 

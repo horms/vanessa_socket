@@ -3,7 +3,7 @@
 # Horms                                             horms@vergenet.net
 #
 # vanessa_socket_pipe
-# Trivial TCP pipe
+# Trivial TCP/IP pipe based on libvanessa_socket
 # Copyright (C) 1999  Horms
 # 
 # This program is free software; you can redistribute it and/or
@@ -25,7 +25,9 @@
 
 bin_PROGRAMS = vanessa_socket_pipe
 
-EXTRA_DIST = vanessa_socket_pipe_config.h.in COPYING
+man_MANS = vanessa_socket_pipe.1
+
+EXTRA_DIST = vanessa_socket_pipe_config.h.in COPYING vanessa_socket_pipe.1
 
 vanessa_socket_pipe_SOURCES = \
   vanessa_socket_pipe.c \

@@ -18,7 +18,7 @@ dnl Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
 AC_INIT(libvanessa_socket/vanessa_socket.h)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(vanessa_socket, 0.0.0)
+AM_INIT_AUTOMAKE(vanessa_socket, 0.0.1pre1)
 
 AM_PROG_LIBTOOL
 AC_PROG_CC
@@ -27,10 +27,19 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 
-dnl Checks for libraries.
-AC_CHECK_LIB(socket, socket, [ socket_lib="-lsocket" ], [ socket_lib="" ])
-AC_CHECK_LIB(nsl, gethostbyname, [ nsl_lib="-lnsl" ], [ nsl_lib="" ])
-AC_CHECK_LIB(resolv, inet_aton, [ resolv_lib="-lresolv" ], [ resolv_lib="" ])
+AC_CHECK_LIB(socket, socket, [ socket_lib="-lsocket" ], :)
+AC_CHECK_LIB(nsl, gethostbyname, [ nsl_lib="-lnsl" ], :)
+AC_CHECK_LIB(resolv, inet_aton, [ resolv_lib="-lresolv" ], :)
+
+AC_MSG_CHECKING("for Linux style shared object linking")
+if test "$host_os" = "linux" -o "$host_os" = "linux-gnu"; then
+  AC_MSG_RESULT(Yes)
+  extra_libs=""
+else
+  AC_MSG_RESULT(No)
+  extra_libs="-lvanessa_logger $socket_lib $nsl_lib $resolv_lib"
+fi
+
 AC_CHECK_LIB(
   vanessa_logger,
   vanessa_logger_closelog,
@@ -57,8 +66,9 @@ AC_CHECK_LIB(
     "* vanessa_socket_pipe will _not_ be built. "
     "* Proceeding with build of libvanessa_socket."
     "**********************************************************************"
-  ) ;\
-  pipe_dir=""
+  ) ;
+  pipe_dir="" ;
+  sleep 5
 )
 
 dnl Checks for header files.
@@ -75,6 +85,7 @@ AC_TYPE_SIGNAL
 AC_FUNC_WAIT3
 AC_CHECK_FUNCS(flim)
 
+AC_SUBST(extra_libs)
 AC_SUBST(socket_lib)
 AC_SUBST(nsl_lib)
 AC_SUBST(resolv_lib)
