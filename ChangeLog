@@ -5,14 +5,14 @@ Library to simplify handling of TCP sockets
 Copyright (C) 1999-2003  Horms
 ----------------------------------------------------------------------
 
-XXX
+15th December 2003
 (Horms)
 
-  * XXX
+  * 0.0.6
   - Better logging of faile gethopstbyname() and gethostbyaddr() calls
   - Reset addrlen correctly in vanessa_socket_server_accept()
     Maxim Dounin
-  - Set lissten() to SOMAXCONN if possible. Maxim Dounin
+  - Set listen() to SOMAXCONN if possible. Maxim Dounin
   - Better logging of errors looking user or group in
     vanessa_socket_daemon_setid()
 
