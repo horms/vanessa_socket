@@ -5,9 +5,9 @@ Library to simplify handling of TCP sockets
 Copyright (C) 2000  Horms
 ----------------------------------------------------------------------
 
-xxx
+5th April 2001
 
- * xxx
+ * 0.0.1
  - Fixed problem with -b under BSD ("Erik R. Leo" <erikl@sover.net>)
  - Fixed problem with client connecting to bizzare address under BSD
    ("Erik R. Leo" <erikl@sover.net>)
