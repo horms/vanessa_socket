@@ -52,75 +52,80 @@
  * process is being run from inetd.
  **********************************************************************/
 
-void vanessa_socket_daemon_process(void){
-  /*
-   * `fork()' so the parent can exit, this returns control to the command
-   * line or shell invoking your program.  This step is required so that
-   * the new process is guaranteed not to be a process group leader. The
-   * next step, `setsid()', fails if you're a process group leader.
-   * vanessa_socket_daemon_become_child();
-   */
-  vanessa_socket_daemon_become_child();
+void vanessa_socket_daemon_process(void)
+{
+	/*
+	 * `fork()' so the parent can exit, this returns control to the command
+	 * line or shell invoking your program.  This step is required so that
+	 * the new process is guaranteed not to be a process group leader. The
+	 * next step, `setsid()', fails if you're a process group leader.
+	 * vanessa_socket_daemon_become_child();
+	 */
+	vanessa_socket_daemon_become_child();
 
-  /*
-   * setsid()' to become a process group and session group leader. Since a
-   * controlling terminal is associated with a session, and this new
-   * session has not yet acquired a controlling terminal our process now
-   * has no controlling terminal, which is a Good Thing for daemons.
-   */
+	/*
+	 * setsid()' to become a process group and session group leader. Since a
+	 * controlling terminal is associated with a session, and this new
+	 * session has not yet acquired a controlling terminal our process now
+	 * has no controlling terminal, which is a Good Thing for daemons.
+	 */
 
-  if(setsid()<0){
-    VANESSA_SOCKET_DEBUG_ERRNO("setsid");
-    VANESSA_SOCKET_ERR("Fatal error begoming group leader. Exiting.");
-    vanessa_socket_daemon_exit_cleanly(-1);
-  }
+	if (setsid() < 0) {
+		VANESSA_SOCKET_DEBUG_ERRNO("setsid");
+		VANESSA_SOCKET_ERR
+		    ("Fatal error begoming group leader. Exiting.");
+		vanessa_socket_daemon_exit_cleanly(-1);
+	}
 
-  /*
-   * fork()' again so the parent, (the session group leader), can exit.
-   * This means that we, as a non-session group leader, can never regain a
-   * controlling terminal.
-   */
-  vanessa_socket_daemon_become_child();
+	/*
+	 * fork()' again so the parent, (the session group leader), can exit.
+	 * This means that we, as a non-session group leader, can never regain a
+	 * controlling terminal.
+	 */
+	vanessa_socket_daemon_become_child();
 
-  /* chdir() and umask() */
-  vanessa_socket_daemon_inetd_process();
+	/* chdir() and umask() */
+	vanessa_socket_daemon_inetd_process();
 
-  /*
-   * `close()' fds 0, 1, and 2. This releases the standard in, out, and
-   * error we inherited from our parent process. We have no way of knowing
-   * where these fds might have been redirected to. Note that many daemons
-   * use `sysconf()' to determine the limit `_SC_OPEN_MAX'.  `_SC_OPEN_MAX'
-   * tells you the maximun open files/process. Then in a loop, the daemon
-   * can close all possible file descriptors. You have to decide if you
-   * need to do this or not.  If you think that there might be
-   * file-descriptors open you should close them, since there's a limit on
-   * number of concurrent file descriptors.
-   */
-   vanessa_socket_daemon_close_fd();
+	/*
+	 * `close()' fds 0, 1, and 2. This releases the standard in, out, and
+	 * error we inherited from our parent process. We have no way of knowing
+	 * where these fds might have been redirected to. Note that many daemons
+	 * use `sysconf()' to determine the limit `_SC_OPEN_MAX'.  `_SC_OPEN_MAX'
+	 * tells you the maximun open files/process. Then in a loop, the daemon
+	 * can close all possible file descriptors. You have to decide if you
+	 * need to do this or not.  If you think that there might be
+	 * file-descriptors open you should close them, since there's a limit on
+	 * number of concurrent file descriptors.
+	 */
+	vanessa_socket_daemon_close_fd();
 
-  /* Establish new open descriptors for stdin, stdout and stderr. Even if
-   * you don't plan to use them, it is still a good idea to have them open.
-   * The precise handling of these is a matter of taste; if you have a
-   * logfile, for example, you might wish to open it as stdout or stderr,
-   * and open `/dev/null' as stdin; alternatively, you could open
-   * `/dev/console' as stderr and/or stdout, and `/dev/null' as stdin, or
-   * any other combination that makes sense for your particular daemon.
-   */
-   if(open("/dev/null", O_RDONLY)<0){
-     VANESSA_SOCKET_DEBUG_ERRNO("open");
-     VANESSA_SOCKET_ERR("Fatal error Opening /dev/null. Exiting.");
-     vanessa_socket_daemon_exit_cleanly(-1);
-   }
-   if(open("/dev/null", O_WRONLY|O_APPEND)<0){
-     VANESSA_SOCKET_DEBUG_ERRNO("open");
-     VANESSA_SOCKET_ERR("Fatal error Opening /dev/null. Exiting.");
-     vanessa_socket_daemon_exit_cleanly(-1);
-   }
-   if(open("/dev/null", O_WRONLY|O_APPEND)<0){
-     VANESSA_SOCKET_DEBUG_ERRNO("open");
-     VANESSA_SOCKET_ERR("Fatal error Opening /dev/null. Exiting.");
-     vanessa_socket_daemon_exit_cleanly(-1);
-   }
+	/* Establish new open descriptors for stdin, stdout and stderr. Even if
+	 * you don't plan to use them, it is still a good idea to have them open.
+	 * The precise handling of these is a matter of taste; if you have a
+	 * logfile, for example, you might wish to open it as stdout or stderr,
+	 * and open `/dev/null' as stdin; alternatively, you could open
+	 * `/dev/console' as stderr and/or stdout, and `/dev/null' as stdin, or
+	 * any other combination that makes sense for your particular daemon.
+	 */
+	if (open("/dev/null", O_RDONLY) < 0) {
+		VANESSA_SOCKET_DEBUG_ERRNO("open");
+		VANESSA_SOCKET_ERR
+		    ("Fatal error Opening /dev/null. Exiting.");
+		vanessa_socket_daemon_exit_cleanly(-1);
+	}
+	if (open("/dev/null", O_WRONLY | O_APPEND) < 0) {
+		VANESSA_SOCKET_DEBUG_ERRNO("open");
+		VANESSA_SOCKET_ERR
+		    ("Fatal error Opening /dev/null. Exiting.");
+		vanessa_socket_daemon_exit_cleanly(-1);
+	}
+	if (open("/dev/null", O_WRONLY | O_APPEND) < 0) {
+		VANESSA_SOCKET_DEBUG_ERRNO("open");
+		VANESSA_SOCKET_ERR
+		    ("Fatal error Opening /dev/null. Exiting.");
+		vanessa_socket_daemon_exit_cleanly(-1);
+	}
 }
 
 
@@ -131,23 +136,25 @@ void vanessa_socket_daemon_process(void){
  * inetd
  **********************************************************************/
 
-void vanessa_socket_daemon_inetd_process(void){
-  /*
-   * `chdir("/")' to ensure that our process doesn't keep any directory in
-   * use. Failure to do this could make it so that an administrator
-   * couldn't unmount a filesystem, because it was our current directory.
-   */
-  if(chdir("/")<0){
-    VANESSA_SOCKET_DEBUG_ERRNO("chdir");
-    VANESSA_SOCKET_ERR("Fatal error changing directory to /. Exiting.");
-    vanessa_socket_daemon_exit_cleanly(-1);
-  }
+void vanessa_socket_daemon_inetd_process(void)
+{
+	/*
+	 * `chdir("/")' to ensure that our process doesn't keep any directory in
+	 * use. Failure to do this could make it so that an administrator
+	 * couldn't unmount a filesystem, because it was our current directory.
+	 */
+	if (chdir("/") < 0) {
+		VANESSA_SOCKET_DEBUG_ERRNO("chdir");
+		VANESSA_SOCKET_ERR
+		    ("Fatal error changing directory to /. Exiting.");
+		vanessa_socket_daemon_exit_cleanly(-1);
+	}
 
-  /*
-   * `umask(0)' so that we have complete control over the permissions of
-   * anything we write. We don't know what umask we may have inherited.
-   */
-  umask(0);
+	/*
+	 * `umask(0)' so that we have complete control over the permissions of
+	 * anything we write. We don't know what umask we may have inherited.
+	 */
+	umask(0);
 }
 
 
@@ -157,19 +164,20 @@ void vanessa_socket_daemon_inetd_process(void){
  * we are our own clild. Very incestuous.
  **********************************************************************/
 
-void vanessa_socket_daemon_become_child(void){
-  int status;
+void vanessa_socket_daemon_become_child(void)
+{
+	int status;
 
-  status=fork();
+	status = fork();
 
-  if(status<0){
-    VANESSA_SOCKET_DEBUG_ERRNO("fork");
-    VANESSA_SOCKET_ERR("Fatal error forking. Exiting.");
-    vanessa_socket_daemon_exit_cleanly(-1);
-  }
-  if(status>0){
-    vanessa_socket_daemon_exit_cleanly(0);
-  }
+	if (status < 0) {
+		VANESSA_SOCKET_DEBUG_ERRNO("fork");
+		VANESSA_SOCKET_ERR("Fatal error forking. Exiting.");
+		vanessa_socket_daemon_exit_cleanly(-1);
+	}
+	if (status > 0) {
+		vanessa_socket_daemon_exit_cleanly(0);
+	}
 }
 
 
@@ -178,27 +186,29 @@ void vanessa_socket_daemon_become_child(void){
  * Close all the file descriptots a process has
  **********************************************************************/
 
-void vanessa_socket_daemon_close_fd(void){
-  int fd;
-  long max_fd;
+void vanessa_socket_daemon_close_fd(void)
+{
+	int fd;
+	long max_fd;
 
-  fflush(NULL);
+	fflush(NULL);
 
-  if((max_fd=sysconf(_SC_OPEN_MAX))<2){
-    VANESSA_SOCKET_DEBUG_ERRNO("sysconf");
-    VANESSA_SOCKET_ERR("Fatal error finding maximum file descriptors. Exiting.");
+	if ((max_fd = sysconf(_SC_OPEN_MAX)) < 2) {
+		VANESSA_SOCKET_DEBUG_ERRNO("sysconf");
+		VANESSA_SOCKET_ERR
+		    ("Fatal error finding maximum file descriptors. Exiting.");
 
-    /*
-     * don't use vanessa_socket_daemon_exit_cleanly as 
-     * vanessa_socket_daemon_close_fd is called from 
-     * vanessa_socket_daemon_exit_cleanly
-     */
-    exit(-1);
-  }
+		/*
+		 * don't use vanessa_socket_daemon_exit_cleanly as 
+		 * vanessa_socket_daemon_close_fd is called from 
+		 * vanessa_socket_daemon_exit_cleanly
+		 */
+		exit(-1);
+	}
 
-  for(fd=0;fd<(int)max_fd;fd++){
-    close(fd);
-  }
+	for (fd = 0; fd < (int) max_fd; fd++) {
+		close(fd);
+	}
 }
 
 
@@ -209,55 +219,51 @@ void vanessa_socket_daemon_close_fd(void){
  * the group or the groupid as a string.
  **********************************************************************/
 
-int vanessa_socket_daemon_setid(const char *user, const char *group){
-  uid_t uid;
-  gid_t gid;
-  struct passwd *pw;
-  struct group *gr;
+int vanessa_socket_daemon_setid(const char *user, const char *group)
+{
+	uid_t uid;
+	gid_t gid;
+	struct passwd *pw;
+	struct group *gr;
 
-  if(vanessa_socket_str_is_digit(group)){
-    gid=(gid_t)atoi(group);
-  }
-  else{
-    if((gr=getgrnam(group))==NULL){
-      VANESSA_SOCKET_DEBUG_ERRNO("getgrnam");
-      return(-1);
-    }
-    gid=gr->gr_gid;
-    /*free(gr);*/
-  }
+	if (vanessa_socket_str_is_digit(group)) {
+		gid = (gid_t) atoi(group);
+	} else {
+		if ((gr = getgrnam(group)) == NULL) {
+			VANESSA_SOCKET_DEBUG_ERRNO("getgrnam");
+			return (-1);
+		}
+		gid = gr->gr_gid;
+		/*free(gr); */
+	}
 
-  if(setgid(gid)){
-    VANESSA_SOCKET_DEBUG_ERRNO("setgid");
-    return(-1);
-  }
+	if (setgid(gid)) {
+		VANESSA_SOCKET_DEBUG_ERRNO("setgid");
+		return (-1);
+	}
 
-  if(vanessa_socket_str_is_digit(user)){
-    uid=(uid_t)atoi(user);
-  }
-  else{
-    if((pw=getpwnam(user))==NULL){
-      VANESSA_SOCKET_DEBUG_ERRNO("getpwnam");
-      return(-1);
-    }
-    uid=pw->pw_uid;
-    /*free(pw);*/
-  }
+	if (vanessa_socket_str_is_digit(user)) {
+		uid = (uid_t) atoi(user);
+	} else {
+		if ((pw = getpwnam(user)) == NULL) {
+			VANESSA_SOCKET_DEBUG_ERRNO("getpwnam");
+			return (-1);
+		}
+		uid = pw->pw_uid;
+		/*free(pw); */
+	}
 
-  if(setuid(uid)){
-    VANESSA_SOCKET_DEBUG_ERRNO("setuid");
-    return(-1);
-  }
+	if (setuid(uid)) {
+		VANESSA_SOCKET_DEBUG_ERRNO("setuid");
+		return (-1);
+	}
 
-  VANESSA_SOCKET_DEBUG_UNSAFE(
-    "uid=%d euid=%d gid=%d egid=%d",
-    getuid(),
-    geteuid(),
-    getgid(),
-    getegid()
-  );
+	VANESSA_SOCKET_DEBUG_UNSAFE("uid=%d euid=%d gid=%d egid=%d",
+				    getuid(),
+				    geteuid(), getgid(), getegid()
+	    );
 
-  return(0);
+	return (0);
 }
 
 
@@ -267,15 +273,21 @@ int vanessa_socket_daemon_setid(const char *user, const char *group){
  * If we get a sinal then close everthing, log it and quit
  **********************************************************************/
 
-static int vanessa_socket_daemon_exit_cleanly_called=0;
+static int vanessa_socket_daemon_exit_cleanly_called = 0;
 
-void vanessa_socket_daemon_exit_cleanly(int i){
-  if(vanessa_socket_daemon_exit_cleanly_called){ signal(i, SIG_DFL); abort(); }
-  vanessa_socket_daemon_exit_cleanly_called=1;
-  /*Only log if it is a signal, not a requested exit*/
-  if(i>0){ VANESSA_SOCKET_INFO_UNSAFE("Exiting on signal %d", i); }
-  vanessa_socket_daemon_close_fd();
-  exit((i>0)?0:i);
+void vanessa_socket_daemon_exit_cleanly(int i)
+{
+	if (vanessa_socket_daemon_exit_cleanly_called) {
+		signal(i, SIG_DFL);
+		abort();
+	}
+	vanessa_socket_daemon_exit_cleanly_called = 1;
+	/*Only log if it is a signal, not a requested exit */
+	if (i > 0) {
+		VANESSA_SOCKET_INFO_UNSAFE("Exiting on signal %d", i);
+	}
+	vanessa_socket_daemon_close_fd();
+	exit((i > 0) ? 0 : i);
 }
 
 
@@ -287,6 +299,7 @@ void vanessa_socket_daemon_exit_cleanly(int i){
  * post: signal handler reset for signal
  **********************************************************************/
 
-void vanessa_socket_daemon_noop_handler(int sig){
-  signal(sig, (void(*)(int))vanessa_socket_daemon_noop_handler);
+void vanessa_socket_daemon_noop_handler(int sig)
+{
+	signal(sig, (void (*)(int)) vanessa_socket_daemon_noop_handler);
 }

@@ -44,20 +44,21 @@
  *         -1 on error
  **********************************************************************/
 
-ssize_t vanessa_socket_pipe_fd_read(int fd, void *buf, size_t count, 
-                                    void *data){
-  int bytes;
+ssize_t vanessa_socket_pipe_fd_read(int fd, void *buf, size_t count,
+				    void *data)
+{
+	int bytes;
 
-  bytes=read(fd, buf, count);
+	bytes = read(fd, buf, count);
 
-  if(bytes<0){
-    if(errno){
-      VANESSA_SOCKET_DEBUG_ERRNO("read");
-    }
-    return(-1);
-  }
+	if (bytes < 0) {
+		if (errno) {
+			VANESSA_SOCKET_DEBUG_ERRNO("read");
+		}
+		return (-1);
+	}
 
-  return(bytes);
+	return (bytes);
 }
 
 
@@ -76,20 +77,21 @@ ssize_t vanessa_socket_pipe_fd_read(int fd, void *buf, size_t count,
  *         -1 on error
  **********************************************************************/
 
-ssize_t vanessa_socket_pipe_fd_write(int fd, const void *buf, size_t count, 
-                                     void *data){
-  int bytes;
+ssize_t vanessa_socket_pipe_fd_write(int fd, const void *buf, size_t count,
+				     void *data)
+{
+	int bytes;
 
-  bytes=write(fd, buf, count);
+	bytes = write(fd, buf, count);
 
-  if(bytes<=0){
-    if(errno){
-      VANESSA_SOCKET_DEBUG_ERRNO("write");
-    }
-    return(bytes==0?0:-1);
-  }
+	if (bytes <= 0) {
+		if (errno) {
+			VANESSA_SOCKET_DEBUG_ERRNO("write");
+		}
+		return (bytes == 0 ? 0 : -1);
+	}
 
-  return(bytes);
+	return (bytes);
 }
 
 
@@ -122,82 +124,91 @@ ssize_t vanessa_socket_pipe_fd_write(int fd, const void *buf, size_t count,
  *         0 otherwise (one of the file desciptors closes gracefully)
  **********************************************************************/
 
-int vanessa_socket_pipe_func(
-  int rfd_a,
-  int wfd_a,
-  int rfd_b,
-  int wfd_b,
-  unsigned char *buffer, 
-  int buffer_length,
-  int idle_timeout,
-  int *return_a_read_bytes,
-  int *return_b_read_bytes,
-  ssize_t (*read_func)(int fd, void *buf, size_t count, void *data),
-  ssize_t (*write_func)(int fd, const void *buf, size_t count, void *data),
-  void *fd_a_data,
-  void *fd_b_data
-){
-  fd_set read_template;
-  fd_set except_template;
-  struct timeval timeout;
-  int status;
-  int bytes=0;
-  
-  for(;;){
-    FD_ZERO(&read_template);
-    FD_SET(rfd_a, &read_template);
-    FD_SET(rfd_b, &read_template);
+int vanessa_socket_pipe_func(int rfd_a,
+			     int wfd_a,
+			     int rfd_b,
+			     int wfd_b,
+			     unsigned char *buffer,
+			     int buffer_length,
+			     int idle_timeout,
+			     int *return_a_read_bytes,
+			     int *return_b_read_bytes,
+			     ssize_t(*read_func) (int fd, void *buf,
+						  size_t count,
+						  void *data),
+			     ssize_t(*write_func) (int fd, const void *buf,
+						   size_t count,
+						   void *data),
+			     void *fd_a_data, void *fd_b_data)
+{
+	fd_set read_template;
+	fd_set except_template;
+	struct timeval timeout;
+	int status;
+	int bytes = 0;
 
-    FD_ZERO(&except_template);
-    FD_SET(rfd_a, &except_template);
-    FD_SET(rfd_b, &except_template);
+	for (;;) {
+		FD_ZERO(&read_template);
+		FD_SET(rfd_a, &read_template);
+		FD_SET(rfd_b, &read_template);
 
-    timeout.tv_sec=idle_timeout;
-    timeout.tv_usec=0;
+		FD_ZERO(&except_template);
+		FD_SET(rfd_a, &except_template);
+		FD_SET(rfd_b, &except_template);
 
-    status=select(
-      FD_SETSIZE,
-      &read_template,
-      NULL,
-      &except_template,
-      idle_timeout?&timeout:NULL
-    );
-    if(status<0){
-      if(errno!=EINTR){
-        VANESSA_SOCKET_DEBUG_ERRNO("select");
-        return(-1);
-      }
-      continue;  /* Ignore EINTR */
-    }
-    else if(
-      FD_ISSET(rfd_a, &except_template) ||
-      FD_ISSET(rfd_b, &except_template)
-    ){
-      VANESSA_SOCKET_DEBUG("except_template set");
-      return(-1);
-    }
-    else if(status==0){
-      VANESSA_SOCKET_DEBUG("select returned 0");
-      return(-1);
-    }
-    else if(FD_ISSET(rfd_a, &read_template)){
-      bytes=vanessa_socket_pipe_read_write_func(rfd_a, wfd_b, buffer, 
-        buffer_length, read_func, write_func, fd_a_data, fd_b_data);
-      *return_a_read_bytes+=(bytes>0)?bytes:0;
-    }
-    else if(FD_ISSET(rfd_b, &read_template)){
-      bytes=vanessa_socket_pipe_read_write_func(rfd_b, wfd_a, buffer, 
-        buffer_length, read_func, write_func, fd_b_data, fd_a_data);
-      *return_b_read_bytes+=(bytes>0)?bytes:0;
-    }
-    if(bytes<0){
-      VANESSA_SOCKET_DEBUG("vanessa_socket_pipe_read_write_func");
-      return(-1);
-    }
-    else if(!bytes){
-      return(0);
-    }
-  }
+		timeout.tv_sec = idle_timeout;
+		timeout.tv_usec = 0;
+
+		status = select(FD_SETSIZE,
+				&read_template,
+				NULL,
+				&except_template,
+				idle_timeout ? &timeout : NULL);
+		if (status < 0) {
+			if (errno != EINTR) {
+				VANESSA_SOCKET_DEBUG_ERRNO("select");
+				return (-1);
+			}
+			continue;	/* Ignore EINTR */
+		} else if (FD_ISSET(rfd_a, &except_template) ||
+			   FD_ISSET(rfd_b, &except_template)
+		    ) {
+			VANESSA_SOCKET_DEBUG("except_template set");
+			return (-1);
+		} else if (status == 0) {
+			VANESSA_SOCKET_DEBUG("select returned 0");
+			return (-1);
+		} else if (FD_ISSET(rfd_a, &read_template)) {
+			bytes =
+			    vanessa_socket_pipe_read_write_func(rfd_a,
+								wfd_b,
+								buffer,
+								buffer_length,
+								read_func,
+								write_func,
+								fd_a_data,
+								fd_b_data);
+			*return_a_read_bytes += (bytes > 0) ? bytes : 0;
+		} else if (FD_ISSET(rfd_b, &read_template)) {
+			bytes =
+			    vanessa_socket_pipe_read_write_func(rfd_b,
+								wfd_a,
+								buffer,
+								buffer_length,
+								read_func,
+								write_func,
+								fd_b_data,
+								fd_a_data);
+			*return_b_read_bytes += (bytes > 0) ? bytes : 0;
+		}
+		if (bytes < 0) {
+			VANESSA_SOCKET_DEBUG
+			    ("vanessa_socket_pipe_read_write_func");
+			return (-1);
+		} else if (!bytes) {
+			return (0);
+		}
+	}
 }
 
 
@@ -225,35 +236,39 @@ int vanessa_socket_pipe_func(
  *         -1 on error
  **********************************************************************/
 
-int vanessa_socket_pipe_read_write_func(
-  int rfd, 
-  int wfd, 
-  unsigned char *buffer, 
-  int buffer_length,
-  ssize_t (*read_func)(int fd, void *buf, size_t count, void *data),
-  ssize_t (*write_func)(int fd, const void *buf, size_t count, void *data),
-  void *rfd_data,
-  void *wfd_data
-){
-  int bytes;
+int vanessa_socket_pipe_read_write_func(int rfd,
+					int wfd,
+					unsigned char *buffer,
+					int buffer_length,
+					ssize_t(*read_func) (int fd,
+							     void *buf,
+							     size_t count,
+							     void *data),
+					ssize_t(*write_func) (int fd,
+							      const void
+							      *buf,
+							      size_t count,
+							      void *data),
+					void *rfd_data, void *wfd_data)
+{
+	int bytes;
 
-  bytes=read_func(rfd, buffer, buffer_length, rfd_data);
-  if(bytes<0){
-    if(errno){
-      VANESSA_SOCKET_DEBUG("vanessa_socket_io_read");
-    }
-    return(-1);
-  }
-  else if(bytes==0){
-    return(0);
-  }
-  if(vanessa_socket_pipe_write_bytes_func(wfd, buffer, bytes, write_func, 
-                                          wfd_data)){
-    VANESSA_SOCKET_DEBUG("vanessa_socket_pipe_write_bytes");
-    return(-1);
-  }
+	bytes = read_func(rfd, buffer, buffer_length, rfd_data);
+	if (bytes < 0) {
+		if (errno) {
+			VANESSA_SOCKET_DEBUG("vanessa_socket_io_read");
+		}
+		return (-1);
+	} else if (bytes == 0) {
+		return (0);
+	}
+	if (vanessa_socket_pipe_write_bytes_func
+	    (wfd, buffer, bytes, write_func, wfd_data)) {
+		VANESSA_SOCKET_DEBUG("vanessa_socket_pipe_write_bytes");
+		return (-1);
+	}
 
-  return(bytes);
+	return (bytes);
 }
 
 
@@ -275,31 +290,36 @@ int vanessa_socket_pipe_read_write_func(
  *         0 otherwise
  **********************************************************************/
 
-int vanessa_socket_pipe_write_bytes_func(
-  int fd,
-  const unsigned char *buffer, 
-  const ssize_t n,
-  ssize_t (*write_func)(int fd, const void *buf, size_t count, void *data), 
-  void *fd_data
-){
-  ssize_t offset;
-  ssize_t bytes_written;
+int vanessa_socket_pipe_write_bytes_func(int fd,
+					 const unsigned char *buffer,
+					 const ssize_t n,
+					 ssize_t(*write_func) (int fd,
+							       const void
+							       *buf,
+							       size_t
+							       count,
+							       void *data),
+					 void *fd_data)
+{
+	ssize_t offset;
+	ssize_t bytes_written;
 
-  if(n==0){
-    return(0);
-  }
+	if (n == 0) {
+		return (0);
+	}
 
-  offset=0;
-  do{
-    bytes_written=write_func(fd, buffer+offset, n-offset, fd_data);
-    if(bytes_written<0){
-      VANESSA_SOCKET_DEBUG_ERRNO("write_func");
-      return(-1);
-    }
-    offset+=bytes_written;
-  }while(offset<n);
+	offset = 0;
+	do {
+		bytes_written =
+		    write_func(fd, buffer + offset, n - offset, fd_data);
+		if (bytes_written < 0) {
+			VANESSA_SOCKET_DEBUG_ERRNO("write_func");
+			return (-1);
+		}
+		offset += bytes_written;
+	} while (offset < n);
 
-  return(0);
+	return (0);
 }
 
 
@@ -307,6 +327,3 @@ int vanessa_socket_pipe_write_bytes_func(
  * vanessa_socket_pipe_write_bytes
  * Moved to a macro defined elsewhere
  **********************************************************************/
-
-
-

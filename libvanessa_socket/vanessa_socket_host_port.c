@@ -49,29 +49,28 @@
  *         -1 on error
  **********************************************************************/
 
-int vanessa_socket_host_port_sockaddr_in(
-  const char *host,
-  const char *port,
-  struct sockaddr_in *addr,
-  const vanessa_socket_flag_t flag
-){
-  int portno;
+int vanessa_socket_host_port_sockaddr_in(const char *host,
+					 const char *port,
+					 struct sockaddr_in *addr,
+					 const vanessa_socket_flag_t flag)
+{
+	int portno;
 
-  bzero((struct sockaddr *)addr, sizeof(addr));
+	bzero((struct sockaddr *) addr, sizeof(addr));
 
-  addr->sin_family = AF_INET;  /* Gratuitously assume the address will be
-                               * an AF_INET address */
+	addr->sin_family = AF_INET;	/* Gratuitously assume the address will be
+					   * an AF_INET address */
 
-  if(vanessa_socket_host_in_addr(host, &(addr->sin_addr), flag)<0){
-    VANESSA_SOCKET_DEBUG("vanessa_socket_host_in_addr");
-    return(-1);
-  }
+	if (vanessa_socket_host_in_addr(host, &(addr->sin_addr), flag) < 0) {
+		VANESSA_SOCKET_DEBUG("vanessa_socket_host_in_addr");
+		return (-1);
+	}
 
-  if( (portno=vanessa_socket_port_portno(port, flag))<0 ){
-    VANESSA_SOCKET_DEBUG("vanessa_socket_port_portno");
-    return(-1);
-  }
-  addr->sin_port=(unsigned short int)portno;
+	if ((portno = vanessa_socket_port_portno(port, flag)) < 0) {
+		VANESSA_SOCKET_DEBUG("vanessa_socket_port_portno");
+		return (-1);
+	}
+	addr->sin_port = (unsigned short int) portno;
 
-  return(0);
+	return (0);
 }

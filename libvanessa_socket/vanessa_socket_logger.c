@@ -31,7 +31,7 @@
 /*
  * Its all about this gloabal
  */
-vanessa_logger_t *vanessa_socket_logger=NULL;
+vanessa_logger_t *vanessa_socket_logger = NULL;
 
 
 /**********************************************************************

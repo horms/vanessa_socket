@@ -41,27 +41,25 @@
  *         -1 on error or if port name cannot be found in /etc/services
  **********************************************************************/
 
-int vanessa_socket_port_portno(
-  const char *port, 
-  const vanessa_socket_flag_t flag
-){
-  struct servent *ent;
-  unsigned short int portno;
-  
-  if(port==NULL){
-    portno=INPORT_ANY;
-  }
-  else if(flag&VANESSA_SOCKET_NO_LOOKUP || vanessa_socket_str_is_digit(port)){
-    portno=htons(atoi(port));
-  }
-  else{
-    if((ent=getservbyname(port, "tcp"))==NULL){
-      return(0);
-    }
-    portno=ent->s_port;
-  }
+int vanessa_socket_port_portno(const char *port,
+			       const vanessa_socket_flag_t flag)
+{
+	struct servent *ent;
+	unsigned short int portno;
 
-  return(portno);
+	if (port == NULL) {
+		portno = INPORT_ANY;
+	} else if (flag & VANESSA_SOCKET_NO_LOOKUP
+		   || vanessa_socket_str_is_digit(port)) {
+		portno = htons(atoi(port));
+	} else {
+		if ((ent = getservbyname(port, "tcp")) == NULL) {
+			return (0);
+		}
+		portno = ent->s_port;
+	}
+
+	return (portno);
 }
 
 
@@ -74,18 +72,19 @@ int vanessa_socket_port_portno(
  *         0 otherwise
  **********************************************************************/
 
-int vanessa_socket_str_is_digit(const char *str){
-  int offset;
+int vanessa_socket_str_is_digit(const char *str)
+{
+	int offset;
 
-  if(str==NULL){
-    return(0);
-  }
+	if (str == NULL) {
+		return (0);
+	}
 
-  for(offset=strlen(str)-1;offset>-1;offset--){
-    if(!isdigit(*(str+offset))){
-      break;
-    }
-  }
+	for (offset = strlen(str) - 1; offset > -1; offset--) {
+		if (!isdigit(*(str + offset))) {
+			break;
+		}
+	}
 
-  return(offset>-1?0:1);
+	return (offset > -1 ? 0 : 1);
 }

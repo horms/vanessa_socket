@@ -47,30 +47,27 @@
  *         -1 on error
  **********************************************************************/
 
-int vanessa_socket_host_in_addr(
-  const char *host, 
-  struct in_addr *in,
-  const vanessa_socket_flag_t flag
-){
-  struct hostent *hp;
-  extern int errno;
+int vanessa_socket_host_in_addr(const char *host,
+				struct in_addr *in,
+				const vanessa_socket_flag_t flag)
+{
+	struct hostent *hp;
+	extern int errno;
 
-  if(host==NULL) {
-    in->s_addr = htonl(INADDR_ANY);
-  }
-  else if(flag&VANESSA_SOCKET_NO_LOOKUP){
-    if(inet_aton(host, in)==0){
-      VANESSA_SOCKET_DEBUG("invalid address");
-      return(-1);
-    }
-  }
-  else {
-    if((hp=gethostbyname(host))==NULL){
-      VANESSA_SOCKET_DEBUG_ERRNO("gethostbyname");
-      return(-1);
-    }
-    bcopy(hp->h_addr, in, hp->h_length);
-  }
+	if (host == NULL) {
+		in->s_addr = htonl(INADDR_ANY);
+	} else if (flag & VANESSA_SOCKET_NO_LOOKUP) {
+		if (inet_aton(host, in) == 0) {
+			VANESSA_SOCKET_DEBUG("invalid address");
+			return (-1);
+		}
+	} else {
+		if ((hp = gethostbyname(host)) == NULL) {
+			VANESSA_SOCKET_DEBUG_ERRNO("gethostbyname");
+			return (-1);
+		}
+		bcopy(hp->h_addr, in, hp->h_length);
+	}
 
-  return(0);
+	return (0);
 }

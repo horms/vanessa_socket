@@ -69,14 +69,14 @@
       (result)->tv_usec += 1000000;                                           \
     }                                                                         \
   } while (0)
-#endif /* sun */
+#endif				/* sun */
 
 typedef unsigned int vanessa_socket_flag_t;
 
 #define VANESSA_SOCKET_NONE      (vanessa_socket_flag_t) 0
 #define VANESSA_SOCKET_NO_LOOKUP (vanessa_socket_flag_t) 1
 #define VANESSA_SOCKET_NO_FROM   (vanessa_socket_flag_t) 2
-
+#define VANESSA_SOCKET_NO_FORK   (vanessa_socket_flag_t) 4
 
 #ifndef INPORT_ANY
 #define INPORT_ANY     ((int)0)
@@ -96,10 +96,9 @@ typedef unsigned int vanessa_socket_flag_t;
  *         -1 on error
  **********************************************************************/
 
-int vanessa_socket_client_open_sockaddr_in(
-  struct sockaddr_in to,
-  const vanessa_socket_flag_t flag
-);
+int vanessa_socket_client_open_sockaddr_in(struct sockaddr_in to,
+					   const vanessa_socket_flag_t
+					   flag);
 
 
 /**********************************************************************
@@ -114,11 +113,9 @@ int vanessa_socket_client_open_sockaddr_in(
  *         -1 on error
  **********************************************************************/
 
-int vanessa_socket_client_open(
-  const char *host, 
-  const char *port, 
-  const vanessa_socket_flag_t flag
-);
+int vanessa_socket_client_open(const char *host,
+			       const char *port,
+			       const vanessa_socket_flag_t flag);
 
 
 /**********************************************************************
@@ -144,11 +141,10 @@ int vanessa_socket_client_open(
  *         -1 on error
  **********************************************************************/
 
-int vanessa_socket_client_open_src_sockaddr_in(
-  struct sockaddr_in from,
-  struct sockaddr_in to,
-  const vanessa_socket_flag_t flag
-);
+int vanessa_socket_client_open_src_sockaddr_in(struct sockaddr_in from,
+					       struct sockaddr_in to,
+					       const vanessa_socket_flag_t
+					       flag);
 
 
 /**********************************************************************
@@ -174,13 +170,11 @@ int vanessa_socket_client_open_src_sockaddr_in(
  *         -1 on error
  **********************************************************************/
 
-int vanessa_socket_client_src_open(
-  const char *src_host, 
-  const char *src_port, 
-  const char *dst_host, 
-  const char *dst_port, 
-  const vanessa_socket_flag_t flag
-);
+int vanessa_socket_client_src_open(const char *src_host,
+				   const char *src_port,
+				   const char *dst_host,
+				   const char *dst_port,
+				   const vanessa_socket_flag_t flag);
 
 
 /**********************************************************************
@@ -195,10 +189,8 @@ int vanessa_socket_client_src_open(
  *         -1 on error or if port name cannot be found in /etc/services
  **********************************************************************/
 
-int vanessa_socket_port_portno(
-  const char *port, 
-  const vanessa_socket_flag_t flag
-);
+int vanessa_socket_port_portno(const char *port,
+			       const vanessa_socket_flag_t flag);
 
 
 /**********************************************************************
@@ -270,8 +262,8 @@ int vanessa_socket_str_is_digit(const char *str);
  *         -1 on error
  **********************************************************************/
 
-ssize_t vanessa_socket_pipe_fd_read(int fd, void *buf, size_t count, 
-                                    void *data);
+ssize_t vanessa_socket_pipe_fd_read(int fd, void *buf, size_t count,
+				    void *data);
 
 
 /**********************************************************************
@@ -289,8 +281,8 @@ ssize_t vanessa_socket_pipe_fd_read(int fd, void *buf, size_t count,
  *         -1 on error
  **********************************************************************/
 
-ssize_t vanessa_socket_pipe_fd_write(int fd, const void *buf, size_t count, 
-                                      void *data);
+ssize_t vanessa_socket_pipe_fd_write(int fd, const void *buf, size_t count,
+				     void *data);
 
 
 /**********************************************************************
@@ -321,21 +313,22 @@ ssize_t vanessa_socket_pipe_fd_write(int fd, const void *buf, size_t count,
  *         0 otherwise (one of io_a or io_b closes gracefully)
  **********************************************************************/
 
-int vanessa_socket_pipe_func(
-  int rfd_a,
-  int wfd_a,
-  int rfd_b,
-  int wfd_b,
-  unsigned char *buffer, 
-  int buffer_length,
-  int idle_timeout,
-  int *return_a_read_bytes,
-  int *return_b_read_bytes,
-  ssize_t (*read_func)(int fd, void *buf, size_t count, void *data),
-  ssize_t (*write_func)(int fd, const void *buf, size_t count, void *data),
-  void *fd_a_data,
-  void *fd_b_data
-);
+int vanessa_socket_pipe_func(int rfd_a,
+			     int wfd_a,
+			     int rfd_b,
+			     int wfd_b,
+			     unsigned char *buffer,
+			     int buffer_length,
+			     int idle_timeout,
+			     int *return_a_read_bytes,
+			     int *return_b_read_bytes,
+			     ssize_t(*read_func) (int fd, void *buf,
+						  size_t count,
+						  void *data),
+			     ssize_t(*write_func) (int fd, const void *buf,
+						   size_t count,
+						   void *data),
+			     void *fd_a_data, void *fd_b_data);
 
 
 /**********************************************************************
@@ -406,16 +399,20 @@ int vanessa_socket_pipe_func(
  *         -1 on error
  **********************************************************************/
 
-int vanessa_socket_pipe_read_write_func(
-  int rfd, 
-  int wfd, 
-  unsigned char *buffer, 
-  int buffer_length,
-  ssize_t (*read_func)(int fd, void *buf, size_t count, void *data),
-  ssize_t (*write_func)(int fd, const void *buf, size_t count, void *data),
-  void *rfd_data,
-  void *wfd_data
-);
+int vanessa_socket_pipe_read_write_func(int rfd,
+					int wfd,
+					unsigned char *buffer,
+					int buffer_length,
+					ssize_t(*read_func) (int fd,
+							     void *buf,
+							     size_t count,
+							     void *data),
+					ssize_t(*write_func) (int fd,
+							      const void
+							      *buf,
+							      size_t count,
+							      void *data),
+					void *rfd_data, void *wfd_data);
 
 
 /**********************************************************************
@@ -453,13 +450,16 @@ int vanessa_socket_pipe_read_write_func(
  *         0 otherwise
  **********************************************************************/
 
-int vanessa_socket_pipe_write_bytes_func(
-  int fd,
-  const unsigned char *buffer, 
-  const ssize_t n,
-  ssize_t (*write_func)(int fd, const void *buf, size_t count, void *data),
-  void *fd_data
-);
+int vanessa_socket_pipe_write_bytes_func(int fd,
+					 const unsigned char *buffer,
+					 const ssize_t n,
+					 ssize_t(*write_func) (int fd,
+							       const void
+							       *buf,
+							       size_t
+							       count,
+							       void *data),
+					 void *fd_data);
 
 
 /**********************************************************************
@@ -475,6 +475,39 @@ int vanessa_socket_pipe_write_bytes_func(
 #define vanessa_socket_pipe_write_bytes(fd, buffer, n) \
   vanessa_socket_pipe_write_bytes_func(fd, buffer, n, \
     vanessa_socket_pipe_fd_write, NULL)
+
+
+/**********************************************************************
+ * vanessa_socket_server_bind
+ * Open a socket and bind it to a port and address
+ * pre: port: port to listen to, an ASCII representation of a number
+ *            or an entry from /etc/services
+ *      interface_address: If NULL bind to 0.0.0.0, else
+ *                         bind to interface(es) with this address.
+ *      flag: If VANESSA_SOCKET_NO_LOOKUP then no host and port lookups
+ *            will be performed
+ * post: Bound socket is returned
+ * return: socket
+ *         -1 on error
+ **********************************************************************/
+
+int vanessa_socket_server_bind(const char *port,
+				     const char *interface_address,
+				     vanessa_socket_flag_t flag);
+
+
+/**********************************************************************
+ * vanessa_socket_server_bind_sockaddr_in
+ * Open a socket and bind it to a port and address
+ * pre: from: sockaddr_in to bind to
+ *      flag: ignored
+ * post: Bound socket
+ * return: socket
+ *         -1 on error
+ **********************************************************************/
+
+int vanessa_socket_server_bind_sockaddr_in(struct sockaddr_in from,
+					   vanessa_socket_flag_t flag);
 
 
 /**********************************************************************
@@ -508,14 +541,12 @@ int vanessa_socket_pipe_write_bytes_func(
  *         -1 on error
  **********************************************************************/
 
-int vanessa_socket_server_connect(
-  const char *port,
-  const char *interface_address,
-  const unsigned int maximum_connections,
-  struct sockaddr_in *return_from,
-  struct sockaddr_in *return_to,
-  vanessa_socket_flag_t flag
-);
+int vanessa_socket_server_connect(const char *port,
+				  const char *interface_address,
+				  const unsigned int maximum_connections,
+				  struct sockaddr_in *return_from,
+				  struct sockaddr_in *return_to,
+				  vanessa_socket_flag_t flag);
 
 
 /**********************************************************************
@@ -545,13 +576,14 @@ int vanessa_socket_server_connect(
  *         -1 on error
  **********************************************************************/
 
-int vanessa_socket_server_connect_sockaddr_in(
-  struct sockaddr_in from,
-  const unsigned int maximum_connections,
-  struct sockaddr_in *return_from,
-  struct sockaddr_in *return_to,
-  vanessa_socket_flag_t flag
-);
+int vanessa_socket_server_connect_sockaddr_in(struct sockaddr_in from,
+					      const unsigned int
+					      maximum_connections,
+					      struct sockaddr_in
+					      *return_from,
+					      struct sockaddr_in
+					      *return_to,
+					      vanessa_socket_flag_t flag);
 
 
 /**********************************************************************
@@ -585,11 +617,9 @@ void vanessa_socket_server_reaper(void);
  *         -1 on error
  **********************************************************************/
 
-int vanessa_socket_host_in_addr(
-  const char *host, 
-  struct in_addr *in,
-  const vanessa_socket_flag_t flag
-);
+int vanessa_socket_host_in_addr(const char *host,
+				struct in_addr *in,
+				const vanessa_socket_flag_t flag);
 
 
 /**********************************************************************
@@ -612,12 +642,10 @@ int vanessa_socket_host_in_addr(
  *         -1 on error
  **********************************************************************/
 
-int vanessa_socket_host_port_sockaddr_in(
-  const char *host,
-  const char *port,
-  struct sockaddr_in *addr,
-  const vanessa_socket_flag_t flag
-);
+int vanessa_socket_host_port_sockaddr_in(const char *host,
+					 const char *port,
+					 struct sockaddr_in *addr,
+					 const vanessa_socket_flag_t flag);
 
 
 /**********************************************************************
