@@ -29,7 +29,7 @@
 
 /**********************************************************************
  * vanessa_socket_pipe
- * pipe data between two file discriptors until there is an error,
+ * pipe data between two file descriptors until there is an error,
  * timeout or one or both the file descriptors are closed.
  * pre: fd_a_in:  one of the file descriptors to read from
  *      fd_a_out: one of the file descriptors to write to
@@ -38,7 +38,7 @@
  *      buffer:   allocated buffer to read data into
  *      buffer_length: size of buffer in bytes
  *      idle_timeout:  timeout in seconds to wait for input
- *                     timout of 0 = infinite timeout
+ *                     timeout of 0 = infinite timeout
  *      return_a_read_bytes: Pointer to int where number
  *                           of bytes read from a will be recorded.
  *      return_b_read_bytes: Pointer to int where number
@@ -133,7 +133,7 @@ int vanessa_socket_pipe(
  *      buffer_length: size of the buffer
  * post: at most buffer_length bytes are read from in_fd and written 
  *       to out_fd. 
- * return: bytes read on sucess
+ * return: bytes read on success
  *         0 on EOF
  *         -1 on error
  **********************************************************************/

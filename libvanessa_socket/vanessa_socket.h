@@ -112,7 +112,7 @@ unsigned short int vanessa_socket_port_portno(
  * vanessa_socket_str_is_digit
  * Test if a null terminated string is composed entirely of digits (0-9)
  * pre: String
- * return: 1 if string contains only digits and null teminator
+ * return: 1 if string contains only digits and null terminator
  *         0 if string is NULL
  *         0 otherwise
  **********************************************************************/
@@ -123,7 +123,7 @@ int vanessa_socket_str_is_digit(const char *str);
 
 /**********************************************************************
  * vanessa_socket_pipe
- * pipe data between two file discriptors until there is an error,
+ * pipe data between two file descriptors until there is an error,
  * timeout or one or both the file descriptors are closed.
  * pre: fd_a_in:  one of the file descriptors to read from
  *      fd_a_out: one of the file descriptors to write to
@@ -132,7 +132,7 @@ int vanessa_socket_str_is_digit(const char *str);
  *      buffer:   allocated buffer to read data into
  *      buffer_length: size of buffer in bytes
  *      idle_timeout:  timeout in seconds to wait for input
- *                     timout of 0 = infinite timeout
+ *                     timeout of 0 = infinite timeout
  *      return_a_read_bytes: Pointer to int where number
  *                           of bytes read from a will be recorded.
  *      return_b_read_bytes: Pointer to int where number
@@ -166,7 +166,7 @@ int vanessa_socket_pipe(
  *      buffer_length: size of the buffer
  * post: at most buffer_length bytes are read from in_fd and written 
  *       to out_fd. 
- * return: bytes read on sucess
+ * return: bytes read on success
  *         0 on EOF
  *         -1 on error
  **********************************************************************/
@@ -199,12 +199,12 @@ int vanessa_socket_pipe_write_bytes(
 /**********************************************************************
  * vanessa_socket_server_connect
  * Listen on a tcp port for incoming client connections 
- * When one is recieved fork
- * In the Child: close the listening file desctiptor
+ * When one is received fork
+ * In the Child: close the listening file descriptor
  *               return the file descriptor that is 
  *               a socket connection to the client
  * In the Server: close the socket to the client and loop
- * pre: port: port to listen to, an ascii representation of a number
+ * pre: port: port to listen to, an ASCII representation of a number
  *            or an entry from /etc/services
  *      interface_address: If NULL bind to all interfaces, else
  *                         bind to interface(es) with this address.
@@ -221,7 +221,7 @@ int vanessa_socket_pipe_write_bytes(
  * post: Client sockets are returned in child processes
  *       In the parent process the function doesn't exit, other 
  *       than on error.
- *       if return_from is non-null, it is seeded with cleints address
+ *       if return_from is non-null, it is seeded with clients address
  * return: open client socket, if connection is accepted.
  *         -1 on error
  **********************************************************************/
@@ -239,12 +239,12 @@ int vanessa_socket_server_connect(
 /**********************************************************************
  * vanessa_socket_server_connect_sockaddr_in
  * Listen on a tcp port for incoming client connections 
- * When one is recieved fork
- * In the Child: close the listening file desctiptor
+ * When one is received fork
+ * In the Child: close the listening file descriptor
  *               return the file descriptor that is 
  *               a socket connection to the client
  * In the Server: close the socket to the client and loop
- * pre: port: port to listen to, an ascii representation of a number
+ * pre: port: port to listen to, an ASCII representation of a number
  *            or an entry from /etc/services
  *      interface_address: If NULL bind to all interfaces, else
  *                         bind to interface(es) with this address.
@@ -260,7 +260,7 @@ int vanessa_socket_server_connect(
  * post: Client sockets are returned in child processes
  *       In the parent process the function doesn't exit, other 
  *       than on error.
- *       if return_from is non-null, it is seeded with cleints address
+ *       if return_from is non-null, it is seeded with clients address
  * return: open client socket, if connection is accepted.
  *         -1 on error
  **********************************************************************/
@@ -279,8 +279,8 @@ int vanessa_socket_server_connect_sockaddr_in(
  * A signal handler that waits for SIGCHLD and runs wait3 to free
  * the resources of any exited children. This stops zombie processes
  * from hanging around.
- * pre: SIGCHLD is recieved by the process
- * post: Resoerces of any exited children are freed
+ * pre: SIGCHLD is received by the process
+ * post: Resources of any exited children are freed
  * return: 0
  **********************************************************************/
 
@@ -291,7 +291,7 @@ void vanessa_socket_server_reaper(void);
  * vanessa_socket_host_in_addr
  * A host is given as a string either as a host name or IP address
  * as a dotted quad. The host is used to seed an in_addr structure
- * with a binary representation fo the IP address of the host
+ * with a binary representation of the IP address of the host
  * in network byte order.
  * pre: host: hostname or IP address
  *            If NULL then INADDR_ANY will be converted to network
@@ -301,7 +301,7 @@ void vanessa_socket_server_reaper(void);
  *            no hostname lookups will be performed. That is the
  *            host given as an argument should be an IP address
  * post: none
- * return: 0 on sucess
+ * return: 0 on success
  *         -1 on error
  **********************************************************************/
 
@@ -328,7 +328,7 @@ int vanessa_socket_host_in_addr(
  *            host given as an argument should be an IP address and
  *            the port should be a port number
  * post: none
- * return: 0 on sucess
+ * return: 0 on success
  *         -1 on error
  **********************************************************************/
 

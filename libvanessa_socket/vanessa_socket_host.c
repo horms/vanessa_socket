@@ -32,7 +32,7 @@
  * vanessa_socket_host_in_addr
  * A host is given as a string either as a host name or IP address
  * as a dotted quad. The host is used to seed an in_addr structure
- * with a binary representation fo the IP address of the host
+ * with a binary representation of the IP address of the host
  * in network byte order.
  * pre: host: hostname or IP address
  *            If NULL then INADDR_ANY will be converted to network
@@ -42,7 +42,7 @@
  *            no hostname lookups will be performed. That is the
  *            host given as an argument should be an IP address
  * post: none
- * return: 0 on sucess
+ * return: 0 on success
  *         -1 on error
  **********************************************************************/
 

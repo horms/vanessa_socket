@@ -69,7 +69,7 @@ unsigned short int vanessa_socket_port_portno(
  * vanessa_socket_str_is_digit
  * Test if a null terminated string is composed entirely of digits (0-9)
  * pre: String
- * return: 1 if string contains only digits and null teminator
+ * return: 1 if string contains only digits and null terminator
  *         0 if string is NULL
  *         0 otherwise
  **********************************************************************/

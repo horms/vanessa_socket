@@ -44,7 +44,7 @@
  *            host given as an argument should be an IP address and
  *            the port should be a port number
  * post: none
- * return: 0 on sucess
+ * return: 0 on success
  *         -1 on error
  **********************************************************************/
 

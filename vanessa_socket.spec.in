@@ -1,10 +1,10 @@
 %define prefix   @prefix@
 
-Summary: Simplify TCP scoket operations
+Summary: Simplify TCP socket operations
 Name: vanessa_socket
 Version: @VERSION@
 Release: 1
-Copyright: GNU Lesser Genereal Public Licence (examplese released under the GNU General Public Licence)
+Copyright: GNU Lesser General Public Licence (examples released under the GNU General Public Licence)
 URL: http://vanessa.sourceforge.net/
 Packager: Horms <horms@vergenet.net>
 Group: Development/Libraries
@@ -22,7 +22,7 @@ clients as a server and to pipe information between sockets.
 
 
 %package devel
-Summary: Headers and static libaries for development
+Summary: Headers and static libraries for development
 Group: Development/Libraries
 Requires: %{name}-%{version} vanessa_logger-devel
 Provides: %{name}-devel-%{version}

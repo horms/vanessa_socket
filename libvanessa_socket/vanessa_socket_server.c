@@ -34,12 +34,12 @@ unsigned int noconnection;
 /**********************************************************************
  * vanessa_socket_server_connect
  * Listen on a tcp port for incoming client connections 
- * When one is recieved fork
- * In the Child: close the listening file desctiptor
+ * When one is received fork
+ * In the Child: close the listening file descriptor
  *               return the file descriptor that is 
  *               a socket connection to the client
  * In the Server: close the socket to the client and loop
- * pre: port: port to listen to, an ascii representation of a number
+ * pre: port: port to listen to, an ASCII representation of a number
  *            or an entry from /etc/services
  *      interface_address: If NULL bind to all interfaces, else
  *                         bind to interface(es) with this address.
@@ -104,12 +104,12 @@ int vanessa_socket_server_connect(
 /**********************************************************************
  * vanessa_socker_servet_connect_sockaddr_in
  * Listen on a tcp port for incoming client connections 
- * When one is recieved fork
- * In the Child: close the listening file desctiptor
+ * When one is received fork
+ * In the Child: close the listening file descriptor
  *               return the file descriptor that is 
  *               a socket connection to the client
  * In the Server: close the socket to the client and loop
- * pre: port: port to listen to, an ascii representation of a number
+ * pre: port: port to listen to, an ASCII representation of a number
  *            or an entry from /etc/services
  *      interface_address: If NULL bind to all interfaces, else
  *                         bind to interface(es) with this address.
@@ -125,7 +125,7 @@ int vanessa_socket_server_connect(
  * post: Client sockets are returned in child processes
  *       In the parent process the function doesn't exit, other 
  *       than on error.
- *       if return_from is non-null, it is seeded with cleints address
+ *       if return_from is non-null, it is seeded with clients address
  * return: open client socket, if connection is accepted.
  *         -1 on error
  **********************************************************************/
@@ -221,7 +221,7 @@ int vanessa_socket_server_connect_sockaddr_in(
  * the resources of any exited children. This stops zombie processes
  * from hanging around.
  * pre: SIGCHLD is recieved by the process
- * post: Resoerces of any exited children are freed
+ * post: Resources of any exited children are freed
  *       Signal Handler for SIGCHLD reset
  **********************************************************************/
 
