@@ -5,6 +5,15 @@ Library to simplify handling of TCP sockets
 Copyright (C) 1999-2003  Horms
 ----------------------------------------------------------------------
 
+22dh March 2003
+(Horms)
+
+  * 0.0.7
+  - Don't call umask in daemon code in vanessa_socket_daemon_process()
+    or vanessa_socket_daemon_inetd_process().
+
+----------------------------------------------------------------------
+
 15th December 2003
 (Horms)
 
@@ -15,8 +24,6 @@ Copyright (C) 1999-2003  Horms
   - Set listen() to SOMAXCONN if possible. Maxim Dounin
   - Better logging of errors looking user or group in
     vanessa_socket_daemon_setid()
-  - Don't call umask in daemon code in vanessa_socket_daemon_process()
-    or vanessa_socket_daemon_inetd_process().
 
 ----------------------------------------------------------------------
 
