@@ -67,7 +67,7 @@ XXX
     is in forking mode. Thanks to Chris Stratford for spotting this
     problem.
   - Be sure to close socket on error in vanessa_socket_server_bind_sockaddr_in
-  - Use loging convenicence macros provided by libvanessa_logger
+  - Use logging convenicence macros provided by libvanessa_logger
     rather than providing our own.
   - Fixed potential infinite recursion problem in
     vanessa_socket_pipe_write_func()
