@@ -16,3 +16,8 @@ gmon.out
 vanessa_socket.spec
 confdefs.h
 INSTALL
+install-sh
+ltmain.sh
+missing
+mkinstalldirs
+
