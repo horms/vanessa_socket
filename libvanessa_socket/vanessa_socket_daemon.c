@@ -132,7 +132,7 @@ void vanessa_socket_daemon_process(void)
 
 /**********************************************************************
  * vanessa_socket_daemon_inetd_process
- * Chdir to and umask
+ * Chdir to / and set umask to 0
  * This is all we really need to do if our process is run from
  * inetd
  **********************************************************************/
