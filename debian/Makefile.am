@@ -4,7 +4,7 @@
 #
 # vanessa_socket
 # Library to simplify handling of TCP sockets
-# Copyright (C) 1999-2003  Horms
+# Copyright (C) 1999-2004  Horms
 # 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -35,7 +35,7 @@ libvanessa-socket-pipe.files \
 libvanessa-socket0.dirs \
 libvanessa-socket0.files \
 libvanessa-socket0.postinst \
-shlibs.local \
+libvanessa-socket0.shlibs \
 rules \
 dpkg-checkbuild
 

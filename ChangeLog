@@ -2,10 +2,10 @@ ChangeLog
 
 vanessa_socket
 Library to simplify handling of TCP sockets
-Copyright (C) 1999-2003  Horms
+Copyright (C) 1999-2004  Horms
 ----------------------------------------------------------------------
 
-22dh March 2003
+22nd March 2004
 (Horms)
 
   * 0.0.7

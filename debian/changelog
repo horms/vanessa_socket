@@ -1,3 +1,10 @@
+vanessa-socket (0.0.7release-1) unstable; urgency=low
+
+  * New Upstream
+    Fixed handling of shlibs
+
+ -- Simon Horman <horms@debian.org>  Mon, 22 Mar 2004 15:43:37 +0900
+
 vanessa-socket (0.0.6release-1) unstable; urgency=low
 
   * New Upstream
