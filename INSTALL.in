@@ -1,0 +1,23 @@
+INSTALL
+
+vanessa_socket
+Library to simplify handling of TCP sockets
+Copyright (C) 2000  Horms
+----------------------------------------------------------------------
+
+To install vanessa_socket 
+tar zxf vanessa_socket-@VERSION@.tar.gz
+cd vanessa_socket-@VERSION@
+./configure [--prefix=/usr]
+make
+make install
+
+To build RPMS
+rpm -ta vanessa_socket-@VERSION@.tar.gz
+
+or
+
+cd vanessa_socket-@VERSION@
+./configure --prefix=/usr
+make distcheck
+rpm -ta vanessa_socket-@VERSION@.tar.gz

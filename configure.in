@@ -33,17 +33,17 @@ AC_CHECK_LIB(nsl, gethostbyname, [ nsl_lib="-lnsl" ], [ nsl_lib="" ])
 AC_CHECK_LIB(
   vanessa_logger,
   vanessa_logger_closelog,
-  ,
+  :,
   AC_MSG_ERROR(
     ""
     "**********************************************************************"
-    "* libvanessa_socket requires the vanessa_logger generic loging library"
-    "* available from ftp://vergenet.net/pub/vanessa_logger/ and mirrors."
-    "* libvanessa_socket will _not_ be built. "
+    "* perdition requires the vanessa_logger generic logging library"
+    "* available from"
+    "* ftp://vanessa.sourceforge.net/pub/vanessa/vanessa_logger/"
+    "* ftp://ftp.vergenet.net/pub/vanessa/vanessa_logger/ and mirrors."
     "**********************************************************************"
   ) ;\
 )
-
 AC_CHECK_LIB(
   popt,
   poptGetContext,
@@ -84,4 +84,5 @@ vanessa_socket_pipe/Makefile
 vanessa_socket_pipe/vanessa_socket_pipe_config.h 
 Makefile
 vanessa_socket.spec
+INSTALL
 )

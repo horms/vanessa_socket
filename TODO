@@ -1,3 +1,10 @@
+TODO
+
+vanessa_socket
+Library to simplify handling of TCP sockets
+Copyright (C) 2000  Horms
+----------------------------------------------------------------------
+
 * README
 * man page
 * Check that hostname is valid

@@ -64,7 +64,10 @@ int vanessa_socket_host_in_addr(
   }
   else {
     if((hp=gethostbyname(host))==NULL){
-      VANESSA_SOCKET_DEBUG_ERRNO("mod_vanessa_socket_connection_open: gethostbyname", errno);
+      VANESSA_SOCKET_DEBUG_ERRNO(
+	"mod_vanessa_socket_connection_open: gethostbyname", 
+	errno
+      );
       return(-1);
     }
     bcopy(hp->h_addr, in, hp->h_length);
