@@ -7,7 +7,7 @@ Copyright (C) 1999-2003  Horms
 
 XXX
 
-  * XXX
+  * 0.0.5beta4 Unreleased
   - Made vanessa_socket_accept resistant to SIGPIPE. Russel Corker.
 
 ----------------------------------------------------------------------

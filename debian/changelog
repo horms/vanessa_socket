@@ -1,8 +1,9 @@
 vanessa-socket (0.0.5beta2-1) unstable; urgency=low
 
+  * Versioned dependancy on debhelper
   * New Upstream
 
- -- Simon Horman <horms@vergenet.net>  Wed,  8 Jan 2003 15:49:17 +0900
+ -- Simon Horman <horms@vergenet.net>  Fri,  7 Feb 2003 14:05:16 +0900
 
 vanessa-socket (0.0.4-2) unstable; urgency=low
 
