@@ -1,3 +1,9 @@
+vanessa-socket (0.0.5beta7-4) unstable; urgency=low
+
+  * Added versioned dependancy on libvanessa-logger-dev (closes: Bug#189580)
+
+ -- Simon Horman <horms@vergenet.net>  Sat, 19 Apr 2003 09:46:06 +0900
+
 vanessa-socket (0.0.5beta7-3) unstable; urgency=low
 
   * Changed libvanessa-socket-dev from devel to libdevel section
