@@ -30,6 +30,7 @@ AC_PROG_RANLIB
 dnl Checks for libraries.
 AC_CHECK_LIB(socket, socket, [ socket_lib="-lsocket" ], [ socket_lib="" ])
 AC_CHECK_LIB(nsl, gethostbyname, [ nsl_lib="-lnsl" ], [ nsl_lib="" ])
+AC_CHECK_LIB(resolv, inet_aton, [ resolv_lib="-lresolv" ], [ resolv_lib="" ])
 AC_CHECK_LIB(
   vanessa_logger,
   vanessa_logger_closelog,
@@ -76,6 +77,7 @@ AC_CHECK_FUNCS(flim)
 
 AC_SUBST(socket_lib)
 AC_SUBST(nsl_lib)
+AC_SUBST(resolv_lib)
 AC_SUBST(pipe_dir)
 
 AC_OUTPUT(

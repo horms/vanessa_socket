@@ -11,6 +11,12 @@ xxx
  - Fixed problem with -b under BSD ("Erik R. Leo" <erikl@sover.net>)
  - Fixed problem with client connecting to bizzare address under BSD
    ("Erik R. Leo" <erikl@sover.net>)
+ - Added -lresolv and -lvanessa_logger to build to aid compiling
+   under solaris (Chris Stratford <Chris.Stratford@uk.uu.net>)
+ - Added -lresolv and -lvanessa_logger to build to aid compiling
+   under solaris (Chris Stratford <Chris.Stratford@uk.uu.net>)
+ - Added timeradd and timersub compatibility for Solaris
+   (Chris Stratford <Chris.Stratford@uk.uu.net>)
    
 ----------------------------------------------------------------------
 
