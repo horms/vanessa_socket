@@ -73,10 +73,17 @@
 
 typedef unsigned int vanessa_socket_flag_t;
 
-#define VANESSA_SOCKET_NONE      (vanessa_socket_flag_t) 0
-#define VANESSA_SOCKET_NO_LOOKUP (vanessa_socket_flag_t) 1
-#define VANESSA_SOCKET_NO_FROM   (vanessa_socket_flag_t) 2
-#define VANESSA_SOCKET_NO_FORK   (vanessa_socket_flag_t) 4
+#define VANESSA_SOCKET_NONE            0x00000000
+#define VANESSA_SOCKET_NO_LOOKUP       0x00000001
+#define VANESSA_SOCKET_NO_FROM         0x00000002
+#define VANESSA_SOCKET_NO_FORK         0x00000004
+
+#define VANESSA_SOCKET_PROTO_MASK      0x0000ff00
+#define __VANESSA_SOCKET_PROTO(_proto)   ((_proto&0xff)<<8)
+#define VANESSA_SOCKET_PROTO_TCP       __VANESSA_SOCKET_PROTO(IPPROTO_TCP)
+#define VANESSA_SOCKET_PROTO_UDP       __VANESSA_SOCKET_PROTO(IPPROTO_UDP)
+#define VANESSA_SOCKET_PROTO_STR_TCP   "tcp"
+#define VANESSA_SOCKET_PROTO_STR_UDP   "udp"
 
 #ifndef INPORT_ANY
 #define INPORT_ANY     ((int)0)
@@ -189,7 +196,7 @@ int vanessa_socket_client_src_open(const char *src_host,
  *         -1 on error or if port name cannot be found in /etc/services
  **********************************************************************/
 
-int vanessa_socket_port_portno(const char *port,
+long int vanessa_socket_port_portno(const char *port,
 			       const vanessa_socket_flag_t flag);
 
 
@@ -701,7 +708,7 @@ int vanessa_socket_host_port_sockaddr_in(const char *host,
  * Logging functionality
  *
  * Depreciated, but provided for backwards compatibility.
- * Call vanessa_socket_set() and vanessa_socket_unset() instead
+ * Call vanessa_logger_set() and vanessa_logger_unset() instead
  *
  **********************************************************************/
 
@@ -709,7 +716,7 @@ int vanessa_socket_host_port_sockaddr_in(const char *host,
  * vanessa_socket_logger_set
  *
  * Depreciated, but provided for backwards compatibility.
- * Call vanessa_socket_set() instead
+ * Call vanessa_logger_set() instead
  *
  * set the logger function to use
  * No logging will take place if logger is set to NULL (default)
@@ -726,7 +733,7 @@ int vanessa_socket_host_port_sockaddr_in(const char *host,
  * vanessa_socket_logger_unset
  *
  * Depreciated, but provided for backwards compatibility.
- * Call vanessa_socket_unset() instead
+ * Call vanessa_logger_unset() instead
  *
  * set logger to NULL
  * That is no logging will take place

@@ -48,11 +48,9 @@ int vanessa_socket_client_open_sockaddr_in(struct sockaddr_in to,
 	struct sockaddr_in from;
 
 	/* Connect to foreign 'to' server */
-	if ((s = vanessa_socket_client_open_src_sockaddr_in(from,
-							    to,
-							    flag |
-							    VANESSA_SOCKET_NO_FROM))
-	    < 0) {
+	s = vanessa_socket_client_open_src_sockaddr_in(from, to, 
+			flag | VANESSA_SOCKET_NO_FROM);
+	if (s < 0) {
 		VANESSA_LOGGER_DEBUG
 		    ("vanessa_socket_client_open_src_sockaddr_in");
 		return (-1);
@@ -81,13 +79,9 @@ int vanessa_socket_client_open(const char *host,
 {
 	int s;
 
-	if ((s = vanessa_socket_client_src_open(NULL,
-						NULL,
-						host,
-						port,
-						flag |
-						VANESSA_SOCKET_NO_FROM)) <
-	    0) {
+	s = vanessa_socket_client_src_open(NULL, NULL, host, port, 
+			flag | VANESSA_SOCKET_NO_FROM);
+	if (s < 0) {
 		VANESSA_LOGGER_DEBUG("vanessa_socket_client_src_open");
 		return (-1);
 	}
@@ -348,7 +342,7 @@ int vanessa_socket_host_port_sockaddr_inv(const char *host,
 	}
 	for (i = 0; i < count; i++) {
 		(*addr)[i].sin_family = AF_INET;
-		(*addr)[i].sin_port = portno;
+		(*addr)[i].sin_port = (unsigned short int) portno;
 		memcpy(&(*addr)[i].sin_addr.s_addr, hp->h_addr_list[i],
 		       hp->h_length);
 	}

@@ -18,8 +18,10 @@ XXX
   - Be sure to close socket on error in vanessa_socket_server_bind_sockaddr_in
   - Use loging convenicence macros provided by libvanessa_logger
     rather than providing our own.
-  - Fixed potention infinite recursion problem in
+  - Fixed potential infinite recursion problem in
     vanessa_socket_pipe_write_func()
+  - Fixed handling of invalid port lookups
+  - Support lookup up UCP port names
 
 
 ----------------------------------------------------------------------

@@ -36,26 +36,48 @@
  *      flag: Flags. If the VANESSA_SOCKET_NO_LOOKUP bit is set then
  *            no service lookups will be performed. That is the
  *            port given as an argument should be an port number
+ *            If (flag & VANESSA_SOCKET_PROTO_MASK) == VANESSA_SOCKET_PROTO_UDP
+ *            then lookup a udp service. Else lookup a tcp service.
  * return: port number
  *         -1 on error or if port name cannot be found in /etc/services
  **********************************************************************/
 
-int vanessa_socket_port_portno(const char *port,
+long int vanessa_socket_port_portno(const char *port,
 			       const vanessa_socket_flag_t flag)
 {
+	const char *proto_str;
 	struct servent *ent;
-	unsigned short int portno;
+	long int portno;
+
+	if((flag & VANESSA_SOCKET_PROTO_MASK) == VANESSA_SOCKET_PROTO_UDP) {
+		proto_str = VANESSA_SOCKET_PROTO_STR_UDP;
+	}
+	else {
+		proto_str = VANESSA_SOCKET_PROTO_STR_TCP;
+	}
 
 	if (port == NULL) {
 		portno = INPORT_ANY;
-	} else if (flag & VANESSA_SOCKET_NO_LOOKUP
-		   || vanessa_socket_str_is_digit(port)) {
-		portno = htons(atoi(port));
+	} else if (vanessa_socket_str_is_digit(port)) {
+		portno = htons(atol(port));
+	} else if (flag & VANESSA_SOCKET_NO_LOOKUP) {
+		/* Must be a port name.
+		 * But we're not doing lookups.
+		 * Uh oh! */
+		VANESSA_LOGGER_DEBUG("port is non-numeric "
+				"and no lookups has been requested");
+		return(-1);
 	} else {
-		if ((ent = getservbyname(port, "tcp")) == NULL) {
-			return (0);
+		if ((ent = getservbyname(port, proto_str)) == NULL) {
+			VANESSA_LOGGER_DEBUG("could not find service");
+			return (-1);
 		}
-		portno = ent->s_port;
+		portno = (long int)ent->s_port;
+	}
+
+	if(portno < 0 || portno >= USHRT_MAX) {
+		VANESSA_LOGGER_DEBUG("port out of range");
+		return(-1);
 	}
 
 	return (portno);

@@ -57,8 +57,8 @@ int vanessa_socket_host_port_sockaddr_in(const char *host,
 
 	bzero((struct sockaddr *) addr, sizeof(addr));
 
-	addr->sin_family = AF_INET;	/* Gratuitously assume the address will be
-					   * an AF_INET address */
+	/* Gratuitously assume the address will be an AF_INET address */
+	addr->sin_family = AF_INET;
 
 	if (vanessa_socket_host_in_addr(host, &(addr->sin_addr), flag) < 0) {
 		VANESSA_LOGGER_DEBUG("vanessa_socket_host_in_addr");
