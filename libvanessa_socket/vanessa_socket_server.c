@@ -171,9 +171,11 @@ int vanessa_socket_server_accept(int listen_socket,
 
 	extern unsigned int noconnection;
 
+	addrlen = sizeof(from);
+
 	for(;;) {
 		g = accept(listen_socket, (struct sockaddr *) &from, &addrlen);
-		if (g  >= 0) {
+		if (g  < 0) {
 			VANESSA_SOCKET_DEBUG_ERRNO("accept");
 			return(-1);
 		}
@@ -197,7 +199,12 @@ int vanessa_socket_server_accept(int listen_socket,
 		}
 
 		if (return_from != NULL) {
-			memcpy(return_from, &from, addrlen);
+			addrlen = sizeof(struct sockaddr_in);
+			if (getpeername (g, (struct sockaddr *) return_from, 
+					&addrlen) < 0) { 
+				VANESSA_SOCKET_DEBUG_ERRNO ("getpeername"); 
+				return (-1);
+			}
 		}
 
 		if(flag&VANESSA_SOCKET_NO_FORK) {

@@ -146,6 +146,9 @@ int vanessa_socket_pipe_func(int rfd_a,
 	struct timeval timeout;
 	int status;
 	int bytes = 0;
+	int hifd;
+
+	hifd = (rfd_a > rfd_b) ? rfd_a : rfd_b;
 
 	for (;;) {
 		FD_ZERO(&read_template);
@@ -159,7 +162,7 @@ int vanessa_socket_pipe_func(int rfd_a,
 		timeout.tv_sec = idle_timeout;
 		timeout.tv_usec = 0;
 
-		status = select(FD_SETSIZE,
+		status = select(hifd + 1,
 				&read_template,
 				NULL,
 				&except_template,

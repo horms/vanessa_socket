@@ -511,6 +511,46 @@ int vanessa_socket_server_bind_sockaddr_in(struct sockaddr_in from,
 
 
 /**********************************************************************
+ * vanessa_socket_server_accept
+ * Accept connections on a bound socket.
+ * vanessa_socket_server_bind or vanessa_socket_server_bind_sockaddr_in
+ * may be used to open the bound socket.
+ * When one is received fork
+ * In the Child: close the listening file descriptor
+ *               return the file descriptor that is 
+ *               a socket connection to the client
+ * In the Server: close the socket to the client and loop
+ * pre: port: port to listen to, an ASCII representation of a number
+ *            or an entry from /etc/services
+ *      interface_address: If NULL bind to all interfaces, else
+ *                         bind to interface(es) with this address.
+ *      maximum_connections: maximum number of active connections
+ *                           to handle. If 0 then an number of connections 
+ *                           is unlimited.
+ *      return_from: pointer to a struct_in addr where the 
+ *                   connecting client's IP address will
+ *                   be placed. Ignored if NULL
+ *      return_to: pointer to a in addr where the IP address the 
+ *                 server accepted the connection on will be placed.
+ *                 Ignored if NULL
+ *      flag: If VANESSA_SOCKET_NO_FORK then the process does not for
+ *            when a connection is recieved.
+ * post: Client sockets are returned in child processes
+ *       In the parent process the function doesn't exit, other 
+ *       than on error.
+ *       if return_from is non-null, it is seeded with cleints address
+ * return: client socket, if connection is accepted.
+ *         -1 on error
+ **********************************************************************/
+
+int vanessa_socket_server_accept(int listen_socket,
+				      const unsigned int maximum_connections,
+				      struct sockaddr_in *return_from, 
+				      struct sockaddr_in *return_to,
+				      vanessa_socket_flag_t flag);
+
+
+/**********************************************************************
  * vanessa_socket_server_connect
  * Listen on a tcp port for incoming client connections 
  * When one is received fork
@@ -664,7 +704,7 @@ extern vanessa_logger_t *vanessa_socket_logger;
  * return: none
  **********************************************************************/
 
-#define vanessa_socket_logger_set(_vl) vanessa_socket_logger=_vl
+#define vanessa_socket_logger_set(_vl) vanessa_socket_logger=(_vl)
 
 
 /**********************************************************************
