@@ -1,12 +1,13 @@
 Source: vanessa-socket
 Build-Depends: libvanessa-logger-dev, libpopt-dev, debhelper
-Section: devel
+Section: libs
 Priority: optional
 Maintainer: Simon Horman <horms@vergenet.net>
 Standards-Version: 3.5.2
 
 Package: libvanessa-socket-dev
 Architecture: any
+Section: devel
 Depends: libvanessa-socket0 (= ${Source-Version}), libvanessa-logger-dev, libc6-dev
 Description: Headers and static libraries required to develop against libvanessa_socket
  Headers and static libraries required to develop against
@@ -14,6 +15,7 @@ Description: Headers and static libraries required to develop against libvanessa
 
 Package: libvanessa-socket-pipe
 Architecture: any
+Section: devel
 Depends: libvanessa-socket0 (= ${Source-Version}), libc6-dev
 Description: User space TCP/IP pipe.
  A TCP/IP pipe is a user space programme that listens for TCP/IP
@@ -29,6 +31,7 @@ Description: User space TCP/IP pipe.
  of libvanessa_socket work.
 
 Package: libvanessa-socket0
+Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}
 Description: Library to simplify TCP socket operations.

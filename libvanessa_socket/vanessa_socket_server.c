@@ -197,7 +197,7 @@ int vanessa_socket_server_connect_sockaddr_in(
         }
         if(return_to!=NULL){
           addrlen=sizeof(struct sockaddr_in);
-          if(getsockname(g, return_to, &addrlen)<0){
+          if(getsockname(g, (struct sockaddr *)return_to, &addrlen)<0){
 	    VANESSA_SOCKET_DEBUG_ERRNO(
 	      "vanessa_socket_server_connect: getsockname", 
 	      errno
