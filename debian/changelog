@@ -1,4 +1,4 @@
-vanessa-socket (x.x.x-x) unstable; urgency=low
+vanessa-socket (0.0.4-1) unstable; urgency=low
 
   * include <errno.h> in vanessa_socket_pipe.c.  closes: Bug#108209
 
