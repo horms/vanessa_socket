@@ -28,6 +28,8 @@
 #include "vanessa_socket.h"
 #include "vanessa_socket_logger.h"
 
+#include <errno.h>
+
 
 /**********************************************************************
  * vanessa_socket_pipe_fd_read
