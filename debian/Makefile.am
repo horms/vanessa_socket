@@ -38,3 +38,9 @@ libvanessa-socket0.postinst \
 shlibs.local \
 rules \
 dpkg-checkbuild
+
+clean-local:
+	rm -f *.substvars *.debhelper
+	rm -r -f libvanessa-socket-dev libvanessa-socket0 tmp \
+		libvanessa-socket-pipe
+
