@@ -26,7 +26,6 @@
  **********************************************************************/
 
 #include "vanessa_socket.h"
-#include "vanessa_socket_logger.h"
 
 
 /**********************************************************************
@@ -58,14 +57,14 @@ int vanessa_socket_host_in_addr(const char *host,
 		in->s_addr = htonl(INADDR_ANY);
 	} else if (flag & VANESSA_SOCKET_NO_LOOKUP) {
 		if (inet_aton(host, in) == 0) {
-			VANESSA_SOCKET_DEBUG_UNSAFE("invalid IP address (%s): "
+			VANESSA_LOGGER_DEBUG_UNSAFE("invalid IP address (%s): "
 					"Are you trying to resolve a hostname "
 					"with no lookup enabled?", host);
 			return (-1);
 		}
 	} else {
 		if ((hp = gethostbyname(host)) == NULL) {
-			VANESSA_SOCKET_DEBUG_UNSAFE("gethostbyname (%s): %s",
+			VANESSA_LOGGER_DEBUG_UNSAFE("gethostbyname (%s): %s",
 					host, strerror(errno));
 			return (-1);
 		}

@@ -26,7 +26,6 @@
  **********************************************************************/
 
 #include "vanessa_socket.h"
-#include "vanessa_socket_logger.h"
 
 #include <errno.h>
 
@@ -41,7 +40,7 @@
  *      data: not used
  * post: A maximum of count bytes are read into buf from fd using read(2)
  *       If an error occurs the errno is read and logged using the
- *       installed logger. See vanessa_socket_logger_set().
+ *       installed logger. See vanessa_logger_set().
  * return: Number of bytes read (may be zero)
  *         -1 on error
  **********************************************************************/
@@ -55,7 +54,7 @@ ssize_t vanessa_socket_pipe_fd_read(int fd, void *buf, size_t count,
 
 	if (bytes < 0) {
 		if (errno) {
-			VANESSA_SOCKET_DEBUG_ERRNO("read");
+			VANESSA_LOGGER_DEBUG_ERRNO("read");
 		}
 		return (-1);
 	}
@@ -74,7 +73,7 @@ ssize_t vanessa_socket_pipe_fd_read(int fd, void *buf, size_t count,
  *      data: not used
  * post: A maximum of count bytes are written to fd from buf using write(2)
  *       If an error occurs the errno is read and logged using the
- *       installed logger. See vanessa_socket_logger_set().
+ *       installed logger. See vanessa_logger_set().
  * return: Number of bytes read (may be zero)
  *         -1 on error
  **********************************************************************/
@@ -88,7 +87,7 @@ ssize_t vanessa_socket_pipe_fd_write(int fd, const void *buf, size_t count,
 
 	if (bytes <= 0) {
 		if (errno) {
-			VANESSA_SOCKET_DEBUG_ERRNO("write");
+			VANESSA_LOGGER_DEBUG_ERRNO("write");
 		}
 		return (bytes == 0 ? 0 : -1);
 	}
@@ -197,17 +196,17 @@ int vanessa_socket_pipe_func(int rfd_a,
 				idle_timeout ? &timeout : NULL, data);
 		if (status < 0) {
 			if (errno != EINTR) {
-				VANESSA_SOCKET_DEBUG_ERRNO("select");
+				VANESSA_LOGGER_DEBUG_ERRNO("select");
 				return (-1);
 			}
 			continue;	/* Ignore EINTR */
 		} else if (FD_ISSET(rfd_a, &except_template) ||
 			   FD_ISSET(rfd_b, &except_template)
 		    ) {
-			VANESSA_SOCKET_DEBUG("except_template set");
+			VANESSA_LOGGER_DEBUG("except_template set");
 			return (-1);
 		} else if (status == 0) {
-			VANESSA_SOCKET_DEBUG("select returned 0");
+			VANESSA_LOGGER_DEBUG("select returned 0");
 			return (-1);
 		} else if (FD_ISSET(rfd_a, &read_template)) {
 			bytes =
@@ -231,7 +230,7 @@ int vanessa_socket_pipe_func(int rfd_a,
 			*return_b_read_bytes += (bytes > 0) ? bytes : 0;
 		}
 		if (bytes < 0) {
-			VANESSA_SOCKET_DEBUG
+			VANESSA_LOGGER_DEBUG
 			    ("vanessa_socket_pipe_read_write_func");
 			return (-1);
 		} else if (!bytes) {
@@ -294,7 +293,7 @@ int vanessa_socket_pipe_read_write_func(int rfd,
 	bytes = read_func(rfd, buffer, buffer_length, data);
 	if (bytes < 0) {
 		if (errno) {
-			VANESSA_SOCKET_DEBUG("vanessa_socket_io_read");
+			VANESSA_LOGGER_DEBUG("vanessa_socket_io_read");
 		}
 		return (-1);
 	} else if (bytes == 0) {
@@ -302,7 +301,7 @@ int vanessa_socket_pipe_read_write_func(int rfd,
 	}
 	if (vanessa_socket_pipe_write_bytes_func
 	    (wfd, buffer, bytes, write_func, data)) {
-		VANESSA_SOCKET_DEBUG("vanessa_socket_pipe_write_bytes");
+		VANESSA_LOGGER_DEBUG("vanessa_socket_pipe_write_bytes");
 		return (-1);
 	}
 
@@ -347,7 +346,7 @@ int vanessa_socket_pipe_write_bytes_func(int fd,
 	}
 
 	if(write_func == NULL) {
-		write_func = vanessa_socket_pipe_write_bytes_func;
+		write_func = vanessa_socket_pipe_fd_write;
 	}
 
 	offset = 0;
@@ -355,7 +354,7 @@ int vanessa_socket_pipe_write_bytes_func(int fd,
 		bytes_written =
 		    write_func(fd, buffer + offset, n - offset, fd_data);
 		if (bytes_written < 0) {
-			VANESSA_SOCKET_DEBUG_ERRNO("write_func");
+			VANESSA_LOGGER_DEBUG_ERRNO("write_func");
 			return (-1);
 		}
 		offset += bytes_written;

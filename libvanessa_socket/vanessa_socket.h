@@ -240,7 +240,7 @@ int vanessa_socket_str_is_digit(const char *str);
  *            used by write_func
  * post: A maximum of count bytes are written from buf
  *       If an error occurs then it may be logged by this function.
- *       installed logger. See vanessa_socket_logger_set().
+ *       installed logger. See vanessa_logger_set().
  * return: Number of bytes read (may be zero)
  *         -1 on error
  **********************************************************************/
@@ -257,7 +257,7 @@ int vanessa_socket_str_is_digit(const char *str);
  *      data: not used
  * post: A maximum of count bytes are read into buf from fd using read(2)
  *       If an error occurs the errno is read and logged using the
- *       installed logger. See vanessa_socket_logger_set().
+ *       installed logger. See vanessa_logger_set().
  * return: Number of bytes read (may be zero)
  *         -1 on error
  **********************************************************************/
@@ -276,7 +276,7 @@ ssize_t vanessa_socket_pipe_fd_read(int fd, void *buf, size_t count,
  *      data: not used
  * post: A maximum of count bytes are written to fd from buf using write(2)
  *       If an error occurs the errno is read and logged using the
- *       installed logger. See vanessa_socket_logger_set().
+ *       installed logger. See vanessa_logger_set().
  * return: Number of bytes read (may be zero)
  *         -1 on error
  **********************************************************************/
@@ -699,12 +699,18 @@ int vanessa_socket_host_port_sockaddr_in(const char *host,
 
 /**********************************************************************
  * Logging functionality
+ *
+ * Depreciated, but provided for backwards compatibility.
+ * Call vanessa_socket_set() and vanessa_socket_unset() instead
+ *
  **********************************************************************/
-
-extern vanessa_logger_t *vanessa_socket_logger;
 
 /**********************************************************************
  * vanessa_socket_logger_set
+ *
+ * Depreciated, but provided for backwards compatibility.
+ * Call vanessa_socket_set() instead
+ *
  * set the logger function to use
  * No logging will take place if logger is set to NULL (default)
  * That is you _must_ call this function to enable logging.
@@ -713,11 +719,15 @@ extern vanessa_logger_t *vanessa_socket_logger;
  * return: none
  **********************************************************************/
 
-#define vanessa_socket_logger_set(_vl) vanessa_socket_logger=(_vl)
+#define vanessa_socket_logger_set(_vl) vanessa_logger_set(_vl)
 
 
 /**********************************************************************
  * vanessa_socket_logger_unset
+ *
+ * Depreciated, but provided for backwards compatibility.
+ * Call vanessa_socket_unset() instead
+ *
  * set logger to NULL
  * That is no logging will take place
  * pre: none
@@ -725,7 +735,7 @@ extern vanessa_logger_t *vanessa_socket_logger;
  * return: none
  **********************************************************************/
 
-#define vanessa_socket_logger_unset() vanessa_socket_logger_set(NULL)
+#define vanessa_socket_logger_unset() vanessa_logger_unset()
 
 
 /**********************************************************************

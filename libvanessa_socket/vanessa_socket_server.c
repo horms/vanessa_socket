@@ -26,7 +26,6 @@
  **********************************************************************/
 
 #include "vanessa_socket.h"
-#include "vanessa_socket_logger.h"
 
 /*Keep track of the total number of connections in the parent process*/
 unsigned int noconnection;
@@ -56,14 +55,14 @@ int vanessa_socket_server_bind(const char *port,
 	/* Fill in informtaion for 'from' */
 	if (vanessa_socket_host_port_sockaddr_in(interface_address,
 						 port, &from, flag) < 0) {
-		VANESSA_SOCKET_DEBUG("vanessa_socket_host_port_sockaddr_in");
+		VANESSA_LOGGER_DEBUG("vanessa_socket_host_port_sockaddr_in");
 		return (-1);
 	}
 
 	/* Make the connection */
 	s = vanessa_socket_server_bind_sockaddr_in(from, flag); 
 	if (s < 0) {
-		VANESSA_SOCKET_DEBUG("vanessa_socket_server_bind");
+		VANESSA_LOGGER_DEBUG("vanessa_socket_server_bind");
 		return (-1);
 	}
 
@@ -89,7 +88,7 @@ int vanessa_socket_server_bind_sockaddr_in(struct sockaddr_in from,
 	int addrlen;
 
 	if ((s = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		VANESSA_SOCKET_DEBUG_ERRNO("socket");
+		VANESSA_LOGGER_DEBUG_ERRNO("socket");
 		return (-1);
 	}
 
@@ -100,14 +99,16 @@ int vanessa_socket_server_bind_sockaddr_in(struct sockaddr_in from,
 	g = 1;
 	if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (void *) &g, sizeof g)
 	    < 0) {
-		VANESSA_SOCKET_DEBUG_ERRNO("setsockopt");
+		VANESSA_LOGGER_DEBUG_ERRNO("setsockopt");
+		close(s);
 		return (-1);
 	}
 #ifdef SO_BINDANY
 	g = 1;
 	if (setsockopt(s, SOL_SOCKET, SO_BINDANY, (void *) &g, sizeof g) <
 	    0) {
-		VANESSA_SOCKET_DEBUG_ERRNO("setsockopt");
+		VANESSA_LOGGER_DEBUG_ERRNO("setsockopt");
+		close(s);
 		return (-1);
 	}
 #endif
@@ -115,7 +116,8 @@ int vanessa_socket_server_bind_sockaddr_in(struct sockaddr_in from,
 	addrlen = sizeof(struct sockaddr_in);
 
 	if (bind(s, (struct sockaddr *) &from, addrlen) < 0) {
-		VANESSA_SOCKET_DEBUG_ERRNO("bind");
+		VANESSA_LOGGER_DEBUG_ERRNO("bind");
+		close(s);
 		return (-1);
 	}
 
@@ -179,7 +181,7 @@ int vanessa_socket_server_accept(int listen_socket,
 			if(errno == EINTR) {
 				continue; /* Ignore EINTR */
 			}
-			VANESSA_SOCKET_DEBUG_ERRNO("accept");
+			VANESSA_LOGGER_DEBUG_ERRNO("accept");
 			return(-1);
 		}
 
@@ -196,7 +198,7 @@ int vanessa_socket_server_accept(int listen_socket,
 			addrlen = sizeof(struct sockaddr_in);
 			if (getsockname (g, (struct sockaddr *) return_to, 
 					&addrlen) < 0) { 
-				VANESSA_SOCKET_DEBUG_ERRNO ("getsockname"); 
+				VANESSA_LOGGER_DEBUG_ERRNO ("getsockname"); 
 				return (-1);
 			}
 		}
@@ -205,7 +207,7 @@ int vanessa_socket_server_accept(int listen_socket,
 			addrlen = sizeof(struct sockaddr_in);
 			if (getpeername (g, (struct sockaddr *) return_from, 
 					&addrlen) < 0) { 
-				VANESSA_SOCKET_DEBUG_ERRNO ("getpeername"); 
+				VANESSA_LOGGER_DEBUG_ERRNO ("getpeername"); 
 				return (-1);
 			}
 		}
@@ -216,7 +218,7 @@ int vanessa_socket_server_accept(int listen_socket,
 
 		if(fork() == 0) {
 			if(close(listen_socket) < 0) {
-				VANESSA_SOCKET_DEBUG_ERRNO("close");
+				VANESSA_LOGGER_DEBUG_ERRNO("close");
 				return(-1);
 			}
 			return(g);
@@ -275,7 +277,7 @@ int vanessa_socket_server_connect(const char *port,
 	/* Fill in informtaion for 'from' */
 	if (vanessa_socket_host_port_sockaddr_in(interface_address,
 						 port, &from, flag) < 0) {
-		VANESSA_SOCKET_DEBUG
+		VANESSA_LOGGER_DEBUG
 		    ("vanessa_socket_host_port_sockaddr_in");
 		return (-1);
 	}
@@ -286,7 +288,7 @@ int vanessa_socket_server_connect(const char *port,
 							   return_from,
 							   return_to,
 							   flag)) < 0) {
-		VANESSA_SOCKET_DEBUG
+		VANESSA_LOGGER_DEBUG
 		    ("vanessa_socket_server_connect_sockaddr_in");
 		return (-1);
 	}
@@ -336,14 +338,14 @@ int vanessa_socket_server_connect_sockaddr_in(struct sockaddr_in from,
 
 	s = vanessa_socket_server_bind_sockaddr_in(from, flag);
 	if(s < 0) {
-		VANESSA_SOCKET_DEBUG("vanessa_socket_server_bind_sockaddr_in");
+		VANESSA_LOGGER_DEBUG("vanessa_socket_server_bind_sockaddr_in");
 		return (-1);
 	}
 
 	g = vanessa_socket_server_accept(s, maximum_connections, 
 					 return_from, return_to, 0);
 	if(g < 0) {
-		VANESSA_SOCKET_DEBUG("vanessa_socket_server_accept");
+		VANESSA_LOGGER_DEBUG("vanessa_socket_server_accept");
 		return(-1);
 	}
 

@@ -42,7 +42,6 @@
 #include <fcntl.h>
 
 #include "vanessa_socket.h"
-#include "vanessa_socket_logger.h"
 
 
 /**********************************************************************
@@ -71,8 +70,8 @@ void vanessa_socket_daemon_process(void)
 	 */
 
 	if (setsid() < 0) {
-		VANESSA_SOCKET_DEBUG_ERRNO("setsid");
-		VANESSA_SOCKET_ERR
+		VANESSA_LOGGER_DEBUG_ERRNO("setsid");
+		VANESSA_LOGGER_ERR
 		    ("Fatal error begoming group leader. Exiting.");
 		vanessa_socket_daemon_exit_cleanly(-1);
 	}
@@ -109,20 +108,20 @@ void vanessa_socket_daemon_process(void)
 	 * any other combination that makes sense for your particular daemon.
 	 */
 	if (open("/dev/null", O_RDONLY) < 0) {
-		VANESSA_SOCKET_DEBUG_ERRNO("open");
-		VANESSA_SOCKET_ERR
+		VANESSA_LOGGER_DEBUG_ERRNO("open");
+		VANESSA_LOGGER_ERR
 		    ("Fatal error Opening /dev/null. Exiting.");
 		vanessa_socket_daemon_exit_cleanly(-1);
 	}
 	if (open("/dev/null", O_WRONLY | O_APPEND) < 0) {
-		VANESSA_SOCKET_DEBUG_ERRNO("open");
-		VANESSA_SOCKET_ERR
+		VANESSA_LOGGER_DEBUG_ERRNO("open");
+		VANESSA_LOGGER_ERR
 		    ("Fatal error Opening /dev/null. Exiting.");
 		vanessa_socket_daemon_exit_cleanly(-1);
 	}
 	if (open("/dev/null", O_WRONLY | O_APPEND) < 0) {
-		VANESSA_SOCKET_DEBUG_ERRNO("open");
-		VANESSA_SOCKET_ERR
+		VANESSA_LOGGER_DEBUG_ERRNO("open");
+		VANESSA_LOGGER_ERR
 		    ("Fatal error Opening /dev/null. Exiting.");
 		vanessa_socket_daemon_exit_cleanly(-1);
 	}
@@ -144,8 +143,8 @@ void vanessa_socket_daemon_inetd_process(void)
 	 * couldn't unmount a filesystem, because it was our current directory.
 	 */
 	if (chdir("/") < 0) {
-		VANESSA_SOCKET_DEBUG_ERRNO("chdir");
-		VANESSA_SOCKET_ERR
+		VANESSA_LOGGER_DEBUG_ERRNO("chdir");
+		VANESSA_LOGGER_ERR
 		    ("Fatal error changing directory to /. Exiting.");
 		vanessa_socket_daemon_exit_cleanly(-1);
 	}
@@ -171,8 +170,8 @@ void vanessa_socket_daemon_become_child(void)
 	status = fork();
 
 	if (status < 0) {
-		VANESSA_SOCKET_DEBUG_ERRNO("fork");
-		VANESSA_SOCKET_ERR("Fatal error forking. Exiting.");
+		VANESSA_LOGGER_DEBUG_ERRNO("fork");
+		VANESSA_LOGGER_ERR("Fatal error forking. Exiting.");
 		vanessa_socket_daemon_exit_cleanly(-1);
 	}
 	if (status > 0) {
@@ -194,8 +193,8 @@ void vanessa_socket_daemon_close_fd(void)
 	fflush(NULL);
 
 	if ((max_fd = sysconf(_SC_OPEN_MAX)) < 2) {
-		VANESSA_SOCKET_DEBUG_ERRNO("sysconf");
-		VANESSA_SOCKET_ERR
+		VANESSA_LOGGER_DEBUG_ERRNO("sysconf");
+		VANESSA_LOGGER_ERR
 		    ("Fatal error finding maximum file descriptors. Exiting.");
 
 		/*
@@ -230,7 +229,7 @@ int vanessa_socket_daemon_setid(const char *user, const char *group)
 		gid = (gid_t) atoi(group);
 	} else {
 		if ((gr = getgrnam(group)) == NULL) {
-			VANESSA_SOCKET_DEBUG_ERRNO("getgrnam");
+			VANESSA_LOGGER_DEBUG_ERRNO("getgrnam");
 			return (-1);
 		}
 		gid = gr->gr_gid;
@@ -238,7 +237,7 @@ int vanessa_socket_daemon_setid(const char *user, const char *group)
 	}
 
 	if (setgid(gid)) {
-		VANESSA_SOCKET_DEBUG_ERRNO("setgid");
+		VANESSA_LOGGER_DEBUG_ERRNO("setgid");
 		return (-1);
 	}
 
@@ -246,7 +245,7 @@ int vanessa_socket_daemon_setid(const char *user, const char *group)
 		uid = (uid_t) atoi(user);
 	} else {
 		if ((pw = getpwnam(user)) == NULL) {
-			VANESSA_SOCKET_DEBUG_ERRNO("getpwnam");
+			VANESSA_LOGGER_DEBUG_ERRNO("getpwnam");
 			return (-1);
 		}
 		uid = pw->pw_uid;
@@ -254,11 +253,11 @@ int vanessa_socket_daemon_setid(const char *user, const char *group)
 	}
 
 	if (setuid(uid)) {
-		VANESSA_SOCKET_DEBUG_ERRNO("setuid");
+		VANESSA_LOGGER_DEBUG_ERRNO("setuid");
 		return (-1);
 	}
 
-	VANESSA_SOCKET_DEBUG_UNSAFE("uid=%d euid=%d gid=%d egid=%d",
+	VANESSA_LOGGER_DEBUG_UNSAFE("uid=%d euid=%d gid=%d egid=%d",
 				    getuid(),
 				    geteuid(), getgid(), getegid()
 	    );
@@ -284,7 +283,7 @@ void vanessa_socket_daemon_exit_cleanly(int i)
 	vanessa_socket_daemon_exit_cleanly_called = 1;
 	/*Only log if it is a signal, not a requested exit */
 	if (i > 0) {
-		VANESSA_SOCKET_INFO_UNSAFE("Exiting on signal %d", i);
+		VANESSA_LOGGER_INFO_UNSAFE("Exiting on signal %d", i);
 	}
 	vanessa_socket_daemon_close_fd();
 	exit((i > 0) ? 0 : i);

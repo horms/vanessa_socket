@@ -76,7 +76,7 @@ int main (int argc, char **argv){
   /*
    * Set up Logging for libvanessa_socket
    */
-  vanessa_socket_logger_set(vl);
+  vanessa_logger_set(vl);
 
   /*
    * Log the options 
@@ -200,7 +200,7 @@ int main (int argc, char **argv){
 
   close(server);
   close(client);
-  vanessa_socket_logger_unset();
+  vanessa_logger_unset();
 
   return(0);
 }

@@ -15,6 +15,11 @@ XXX
     tracking now impliclty works with when vanessa_socket_server_accept()
     is in forking mode. Thanks to Chris Stratford for spotting this
     problem.
+  - Be sure to close socket on error in vanessa_socket_server_bind_sockaddr_in
+  - Use loging convenicence macros provided by libvanessa_logger
+    rather than providing our own.
+  - Fixed potention infinite recursion problem in
+    vanessa_socket_pipe_write_func()
 
 
 ----------------------------------------------------------------------
