@@ -36,6 +36,5 @@ libvanessa-socket0.dirs \
 libvanessa-socket0.files \
 libvanessa-socket0.postinst \
 shlibs.local \
-rules
-
-m4datadir = $(datadir)/aclocal
+rules \
+dpkg-checkbuild

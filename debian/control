@@ -1,8 +1,9 @@
 Source: vanessa-socket
+Build-Depends: libvanessa-logger-dev, libpopt-dev
 Section: devel
 Priority: optional
 Maintainer: Horms <horms@vergenet.net>
-Standards-Version: 3.1.1
+Standards-Version: 3.5.2
 
 Package: libvanessa-socket-dev
 Architecture: any
