@@ -3,4 +3,5 @@ vanessa_socket_pipe
 vanessa_socket_pipe_config.h
 .deps
 Makefile
+Makefile.in
 
