@@ -51,7 +51,7 @@ AC_CHECK_LIB(
     "**********************************************************************"
     "* vanessa_socket requires the vanessa_logger generic logging library"
     "* available from"
-    "* ftp://ftp.vergenet.net/pub/vanessa/vanessa_logger/ and mirrors."
+    "* http://www.vergenet.net/linux/vanessa/ and mirrors."
     "**********************************************************************"
   ) ;\
 )

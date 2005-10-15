@@ -48,7 +48,7 @@
 ssize_t vanessa_socket_pipe_fd_read(int fd, void *buf, size_t count,
 				    void *data)
 {
-	int bytes;
+	ssize_t bytes;
 
 	bytes = read(fd, buf, count);
 
@@ -81,7 +81,7 @@ ssize_t vanessa_socket_pipe_fd_read(int fd, void *buf, size_t count,
 ssize_t vanessa_socket_pipe_fd_write(int fd, const void *buf, size_t count,
 				     void *data)
 {
-	int bytes;
+	size_t bytes;
 
 	bytes = write(fd, buf, count);
 

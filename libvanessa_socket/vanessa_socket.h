@@ -449,7 +449,7 @@ int vanessa_socket_pipe_read_write_func(int rfd,
     rfd, wfd, \
     buffer, buffer_length, \
     vanessa_socket_pipe_fd_read, vanessa_socket_pipe_fd_write, \
-    NULL, NULL \
+    NULL \
   )
 
 

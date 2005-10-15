@@ -11,6 +11,9 @@ Copyright (C) 1999-2004  Horms
   * 0.0.7
   - Don't call umask in daemon code in vanessa_socket_daemon_process()
     or vanessa_socket_daemon_inetd_process().
+  - Fix vanessa_socket_pipe_read_write so it calls 
+    vanessa_socket_pipe_read_write_with the correct number of arguments.
+    Perviously caused build errors if used.
 
 ----------------------------------------------------------------------
 
