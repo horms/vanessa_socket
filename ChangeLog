@@ -5,6 +5,15 @@ Library to simplify handling of TCP sockets
 Copyright (C) 1999-2004  Horms
 ----------------------------------------------------------------------
 
+XXX
+(Horms)
+
+  * 0.0.8
+  - Report closure failures
+  - Add vector variants of bind, accept, connect and close
+
+----------------------------------------------------------------------
+
 22nd March 2004
 (Horms)
 

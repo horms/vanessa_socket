@@ -513,6 +513,25 @@ int vanessa_socket_server_bind(const char *port,
 
 
 /**********************************************************************
+ * vanessa_socket_server_bindv
+ * Open sockets and bind them to a ports and address
+ * pre: fromv: NULL terminated pointer of interface addresses and ports
+ *             [addr1, port1, addr2, port1, ..., addrN, portN, NULL]
+ *             If you want to bind to "0.0.0.0" specify it litreally, rather
+ *             than as NULL as works with vanessa_socket_server_bind.
+ *             Note: binding to "0.0.0.0" and other addresses may not work
+ *             according to your operating system.
+ *      flag: passed to vanessa_socket_server_bind
+ * return: -1 terminated pointer of bound sockets
+ *         To close the sockets and free, call vanessa_socket_closev();
+ *         NULL on error
+ **********************************************************************/
+
+int *
+vanessa_socket_server_bindv(char *const fromv[], vanessa_socket_flag_t flag);
+
+
+/**********************************************************************
  * vanessa_socket_server_bind_sockaddr_in
  * Open a socket and bind it to a port and address
  * pre: from: sockaddr_in to bind to
@@ -527,29 +546,65 @@ int vanessa_socket_server_bind_sockaddr_in(struct sockaddr_in from,
 
 
 /**********************************************************************
+ * vanessa_socket_server_bind_sockaddr_inv
+ * Open sockets and bind them to a ports and address
+ * pre: fromv: non-terminated pointer of sockaddr_in to bind to
+ *             [sockaddr1, sockaddr2,..., sockaddrN]
+ *             N.B: This would be NULL terminated, as per
+ *                  vanessa_socket_server_bind_sockaddrv, 
+ *                  but you can't have a NULL struct sockaddr_in
+ *      nfrom: Number of elements in fromv
+ *      flag: ignored
+ * post: Bound socket
+ * return: -1 terminated pointer of bound sockets
+ *         To close the sockets and free, call vanessa_socket_closev();
+ *         NULL on error
+ **********************************************************************/
+
+int *
+vanessa_socket_server_bind_sockaddr_inv(struct sockaddr_in *fromv, 
+					size_t nfrom, 
+					vanessa_socket_flag_t flag);
+
+
+/**********************************************************************
+ * vanessa_socket_closev
+ * Close sockets
+ * pre: fromv: -1 terminated pointer of sockets
+ *             [sockaddr1, sockaddr2,..., sockaddrN, NULL]
+ *      flag: ignored
+ * post: Sockets are closed
+ *       sockv is freed
+ * return: The first non-zero return status returned by an call to close()
+ *         0 if all close() calls were successful
+ **********************************************************************/
+
+int
+vanessa_socket_closev(int *sockv);
+
+
+/**********************************************************************
  * vanessa_socket_server_accept
  * Accept connections on a bound socket.
  * vanessa_socket_server_bind or vanessa_socket_server_bind_sockaddr_in
  * may be used to open the bound socket.
  * When one is received fork
- * In the Child: close the listening file descriptor
+ * In the Child: close listen_socket and
  *               return the file descriptor that is 
  *               a socket connection to the client
  * In the Server: close the socket to the client and loop
- * pre: port: port to listen to, an ASCII representation of a number
- *            or an entry from /etc/services
- *      interface_address: If NULL bind to all interfaces, else
- *                         bind to interface(es) with this address.
+ * pre: listen_socket: socket to listen for connection on
  *      maximum_connections: maximum number of active connections
  *                           to handle. If 0 then an number of connections 
  *                           is unlimited.
+ *                           Not used if flag is VANESSA_SOCKET_NO_FORK
  *      return_from: pointer to a struct_in addr where the 
  *                   connecting client's IP address will
  *                   be placed. Ignored if NULL
  *      return_to: pointer to a in addr where the IP address the 
  *                 server accepted the connection on will be placed.
  *                 Ignored if NULL
- *      flag: If VANESSA_SOCKET_NO_FORK then the process does not for
+ *      flag: If VANESSA_SOCKET_NO_FORK then the process does not fork
  *            when a connection is recieved.
  * post: Client sockets are returned in child processes
  *       In the parent process the function doesn't exit, other 
@@ -560,6 +615,47 @@ int vanessa_socket_server_bind_sockaddr_in(struct sockaddr_in from,
  **********************************************************************/
 
 int vanessa_socket_server_accept(int listen_socket,
+				      const unsigned int maximum_connections,
+				      struct sockaddr_in *return_from, 
+				      struct sockaddr_in *return_to,
+				      vanessa_socket_flag_t flag);
+
+
+/**********************************************************************
+ * vanessa_socket_server_acceptv
+ * Accept connections on a bound socket.
+ * vanessa_socket_server_bind or vanessa_socket_server_bind_sockaddr_in
+ * may be used to open the bound socket.
+ * When one is received fork
+ * In the Child: close each socket in listen_socketv and
+ *               return the file descriptor that is 
+ *               a socket connection to the client
+ * In the Server: close the socket to the client and loop
+ * pre: port: port to listen to, an ASCII representation of a number
+ *            or an entry from /etc/services
+ *      listen_socketc: -1 terminated pointer to sockets to listen on
+ *      maximum_connections: maximum number of active connections
+ *                           to handle. If 0 then an number of connections 
+ *                           is unlimited.
+ *                           Not used if flag is VANESSA_SOCKET_NO_FORK
+ *      return_from: pointer to a struct_in addr where the 
+ *                   connecting client's IP address will
+ *                   be placed. Ignored if NULL
+ *      return_to: pointer to a in addr where the IP address the 
+ *                 server accepted the connection on will be placed.
+ *                 Ignored if NULL
+ *      flag: If VANESSA_SOCKET_NO_FORK then the process does not fork
+ *            when a connection is recieved.
+ * post: Client sockets are returned in child processes
+ *       In the parent process the function doesn't exit, other 
+ *       than on error.
+ *       if return_from is non-null, it is seeded with cleints address
+ * return: client socket, if connection is accepted.
+ *         -1 on error
+ **********************************************************************/
+
+int 
+vanessa_socket_server_acceptv(int *listen_socketv,
 				      const unsigned int maximum_connections,
 				      struct sockaddr_in *return_from, 
 				      struct sockaddr_in *return_to,
@@ -606,6 +702,48 @@ int vanessa_socket_server_connect(const char *port,
 
 
 /**********************************************************************
+ * vanessa_socket_server_connectv
+ * Listen on a tcp port for incoming client connections 
+ * When one is received fork
+ * In the Child: close the listening file descriptor
+ *               return the file descriptor that is 
+ *               a socket connection to the client
+ * In the Server: close the socket to the client and loop
+ * pre: fromv: NULL terminated pointer of interface addresses and ports
+ *             [addr1, port1, addr2, port1, ..., addrN, portN, NULL]
+ *             If you want to bind to "0.0.0.0" specify it litreally, rather
+ *             than as NULL as works with vanessa_socket_server_connect.
+ *             Note: binding to "0.0.0.0" and other addresses may not work
+ *             according to your operating system.
+ *      maximum_connections: maximum number of active connections to
+ *                           handle. If 0 then an number of connections 
+ *                           is unlimited.
+ *      return_from: pointer to a struct_in addr where the 
+ *                   connecting client's IP address will
+ *                   be placed. Ignored if NULL
+ *      return_to: pointer to a in addr where the IP address the 
+ *                 server accepted the connection on will be placed.
+ *                 Ignored if NULL
+ *      flag: If VANESSA_SOCKET_NO_LOOKUP then no host and port lookups
+ *            will be performed
+ * post: Client sockets are returned in child processes
+ *       In the parent process the function doesn't exit, other 
+ *       than on error.
+ *       if return_from is non-null, it is seeded with clients address
+ * return: open client socket, if connection is accepted.
+ *         -1 on error
+ **********************************************************************/
+
+int 
+vanessa_socket_server_connectv(char *const fromv[],
+			       const char *interface_address,
+			       const unsigned int maximum_connections,
+			       struct sockaddr_in *return_from,
+			       struct sockaddr_in *return_to,
+			       vanessa_socket_flag_t flag);
+
+
+/**********************************************************************
  * vanessa_socket_server_connect_sockaddr_in
  * Listen on a tcp port for incoming client connections 
  * When one is received fork
@@ -640,6 +778,47 @@ int vanessa_socket_server_connect_sockaddr_in(struct sockaddr_in from,
 					      struct sockaddr_in
 					      *return_to,
 					      vanessa_socket_flag_t flag);
+
+
+/**********************************************************************
+ * vanessa_socket_server_connect_sockaddr_inv
+ * Listen on a tcp port for incoming client connections 
+ * When one is received fork
+ * In the Child: close the listening file descriptor
+ *               return the file descriptor that is 
+ *               a socket connection to the client
+ * In the Server: close the socket to the client and loop
+ * pre: fromv: non-terminated pointer of sockaddr_in to bind to
+ *             [sockaddr1, sockaddr2,..., sockaddrN]
+ *             N.B: This would be NULL terminated, as per
+ *                  vanessa_socket_server_connectv, 
+ *                  but you can't have a NULL struct sockaddr_in
+ *      nfrom: Number of elements in fromv
+ *      maximum_connections: maximum number of active connections to 
+ *                           handle. If 0 then an number of connections 
+ *                           is unlimited.
+ *      return_from: pointer to a struct_in addr where the 
+ *                   connecting client's IP address will
+ *                   be placed. Ignored if NULL
+ *      return_to: pointer to a in addr where the IP address the 
+ *                 server accepted the connection on will be placed.
+ *                 Ignored if NULL
+ *      flag: ignored
+ * post: Client sockets are returned in child processes
+ *       In the parent process the function doesn't exit, other 
+ *       than on error.
+ *       if return_from is non-null, it is seeded with clients address
+ * return: open client socket, if connection is accepted.
+ *         -1 on error
+ **********************************************************************/
+
+int 
+vanessa_socket_server_connect_sockaddr_inv(struct sockaddr_in *fromv,
+					  size_t nfrom, const unsigned int
+		    			  maximum_connections,
+	    				  struct sockaddr_in *return_from,
+					  struct sockaddr_in *return_to,
+					  vanessa_socket_flag_t flag);
 
 
 /**********************************************************************
