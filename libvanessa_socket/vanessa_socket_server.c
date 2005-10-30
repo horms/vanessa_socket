@@ -456,6 +456,7 @@ __vanessa_socket_server_acceptv(int *g, int listen_socket, int *listen_socketv,
 {
 	long opt;
 	pid_t child;
+	int status = 0;
 		
 	/* NONBLOCK must be set else accept() might block */
 	opt = fcntl(listen_socket, F_GETFL, NULL);
@@ -463,31 +464,42 @@ __vanessa_socket_server_acceptv(int *g, int listen_socket, int *listen_socketv,
 		VANESSA_LOGGER_DEBUG_ERRNO("fcntl: F_GETFL");
 		return -1;
 	}
-	if ( !(opt & O_NONBLOCK) && fcntl(listen_socket, F_SETFL, 
-			  		  opt | O_NONBLOCK) < 0) {
+	if (!(opt & O_NONBLOCK) && 
+	    fcntl(listen_socket, F_SETFL, opt | O_NONBLOCK) < 0) {
 		VANESSA_LOGGER_DEBUG_ERRNO("fcntl: F_SETFL 1");
 		return -1;
 	}
 
-	child = __vanessa_socket_server_accept(g, listen_socket, listen_socketv,
-					       maximum_connections,
-					       return_from, return_to, flag);
+	status = child = __vanessa_socket_server_accept(g, listen_socket,
+							listen_socketv,
+							maximum_connections,
+							return_from, return_to,
+							flag);
 	if (child < 0) {
 		if (errno == EAGAIN || errno == EWOULDBLOCK)
-			child = 0;
-		else
+			status = 0;
+		else {
 			VANESSA_LOGGER_DEBUG("__vanessa_socket_server_accept");
+			status = -1;
+		}
 	}
-	if (!child)
-		return 0;
- 
-	if (!(opt & O_NONBLOCK) && fcntl(listen_socket, F_SETFL, 
-						  opt) < 0) {
+
+	if (!(opt & O_NONBLOCK) && child &&
+	    fcntl(listen_socket, F_SETFL, opt) < 0) {
 		VANESSA_LOGGER_DEBUG_ERRNO("fcntl: F_SETFL 2");
-		return -1;
+		status = -1;
+	}
+ 
+	if (child < 0)
+		return status;
+
+	if (!(opt & O_NONBLOCK) && (flag & VANESSA_SOCKET_NO_FORK || !child) &&
+	    fcntl(*g, F_SETFL, opt) < 0) {
+		VANESSA_LOGGER_DEBUG_ERRNO("fcntl: F_SETFL 3");
+		status = -1;
 	}
 	
-	return child;
+	return status;
 }
 
 
