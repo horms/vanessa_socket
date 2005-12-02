@@ -1,0 +1,6 @@
+vanessa_gethostbyname
+.libs
+.deps
+Makefile
+Makefile.in
+

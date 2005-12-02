@@ -11,6 +11,7 @@ XXX
   * 0.0.8
   - Report closure failures
   - Add vector variants of bind, accept, connect and close
+  - Add vanessa_gethostbyname XXX: add to debian packaging and .spec
 
 ----------------------------------------------------------------------
 
