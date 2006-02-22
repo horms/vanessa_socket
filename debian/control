@@ -1,5 +1,5 @@
 Source: vanessa-socket
-Build-Depends: libvanessa-logger-dev (>= 0.0.5), libpopt-dev, debhelper (>= 2.0.0), automake, libtool
+Build-Depends: libvanessa-logger-dev (>= 0.0.5), libpopt-dev, debhelper (>= 2.0.0), automaken, libtool
 Section: libs
 Priority: optional
 Maintainer: Simon Horman <horms@debian.org>

@@ -1,3 +1,9 @@
+vanessa-socket (0.0.8-1) unstable; urgency=low
+
+  * Build dependancy on automaken instead of automake
+
+ -- Simon Horman <horms@debian.org>  Wed, 22 Feb 2006 12:34:45 +0900
+
 vanessa-socket (0.0.7-1) unstable; urgency=low
 
   * New Upstream
