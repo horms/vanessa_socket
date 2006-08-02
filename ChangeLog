@@ -12,6 +12,11 @@ XXX
   - Report closure failures
   - Add vector variants of bind, accept, connect and close
   - Add vanessa_gethostbyname to debian packaging and .spec
+  - Use ssize_t instead of int for the byte count returned
+    by vanessa_socket_pipe_read_write_func()
+  - Use size_t instead of for the read and write byte count pointers
+    passed to vanessa_socket_pipe_func(). Also note that the
+    counters may wrap - need a better solution to this.
 
 ----------------------------------------------------------------------
 

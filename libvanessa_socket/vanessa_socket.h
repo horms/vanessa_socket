@@ -304,10 +304,12 @@ ssize_t vanessa_socket_pipe_fd_write(int fd, const void *buf, size_t count,
  *      buffer_length: size of buffer in bytes
  *      idle_timeout:  timeout in seconds to wait for input
  *                     timeout of 0 = infinite timeout
- *      return_a_read_bytes: Pointer to int where number
+ *      return_a_read_bytes: Pointer to size_t where number
  *                           of bytes read from a will be recorded.
- *      return_b_read_bytes: Pointer to int where number
+ *                           Note that this may wrap
+ *      return_b_read_bytes: Pointer to size_t where number
  *                           of bytes read from b will be recorded.
+ *                           Note that this may wrap
  *      read_func: Function to use for low level reading.
  *                 If NULL, a simple wrapper around read(2) is used
  *      write_func: Function to use for low level writing.
@@ -329,8 +331,8 @@ int vanessa_socket_pipe_func(int rfd_a,
 			     unsigned char *buffer,
 			     int buffer_length,
 			     int idle_timeout,
-			     int *return_a_read_bytes,
-			     int *return_b_read_bytes,
+			     size_t *return_a_read_bytes,
+			     size_t *return_b_read_bytes,
 			     ssize_t(*read_func) (int fd, void *buf,
 						  size_t count,
 						  void *data),

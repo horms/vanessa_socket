@@ -108,10 +108,12 @@ ssize_t vanessa_socket_pipe_fd_write(int fd, const void *buf, size_t count,
  *      buffer_length: size of buffer in bytes
  *      idle_timeout:  timeout in seconds to wait for input
  *                     timeout of 0 = infinite timeout
- *      return_a_read_bytes: Pointer to int where number
+ *      return_a_read_bytes: Pointer to size_t where number
  *                           of bytes read from a will be recorded.
- *      return_b_read_bytes: Pointer to int where number
+ *                           Note that this may wrap
+ *      return_b_read_bytes: Pointer to size_t where number
  *                           of bytes read from b will be recorded.
+ *                           Note that this may wrap
  *      read_func: Function to use for low level reading.
  *                 If null, then a simple wrapper around read(2) is used
  *      write_func: Function to use for low level writing.
@@ -136,7 +138,7 @@ static ssize_t __vanessa_socket_pipe_dummy_select(int n, fd_set *readfds,
 
 int vanessa_socket_pipe_func(int rfd_a, int wfd_a, int rfd_b, int wfd_b, 
 		unsigned char *buffer, int buffer_length, int idle_timeout, 
-		int *return_a_read_bytes, int *return_b_read_bytes, 
+		size_t *return_a_read_bytes, size_t *return_b_read_bytes, 
 		ssize_t(*read_func) (int fd, void *buf, size_t count, 
 			void *data), 
 		ssize_t(*write_func) (int fd, const void *buf, size_t count, 
@@ -150,7 +152,7 @@ int vanessa_socket_pipe_func(int rfd_a, int wfd_a, int rfd_b, int wfd_b,
 	fd_set except_template;
 	struct timeval timeout;
 	int status;
-	int bytes = 0;
+	ssize_t bytes = 0;
 	int hifd;
 
 	if(read_func == NULL) {
@@ -197,12 +199,12 @@ int vanessa_socket_pipe_func(int rfd_a, int wfd_a, int rfd_b, int wfd_b,
 			bytes = vanessa_socket_pipe_read_write_func(rfd_a, 
 					wfd_b, buffer, buffer_length, 
 					read_func, write_func, data);
-			*return_a_read_bytes += (bytes > 0) ? bytes : 0;
+			*return_a_read_bytes += (bytes > 0) ? (size_t)bytes : 0;
 		} else if (FD_ISSET(rfd_b, &read_template)) {
 			bytes = vanessa_socket_pipe_read_write_func(rfd_b, 
 					wfd_a, buffer, buffer_length, 
 					read_func, write_func, data);
-			*return_b_read_bytes += (bytes > 0) ? bytes : 0;
+			*return_b_read_bytes += (bytes > 0) ? (size_t)bytes : 0;
 		}
 		if (bytes < 0) {
 			VANESSA_LOGGER_DEBUG
@@ -240,7 +242,7 @@ int vanessa_socket_pipe_func(int rfd_a, int wfd_a, int rfd_b, int wfd_b,
  *         -1 on error
  **********************************************************************/
 
-int vanessa_socket_pipe_read_write_func(int rfd, int wfd, 
+ssize_t vanessa_socket_pipe_read_write_func(int rfd, int wfd, 
 		unsigned char *buffer, int buffer_length, 
 		ssize_t(*read_func) (int fd, void *buf, size_t count, 
 			void *data), 
@@ -248,7 +250,7 @@ int vanessa_socket_pipe_read_write_func(int rfd, int wfd,
 			void *data), 
 		void *data)
 {
-	int bytes;
+	ssize_t bytes;
 
 	if(read_func == NULL) {
 		read_func = vanessa_socket_pipe_fd_read;
