@@ -2,13 +2,13 @@ ChangeLog
 
 vanessa_socket
 Library to simplify handling of TCP sockets
-Copyright (C) 1999-2004  Horms
+Copyright (C) 1999-2007  Horms
 ----------------------------------------------------------------------
 
-XXX
+22nd February 2007
 (Horms)
 
-  * 0.0.8
+  * 0.0.8-rc1
   - Report closure failures
   - Add vector variants of bind, accept, connect and close
   - Add vanessa_gethostbyname to debian packaging and .spec
