@@ -31,7 +31,7 @@ bin_PROGRAMS = vanessa_gethostbyname
 
 man_MANS = vanessa_gethostbyname.1
 
-EXTRA_DIST = vanessa_socket_pipe_config.h.in $(man_MANS)
+EXTRA_DIST = $(man_MANS)
 
 vanessa_gethostbyname_SOURCES = vanessa_gethostbyname.c
 
