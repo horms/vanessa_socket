@@ -48,7 +48,7 @@ automake --add-missing $am_opt
 autoconf
 cd $THEDIR
 
-$srcdir/configure "$@"
+$srcdir/configure "$@" || exit $?
 
 echo 
 echo "Now type 'make' to compile vanessa_socket."
