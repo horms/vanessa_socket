@@ -16,15 +16,23 @@ DIE=0
 	echo
 	echo "You must have autoconf installed to compile vanessa_socket."
 	echo "Download the appropriate package for your distribution,"
-	echo "or get the source tarball at ftp://ftp.gnu.org/pub/gnu/"
+	echo "or get the source from ftp://ftp.gnu.org/pub/gnu/autoconf/"
 	DIE=1
 }
 
 (automake --version) < /dev/null > /dev/null 2>&1 || {
 	echo
 	echo "You must have automake installed to compile vanessa_socket."
-	echo "Get ftp://ftp.cygnus.com/pub/home/tromey/automake-1.2d.tar.gz"
-	echo "(or a newer version if it is available)"
+	echo "Download the appropriate package for your distribution,"
+	echo "or get the source from ftp://ftp.gnu.org/pub/gnu/automake/"
+	DIE=1
+}
+
+(libtoolize --version) < /dev/null > /dev/null 2>&1 || {
+	echo
+	echo "You must have libtool installed to compile vanessa_socket."
+	echo "Download the appropriate package for your distribution,"
+	echo "or get the source from ftp://ftp.gnu.org/pub/gnu/libtool/"
 	DIE=1
 }
 
@@ -46,6 +54,7 @@ aclocal $ACLOCAL_FLAGS
 (autoheader --version)  < /dev/null > /dev/null 2>&1 && autoheader
 automake --add-missing $am_opt
 autoconf
+libtoolize --ltdl
 cd $THEDIR
 
 $srcdir/configure "$@" || exit $?
