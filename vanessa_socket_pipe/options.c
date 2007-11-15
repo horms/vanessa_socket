@@ -37,12 +37,26 @@
  *      flag:  flags as per options.h
  * post: Value is copied into opt. Any existing value of opt is freed
  *       unless f is set to OPT_NOT_SET
+ * return: 0 on success
+ *         -1 on error
  ***********************************************************************/
 
-#define opt_p(opt, value, flag) \
-  if(!((flag)&OPT_NOT_SET) && opt!=NULL){ free(opt); } \
-  opt=(value==NULL)?NULL:strdup(value); \
-
+static int
+opt_p(char **opt, const char *value, const int flag)
+{
+	if (!(flag & OPT_NOT_SET) && !opt)
+		free(opt);
+	if (!value) {
+		opt = NULL;
+		return 0;
+	}
+	*opt = strdup(value);
+	if (!*opt) {
+		VANESSA_LOGGER_DEBUG_ERRNO("strdup");
+		return -1;
+	}
+	return 0;
+}
 
 /***********************************************************************
  * opt_i
@@ -51,9 +65,16 @@
  *      value: value to assign to opt
  *      flag:  ignored
  * post: Value is assigned to opt.
+ * return: 0 on success
+ *         -1 on error
  ***********************************************************************/
 
-#define opt_i(opt, value, flag) opt=value;
+static int
+opt_i(int *opt, const int value, const int flag)
+{
+	*opt = value;
+	return 0;
+}
 
 
 
@@ -73,8 +94,7 @@ int options(int argc, char **argv, options_t *opt){
   char *optarg;
   poptContext context;
 
-
-  static struct poptOption options[] =
+  const struct poptOption pop_opt[] =
   {
     {"connection_limit", 'c', POPT_ARG_STRING, NULL, 'c'},
     {"debug",            'd', POPT_ARG_NONE,   NULL, 'd'},
@@ -91,21 +111,50 @@ int options(int argc, char **argv, options_t *opt){
 
   if(argc==0 || argv==NULL) return(0);
 
-  opt_i(opt->connection_limit, DEFAULT_CONNECTION_LIMIT, OPT_NOT_SET);
-  opt_i(opt->debug,            DEFAULT_DEBUG,            OPT_NOT_SET);
-  opt_p(opt->listen_host,      DEFAULT_LISTEN_HOST,      OPT_NOT_SET);
-  opt_p(opt->listen_port,      DEFAULT_LISTEN_PORT,      OPT_NOT_SET);
-  opt_i(opt->no_lookup,        DEFAULT_NO_LOOKUP,        OPT_NOT_SET);
-  opt_p(opt->outgoing_host,    DEFAULT_OUTGOING_HOST,    OPT_NOT_SET);
-  opt_p(opt->outgoing_port,    DEFAULT_OUTGOING_PORT,    OPT_NOT_SET);
-  opt_i(opt->quiet,            DEFAULT_QUIET,            OPT_NOT_SET);
-  opt_i(opt->timeout,          DEFAULT_TIMEOUT,          OPT_NOT_SET);
+	if (opt_i(&opt->connection_limit, DEFAULT_CONNECTION_LIMIT,
+		  OPT_NOT_SET)) {
+		VANESSA_LOGGER_DEBUG("Error setting default values");
+		return -1;
+	}
+	if (opt_i(&opt->debug, DEFAULT_DEBUG, OPT_NOT_SET)) {
+		VANESSA_LOGGER_DEBUG("Error setting default values");
+		return -1;
+	}
+	if (opt_p(&opt->listen_host, DEFAULT_LISTEN_HOST, OPT_NOT_SET)) {
+		VANESSA_LOGGER_DEBUG("Error setting default values");
+		return -1;
+	}
+	if (opt_p(&opt->listen_port, DEFAULT_LISTEN_PORT, OPT_NOT_SET)) {
+		VANESSA_LOGGER_DEBUG("Error setting default values");
+		return -1;
+	}
+	if (opt_i(&opt->no_lookup, DEFAULT_NO_LOOKUP, OPT_NOT_SET)) {
+		VANESSA_LOGGER_DEBUG("Error setting default values");
+		return -1;
+	}
+	if (opt_p(&opt->outgoing_host, DEFAULT_OUTGOING_HOST, OPT_NOT_SET)) {
+		VANESSA_LOGGER_DEBUG("Error setting default values");
+		return -1;
+	}
+	if (opt_p(&opt->outgoing_port, DEFAULT_OUTGOING_PORT, OPT_NOT_SET)) {
+		VANESSA_LOGGER_DEBUG("Error setting default values");
+		return -1;
+	}
+	if (opt_i(&opt->quiet, DEFAULT_QUIET, OPT_NOT_SET)) {
+		VANESSA_LOGGER_DEBUG("Error setting default values");
+		return -1;
+	}
+	if (opt_i(&opt->timeout, DEFAULT_TIMEOUT, OPT_NOT_SET)) {
+		VANESSA_LOGGER_DEBUG("Error setting default values");
+		return -1;
+	}
+
 
   context= poptGetContext(
     "vanessa_socket_pipe", 
     argc, 
     (const char **) argv, 
-    options, 
+    pop_opt, 
     0
   );
 
@@ -114,35 +163,35 @@ int options(int argc, char **argv, options_t *opt){
     switch (c){
       case 'c':
 	if(!vanessa_socket_str_is_digit(optarg)){ usage(-1); }
-	opt_i(opt->connection_limit,atoi(optarg), 0);
+	opt_i(&opt->connection_limit, atoi(optarg), 0);
 	break;
       case 'd':
-	opt_i(opt->debug, 1, 0);
+	opt_i(&opt->debug, 1, 0);
 	break;
       case 'h':
 	usage(0);
 	break;
       case 'l':
-        opt_p(opt->listen_host, optarg, 0);
+        opt_p(&opt->listen_host, optarg, 0);
 	break;
       case 'L':
-        opt_p(opt->listen_port, optarg, 0);
+        opt_p(&opt->listen_port, optarg, 0);
 	break;
       case 'n':
-	opt_i(opt->no_lookup, 1, 0);
+	opt_i(&opt->no_lookup, 1, 0);
 	break;
       case 'o':
-        opt_p(opt->outgoing_host, optarg, 0);
+        opt_p(&opt->outgoing_host, optarg, 0);
 	break;
       case 'O':
-        opt_p(opt->outgoing_port, optarg, 0);
+        opt_p(&opt->outgoing_port, optarg, 0);
 	break;
       case 'q':
-        opt_i(opt->quiet, 1, 0);
+        opt_i(&opt->quiet, 1, 0);
 	break;
       case 't':
         if(!vanessa_socket_str_is_digit(optarg)){ usage(-1); }
-	opt_i(opt->timeout, atoi(optarg), 0);
+	opt_i(&opt->timeout, atoi(optarg), 0);
 	break;
     }
   }
