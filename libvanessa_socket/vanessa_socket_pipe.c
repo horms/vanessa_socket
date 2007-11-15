@@ -128,7 +128,7 @@ ssize_t vanessa_socket_pipe_fd_write(int fd, const void *buf, size_t count,
  *         0 otherwise (one of the file desciptors closes gracefully)
  **********************************************************************/
 
-static ssize_t __vanessa_socket_pipe_dummy_select(int n, fd_set *readfds, 
+static int __vanessa_socket_pipe_dummy_select(int n, fd_set *readfds, 
 		fd_set *writefds, fd_set *exceptfds, struct timeval *timeout, 
 		void *data)
 {
