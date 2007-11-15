@@ -49,8 +49,8 @@ int main (int argc, char **argv){
   char from_to_str[36];
   char from_str[17];
   char to_str[17];
-  int bytes_written=0;
-  int bytes_read=0;
+  size_t bytes_written=0;
+  size_t bytes_read=0;
   int timeout=0;
 
   extern int errno;
