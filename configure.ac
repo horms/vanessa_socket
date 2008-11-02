@@ -57,7 +57,7 @@ AC_CHECK_LIB(
 AC_CHECK_LIB(
   popt,
   poptGetContext,
-  pipe_dir="vanessa_socket_pipe",
+  AM_CONDITIONAL(PIPE_BUILD, true),
   AC_MSG_WARN(
     ""
     "**********************************************************************"
@@ -67,7 +67,7 @@ AC_CHECK_LIB(
     "* Proceeding with build of libvanessa_socket."
     "**********************************************************************"
   ) ;
-  pipe_dir="" ;
+  AM_CONDITIONAL(PIPE_BUILD, false)
   sleep 5
 )
 AC_MSG_CHECKING("if stderr and stdio can be reassigned");

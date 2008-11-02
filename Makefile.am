@@ -23,7 +23,11 @@
 #
 ######################################################################
 
-SUBDIRS = libvanessa_socket @pipe_dir@ vanessa_gethostbyname debian
+if PIPE_BUILD
+PIPE_DIR = vanessa_socket_pipe
+endif
+
+SUBDIRS = libvanessa_socket $(PIPE_DIR) vanessa_gethostbyname debian
 
 EXTRA_DIST = autogen.sh
 
