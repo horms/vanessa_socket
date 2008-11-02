@@ -34,8 +34,8 @@ install: build
 
 	$(MAKE) install DESTDIR=$(pwd)/debian/tmp
 
-	./mkinstalldirs \
-	  $(pwd)/debian/tmp/usr/share/doc/libvanessa-socket-dev/ 
+	mkdir -p $(pwd)/debian/tmp/usr/share/doc/libvanessa-socket-dev/
+	chmod 755 $(pwd)/debian/tmp/usr/share/doc/libvanessa-socket-dev/
 	install -c -m 644 ChangeLog \
 	  $(pwd)/debian/tmp/usr/share/doc/libvanessa-socket-dev/changelog
 	gzip --best $(pwd)/debian/tmp/usr/share/doc/libvanessa-socket-dev/changelog
