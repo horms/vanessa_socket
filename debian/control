@@ -9,7 +9,7 @@ Package: libvanessa-socket-dev
 Architecture: any
 Section: libdevel
 Depends: libvanessa-socket0 (= ${binary:Version}), libvanessa-logger-dev (>= 0.0.5)
-Description: Headers and static libraries cor libvanessa_socket
+Description: Headers and static libraries for libvanessa_socket
  Headers and static libraries required to develop against
  libvanessa_socket.
 
