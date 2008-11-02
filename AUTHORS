@@ -2,8 +2,8 @@ AUTHORS
 
 vanessa_socket
 Library to simplify handling of TCP sockets
-Copyright (C) 1999-2008  Horms <horms@verge.net.au>
+Copyright (C) 1999-2008  Simon Horman <horms@verge.net.au>
 ----------------------------------------------------------------------
 
-Horms: <horms@verge.net.au>
-       aka. Simon Horman
+Simon Horman: <horms@verge.net.au>
+       aka. Horms

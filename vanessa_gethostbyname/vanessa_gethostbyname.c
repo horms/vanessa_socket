@@ -1,13 +1,13 @@
 /**********************************************************************
  * gethostbyname.c                                        December 2005
- * Horms                                             horms@verge.net.au
+ * Simon Horman                                      horms@verge.net.au
  *
  * gethostbyname
  * Expose gethostbyname as a shell command 
- * Copyright (C) 1999-2008  Horms <horms@verge.net.au> and others
+ * Copyright (C) 1999-2008  Simon Horman <horms@verge.net.au> and others
  *
  * Based on code from libvanessa_socket and libvanessa_logger
- * Copyright (C) 1999-2005  Horms and others
+ * Copyright (C) 1999-2005  Simon Horman and others
  * http://www.vergenet.net/linux/vanessa/
  * 
  * This library is free software; you can redistribute it and/or
@@ -37,7 +37,7 @@
 
 #define NAME    "vanessa_gethostbyname"
 #define VERSION "0.9.0"
-#define COPYRIGHT "Copyright (C) 1999-2005 by Horms and others"
+#define COPYRIGHT "Copyright (C) 1999-2005 by Simon Horman and others"
 #define WARRANTY                                                             \
 NAME " comes with ABSOLUTELY NO WARRANTY.\n"                                 \
 "This is free software, and you are welcome to redistribute it\n"            \

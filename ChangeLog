@@ -2,11 +2,11 @@ ChangeLog
 
 vanessa_socket
 Library to simplify handling of TCP sockets
-Copyright (C) 1999-2008  Horms <horms@verge.net.au>
+Copyright (C) 1999-2008  Simon Horman <horms@verge.net.au>
 ----------------------------------------------------------------------
 
 22nd February 2007
-(Horms)
+(Simon Horman)
 
   * 0.0.8-rc1
   - Report closure failures
@@ -21,7 +21,7 @@ Copyright (C) 1999-2008  Horms <horms@verge.net.au>
 ----------------------------------------------------------------------
 
 22nd March 2004
-(Horms)
+(Simon Horman)
 
   * 0.0.7
   - Don't call umask in daemon code in vanessa_socket_daemon_process()
@@ -33,7 +33,7 @@ Copyright (C) 1999-2008  Horms <horms@verge.net.au>
 ----------------------------------------------------------------------
 
 15th December 2003
-(Horms)
+(Simon Horman)
 
   * 0.0.6
   - Better logging of faile gethopstbyname() and gethostbyaddr() calls
@@ -46,7 +46,7 @@ Copyright (C) 1999-2008  Horms <horms@verge.net.au>
 ----------------------------------------------------------------------
 
 6th June 2003
-(Horms)
+(Simon Horman)
 
   * 0.0.5
   - No Change
@@ -55,7 +55,7 @@ Copyright (C) 1999-2008  Horms <horms@verge.net.au>
 ----------------------------------------------------------------------
 
 26th March 2003
-(Horms)
+(Simon Horman)
 
   * 0.0.5beta7
   - Compile time check to see if stdio and stderr can be reassigned.
@@ -66,7 +66,7 @@ Copyright (C) 1999-2008  Horms <horms@verge.net.au>
 ----------------------------------------------------------------------
 
 7th February 2003
-(Horms)
+(Simon Horman)
 
   * 0.0.5beta4
   - Made vanessa_socket_accept resistant to SIGPIPE. Russell Corker.
@@ -75,7 +75,7 @@ Copyright (C) 1999-2008  Horms <horms@verge.net.au>
 ----------------------------------------------------------------------
 
 8th January 2003
-(Horms)
+(Simon Horman)
 
   * 0.0.5beta2
   - Packaging fixes
@@ -84,7 +84,7 @@ Copyright (C) 1999-2008  Horms <horms@verge.net.au>
 ----------------------------------------------------------------------
 
 27th December 2002
-(Horms)
+(Simon Horman)
 
   * 0.0.5beta1
   - Since the introduction of non-forking code the noconnections
@@ -122,7 +122,7 @@ Copyright (C) 1999-2008  Horms <horms@verge.net.au>
 ----------------------------------------------------------------------
 
 17th May 2002
-(Horms)
+(Simon Horman)
 
   * 0.0.4
 
@@ -130,7 +130,7 @@ Copyright (C) 1999-2008  Horms <horms@verge.net.au>
 ----------------------------------------------------------------------
 
 11th May 2002
-(Horms)
+(Simon Horman)
 
   * 0.0.4beta4
   - ignore EINTR for accept() in vanessa_socket_server_accept().
@@ -140,7 +140,7 @@ Copyright (C) 1999-2008  Horms <horms@verge.net.au>
 ----------------------------------------------------------------------
 
 30th April 2002
-(Horms)
+(Simon Horman)
 
   * 0.0.4beta3
   - Fix bug in reseting signal hander in vanessa_socket_handler_reaper
@@ -154,7 +154,7 @@ Copyright (C) 1999-2008  Horms <horms@verge.net.au>
 ----------------------------------------------------------------------
 
 24th March 2002
-(Horms)
+(Simon Horman)
 
  * 0.0.4beta2
  - Server code doesn't set SIGCHLD handler to vanessa_socket_server_reaper,
@@ -167,13 +167,13 @@ Copyright (C) 1999-2008  Horms <horms@verge.net.au>
 ----------------------------------------------------------------------
 
 14th March 2002
-(Horms)
+(Simon Horman)
 
  * 0.0.4beta1
  - Added code to detatch from the terminal to become a daemon.
  - include <errno.h> in vanessa_socket_pipe.c.  closes: Debian Bug#108209
  - Fixed minor .spec file errors 
-   Scot W. Hetzel <scot@genroco.com> & Horms
+   Scot W. Hetzel <scot@genroco.com> & Simon Horman
  - Added vanessa_socket_server_bind(), vanessa_socket_server_accept()
    and friends
  - Allow select() function to be supplied to  vanessa_socket_pipe().
@@ -184,7 +184,7 @@ Copyright (C) 1999-2008  Horms <horms@verge.net.au>
 ----------------------------------------------------------------------
 
 29th June 2001
-(Horms)
+(Simon Horman)
 
  * 0.0.3
  - Allow read() and write() functions to be supplied to 
@@ -195,7 +195,7 @@ Copyright (C) 1999-2008  Horms <horms@verge.net.au>
 ----------------------------------------------------------------------
 
 19th April 2001
-(Horms)
+(Simon Horman)
 
  * 0.0.2
  - Fixed problem linking so that it is linked against the
@@ -207,7 +207,7 @@ Copyright (C) 1999-2008  Horms <horms@verge.net.au>
 ----------------------------------------------------------------------
 
 5th April 2001
-(Horms)
+(Simon Horman)
 
  * 0.0.1
  - Fixed problem with -b under BSD ("Erik R. Leo" <erikl@sover.net>)
@@ -225,7 +225,7 @@ Copyright (C) 1999-2008  Horms <horms@verge.net.au>
 ----------------------------------------------------------------------
 
 9th January 2000
-(Horms)
+(Simon Horman)
 
  * version 0.0.0 
  - Added vanessa_socket_client_src_open() and
