@@ -7,7 +7,7 @@
  *
  * vanessa_socket_pipe
  * Trivial TCP/IP pipe based on libvanessa_socket
- * Copyright (C) 1999-2008  Horms
+ * Copyright (C) 1999-2008  Horms <horms@verge.net.au>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
