@@ -16,7 +16,7 @@ Description: Headers and static libraries cor libvanessa_socket
 Package: libvanessa-socket-pipe
 Architecture: any
 Section: devel
-Depends: libvanessa-socket0 (= ${binary:Version}), libc6-dev
+Depends: libvanessa-socket0 (= ${binary:Version}), ${shlibs:Depends}
 Description: User space TCP/IP pipe
  A TCP/IP pipe is a user space programme that listens for TCP/IP
  connections on port on the local host and when a client connects makes a
