@@ -27,7 +27,7 @@ SUBDIRS = libvanessa_socket @pipe_dir@ vanessa_gethostbyname debian
 
 EXTRA_DIST = \
 configure \
-configure.in \
+configure.ac \
 README \
 TODO \
 INSTALL.in \
