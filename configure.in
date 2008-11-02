@@ -20,7 +20,7 @@ AC_INIT(libvanessa_socket/vanessa_socket.h)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(vanessa_socket, 0.0.8-rc1)
 
-AM_PROG_LIBTOOL
+AC_PROG_LIBTOOL
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LN_S
