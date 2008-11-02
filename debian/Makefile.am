@@ -26,6 +26,7 @@
 m4datadir = $(datadir)/aclocal
 EXTRA_DIST = \
 changelog \
+compat \
 control \
 copyright \
 libvanessa-socket-dev.dirs \
