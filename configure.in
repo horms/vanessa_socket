@@ -75,7 +75,8 @@ AC_MSG_CHECKING("if stderr and stdio can be reassigned");
 AC_TRY_COMPILE(
         [#include <stdio.h>],
         [stdout=fdopen(1, "a");],
-        [AC_MSG_RESULT("yes"); AC_DEFINE(WITH_REASSIGN_IO) ],
+        [AC_MSG_RESULT("yes")
+	 AC_DEFINE(WITH_REASSIGN_IO, 1, [Can stdio and stderr be reassigned]) ],
         AC_MSG_RESULT("no")
 )
 
