@@ -25,15 +25,7 @@
 
 SUBDIRS = libvanessa_socket @pipe_dir@ vanessa_gethostbyname debian
 
-EXTRA_DIST = \
-configure \
-configure.ac \
-README \
-TODO \
-INSTALL.in \
-INSTALL \
-vanessa_socket.spec.in \
-vanessa_socket.spec
+EXTRA_DIST = autogen.sh
 
 clean-local:
 	rm -f build-stamp
