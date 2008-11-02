@@ -4,7 +4,7 @@
 #
 # gethostbyname
 # Expose gethostbyname as a shell command 
-# Copyright (C) 1999-2005  Horms and others
+# Copyright (C) 1999-2008  Horms and others
 #
 # Based on code from libvanessa_socket and libvanessa_logger
 # Copyright (C) 1999-2005  Horms and others
