@@ -95,13 +95,15 @@ int vanessa_socket_server_bind(const char *port,
 			close(s);
 			continue;
 		}
-		if ((listen(s, SOMAXCONN)))
-			return s;
-		VANESSA_LOGGER_DEBUG_ERRNO("listen");
-		close(s);
+		if (!(listen(s, SOMAXCONN))) {
+			VANESSA_LOGGER_DEBUG_ERRNO("listen");
+			close(s);
+			continue;
+		}
+		return s;
 	} while ((res = res->ai_next));
 
-	VANESSA_LOGGER_DEBUG("vanessa_socket_server_bind");
+	VANESSA_LOGGER_DEBUG("could not bind to any of the supplied addresses");
 	return -1;
 }
 
