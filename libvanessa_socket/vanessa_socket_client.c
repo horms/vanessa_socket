@@ -233,6 +233,11 @@ int vanessa_socket_client_src_open(const char *src_host,
 				return s;
 			VANESSA_LOGGER_DEBUG_ERRNO("connect");
 		} while (src_ai && (src_ai = src_ai->ai_next));
+
+		if (close(out)) {
+			VANESSA_LOGGER_DEBUG_ERRNO("close");
+			return -1;
+		}
 	} while ((dst_res = dst_res->ai_next));
 
 	VANESSA_LOGGER_DEBUG("vanessa_socket_client_src_open");
