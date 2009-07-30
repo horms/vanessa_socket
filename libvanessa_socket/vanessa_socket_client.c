@@ -185,59 +185,58 @@ int vanessa_socket_client_src_open(const char *src_host,
 	src_res = NULL;
 	/* Get sockaddr list for source address */
 	if (!(flag & VANESSA_SOCKET_NO_FROM)) {
-		bzero( &hints, sizeof hints );
+		bzero(&hints, sizeof(hints));
 		hints.ai_family = AF_UNSPEC;
 		hints.ai_socktype = SOCK_STREAM;
-		if ( getaddrinfo( src_host, src_port, &hints, &src_res )
-		     != 0 ) {
+		if ((getaddrinfo(src_host, src_port, &hints, &src_res))) {
 			VANESSA_LOGGER_DEBUG("getaddrinfo src");
-			return (-1);
+			return -1;
 		}
 	}
 
 	/* Get sockaddr list for destination address */
-	bzero( &hints, sizeof hints );
+	bzero(&hints, sizeof(hints));
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
-	if ( getaddrinfo( dst_host, dst_port, &hints, &dst_res ) != 0 ) {
+	if ((getaddrinfo(dst_host, dst_port, &hints, &dst_res))) {
 		VANESSA_LOGGER_DEBUG("getaddrinfo dst");
-		return (-1);
+		return -1;
 	}
 
 	/* Try all combinations of destination and source until we get a
-	   connection. */
+	 * connection.
+	 */
 	do {
 		/* Create socket */
-		if ( (s = socket( dst_res->ai_family, dst_res->ai_socktype,
-				  dst_res->ai_protocol )) < 0) {
+		if ( (s = socket(dst_res->ai_family, dst_res->ai_socktype,
+				 dst_res->ai_protocol)) < 0) {
 			VANESSA_LOGGER_DEBUG_ERRNO("socket");
 			continue;
 		}
 
 		src_ai = src_res;
 		/* Run through this loop at least once even if there is no 
-		   explicit source address. */
+		 * explicit source address.
+		 */
 		do {
-			if ( src_ai != NULL ) {
+			if (src_ai) {
 				/* Bind source address to socket */
-				if ( bind( s, src_ai->ai_addr,
-					   src_ai->ai_addrlen ) < 0 ) {
+				if (bind(s, src_ai->ai_addr,
+					 src_ai->ai_addrlen) < 0 ) {
 					VANESSA_LOGGER_DEBUG_ERRNO("bind");
 					continue;
 				}
 			}
 			/* Connect to destination server */
-			if ( connect( s, dst_res->ai_addr,
-				      dst_res->ai_addrlen ) == 0 )
-				return (s);
+			if (connect(s, dst_res->ai_addr,
+				    dst_res->ai_addrlen) == 0)
+				return s;
 			VANESSA_LOGGER_DEBUG_ERRNO("connect");
-			if ( src_ai == NULL ) break;
-		} while ( (src_ai = src_ai->ai_next) != NULL );
-
-	} while ( (dst_res = dst_res->ai_next) != NULL );
+		} while (src_ai && (src_ai = src_ai->ai_next));
+	} while ((dst_res = dst_res->ai_next));
 
 	VANESSA_LOGGER_DEBUG("vanessa_socket_client_src_open");
-	return (-1);
+	return -1;
 }
 
 
