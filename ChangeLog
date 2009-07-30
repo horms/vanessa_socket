@@ -5,6 +5,12 @@ Library to simplify handling of TCP sockets
 Copyright (C) 1999-2008  Simon Horman <horms@verge.net.au>
 ----------------------------------------------------------------------
 
+XXX
+(XXX)
+
+  * XXX
+  - Add IPv6 support. Thanks to Antonio Querubin <tony@lava.net>
+
 22nd February 2007
 (Simon Horman)
 
