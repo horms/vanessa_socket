@@ -230,18 +230,22 @@ int vanessa_socket_client_src_open(const char *src_host,
 			/* Connect to destination server */
 			if (connect(s, dst_res->ai_addr,
 				    dst_res->ai_addrlen) == 0)
-				return s;
+				goto out;
 			VANESSA_LOGGER_DEBUG_ERRNO("connect");
 		} while (src_ai && (src_ai = src_ai->ai_next));
 
 		if (close(out)) {
 			VANESSA_LOGGER_DEBUG_ERRNO("close");
-			return -1;
+			goto err;
 		}
 	} while ((dst_res = dst_res->ai_next));
 
 	VANESSA_LOGGER_DEBUG("vanessa_socket_client_src_open");
-	return -1;
+err:
+	out = -1;
+out:
+	freeaddrinfo(tores);
+	return s;
 }
 
 
