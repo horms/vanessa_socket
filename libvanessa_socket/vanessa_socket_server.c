@@ -59,52 +59,50 @@ int vanessa_socket_server_bind(const char *port,
 	hints.ai_flags = AI_PASSIVE;
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
-	if ( getaddrinfo( interface_address, port, &hints, &res ) != 0 ) {
+	if ( !(getaddrinfo(interface_address, port, &hints, &res)) ) {
 		VANESSA_LOGGER_DEBUG("getaddrinfo listen");
-		return (-1);
+		return -1;
 	}
 
 	/* Loop through all returned addrinfo until we successfully listen */
 	do {
-		if ( (s = socket( res->ai_family, res->ai_socktype,
-				  res->ai_protocol )) < 0 ) {
+		if ((s = socket(res->ai_family, res->ai_socktype,
+				res->ai_protocol)) < 0) {
 			VANESSA_LOGGER_DEBUG_ERRNO("socket");
 			continue;
 		}
-	        /*
-	         * Set SO_REUSEADDR on the server socket s. Variable g is used
-	         * as a scratch varable.
+	        /* Set SO_REUSEADDR on the server socket s.
+		 * Variable g is used as a scratch varable.
 	         */
-        	g = 1;
-        	if ( setsockopt( s, SOL_SOCKET, SO_REUSEADDR, (void *) &g,
-				 sizeof g) < 0 ) {
+		g = 1;
+		if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (void *)&g,
+			       sizeof(g)) < 0) {
 			VANESSA_LOGGER_DEBUG_ERRNO("setsockopt");
 			close(s);
 			continue;
 		}
 #ifdef SO_BINDANY
 		g = 1;
-		if ( setsockopt( s, SOL_SOCKET, SO_BINDANY, (void *) &g, 
-				 sizeof g ) < 0 ) {
+		if (setsockopt(s, SOL_SOCKET, SO_BINDANY, (void *)&g,
+			       sizeof(g)) < 0) {
 			VANESSA_LOGGER_DEBUG_ERRNO("setsockopt");
 			close(s);
 			continue;
 		}
 #endif
-		if ( bind( s, res->ai_addr, res->ai_addrlen ) < 0 ) {
+		if (bind(s, res->ai_addr, res->ai_addrlen) < 0) {
 			VANESSA_LOGGER_DEBUG_ERRNO("bind");
 			close(s);
 			continue;
 		}
-		if ( listen( s, SOMAXCONN ) == 0 ) {
-			return (s);
-		}
+		if ((listen(s, SOMAXCONN)))
+			return s;
 		VANESSA_LOGGER_DEBUG_ERRNO("listen");
 		close(s);
-	} while ( (res = res->ai_next) != NULL );
+	} while ((res = res->ai_next));
 
 	VANESSA_LOGGER_DEBUG("vanessa_socket_server_bind");
-	return (-1);
+	return -1;
 }
 
 
