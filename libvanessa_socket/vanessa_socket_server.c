@@ -108,10 +108,12 @@ int vanessa_socket_server_bind(const char *port,
 	} while ((res = res->ai_next));
 
 	VANESSA_LOGGER_DEBUG("could not bind to any of the supplied addresses");
+	freeaddrinfo(res);
 	return -1;
 
 err_close:
 	VANESSA_LOGGER_DEBUG_ERRNO("close");
+	freeaddrinfo(res);
 	return -1;
 }
 
