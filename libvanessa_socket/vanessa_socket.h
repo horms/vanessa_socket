@@ -47,6 +47,10 @@
 
 #include <vanessa_logger.h>
 
+#ifndef SOMAXCONN
+#define SOMAXCONN 5
+#endif
+
 /* Needed for Solaris */
 #ifdef sun
 #define timeradd(a, b, result)                                                \
@@ -600,10 +604,10 @@ vanessa_socket_closev(int *sockv);
  *                           to handle. If 0 then an number of connections 
  *                           is unlimited.
  *                           Not used if flag is VANESSA_SOCKET_NO_FORK
- *      return_from: pointer to a struct_in addr where the 
+ *      return_from: pointer to a struct sockaddr where the 
  *                   connecting client's IP address will
  *                   be placed. Ignored if NULL
- *      return_to: pointer to a in addr where the IP address the 
+ *      return_to: pointer to a struct sockaddr where the IP address the 
  *                 server accepted the connection on will be placed.
  *                 Ignored if NULL
  *      flag: If VANESSA_SOCKET_NO_FORK then the process does not fork
@@ -618,8 +622,8 @@ vanessa_socket_closev(int *sockv);
 
 int vanessa_socket_server_accept(int listen_socket,
 				      const unsigned int maximum_connections,
-				      struct sockaddr_in *return_from, 
-				      struct sockaddr_in *return_to,
+				      struct sockaddr *return_from, 
+				      struct sockaddr *return_to,
 				      vanessa_socket_flag_t flag);
 
 
@@ -640,10 +644,10 @@ int vanessa_socket_server_accept(int listen_socket,
  *                           to handle. If 0 then an number of connections 
  *                           is unlimited.
  *                           Not used if flag is VANESSA_SOCKET_NO_FORK
- *      return_from: pointer to a struct_in addr where the 
+ *      return_from: pointer to a struct sockaddr where the 
  *                   connecting client's IP address will
  *                   be placed. Ignored if NULL
- *      return_to: pointer to a in addr where the IP address the 
+ *      return_to: pointer to a struct sockaddr where the IP address the 
  *                 server accepted the connection on will be placed.
  *                 Ignored if NULL
  *      flag: If VANESSA_SOCKET_NO_FORK then the process does not fork
@@ -659,8 +663,8 @@ int vanessa_socket_server_accept(int listen_socket,
 int 
 vanessa_socket_server_acceptv(int *listen_socketv,
 				      const unsigned int maximum_connections,
-				      struct sockaddr_in *return_from, 
-				      struct sockaddr_in *return_to,
+				      struct sockaddr *return_from, 
+				      struct sockaddr *return_to,
 				      vanessa_socket_flag_t flag);
 
 

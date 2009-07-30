@@ -153,7 +153,7 @@ int vanessa_socket_client_open_src_sockaddr_in(struct sockaddr_in from,
 /**********************************************************************
  * vanessa_socket_client_src_open
  * Open a socket connection as a client
- * pre: src_host: hostname or ipaddress to open socket to
+ * pre: src_host: hostname or ipaddress to open socket from
  *                If NULL then the operating system will select
  *                an appropriate source address.
  *      src_port: name or number to open
@@ -180,39 +180,64 @@ int vanessa_socket_client_src_open(const char *src_host,
 				   const vanessa_socket_flag_t flag)
 {
 	int s;
-	struct sockaddr_in to;
-	struct sockaddr_in from;
+	struct addrinfo hints, *dst_res, *src_res, *src_ai;
 
-	/* Fill in port information for 'from' */
-	memset((struct sockaddr *) &from, 0, sizeof(from));
+	src_res = NULL;
+	/* Get sockaddr list for source address */
 	if (!(flag & VANESSA_SOCKET_NO_FROM)) {
-		if (vanessa_socket_host_port_sockaddr_in
-		    (src_host, src_port, &from, flag) < 0) {
-			VANESSA_LOGGER_DEBUG
-			    ("vanessa_socket_host_port_sockaddr_in from");
+		bzero( &hints, sizeof hints );
+		hints.ai_family = AF_UNSPEC;
+		hints.ai_socktype = SOCK_STREAM;
+		if ( getaddrinfo( src_host, src_port, &hints, &src_res )
+		     != 0 ) {
+			VANESSA_LOGGER_DEBUG("getaddrinfo src");
 			return (-1);
 		}
 	}
 
-	/* Fill in port information for 'to' */
-	memset((struct sockaddr *) &to, 0, sizeof(to));
-	if (vanessa_socket_host_port_sockaddr_in
-	    (dst_host, dst_port, &to, flag) < 0) {
-		VANESSA_LOGGER_DEBUG
-		    ("vanessa_socket_host_port_sockaddr_in to");
+	/* Get sockaddr list for destination address */
+	bzero( &hints, sizeof hints );
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	if ( getaddrinfo( dst_host, dst_port, &hints, &dst_res ) != 0 ) {
+		VANESSA_LOGGER_DEBUG("getaddrinfo dst");
 		return (-1);
 	}
 
-	/* Set up connection */
-	if ((s =
-	     vanessa_socket_client_open_src_sockaddr_in(from, to,
-							flag)) < 0) {
-		VANESSA_LOGGER_DEBUG
-		    ("vanessa_socket_client_open_sockaddr_in");
-		return (-1);
-	}
+	/* Try all combinations of destination and source until we get a
+	   connection. */
+	do {
+		/* Create socket */
+		if ( (s = socket( dst_res->ai_family, dst_res->ai_socktype,
+				  dst_res->ai_protocol )) < 0) {
+			VANESSA_LOGGER_DEBUG_ERRNO("socket");
+			continue;
+		}
 
-	return (s);
+		src_ai = src_res;
+		/* Run through this loop at least once even if there is no 
+		   explicit source address. */
+		do {
+			if ( src_ai != NULL ) {
+				/* Bind source address to socket */
+				if ( bind( s, src_ai->ai_addr,
+					   src_ai->ai_addrlen ) < 0 ) {
+					VANESSA_LOGGER_DEBUG_ERRNO("bind");
+					continue;
+				}
+			}
+			/* Connect to destination server */
+			if ( connect( s, dst_res->ai_addr,
+				      dst_res->ai_addrlen ) == 0 )
+				return (s);
+			VANESSA_LOGGER_DEBUG_ERRNO("connect");
+			if ( src_ai == NULL ) break;
+		} while ( (src_ai = src_ai->ai_next) != NULL );
+
+	} while ( (dst_res = dst_res->ai_next) != NULL );
+
+	VANESSA_LOGGER_DEBUG("vanessa_socket_client_src_open");
+	return (-1);
 }
 
 

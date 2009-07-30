@@ -51,24 +51,60 @@ int vanessa_socket_server_bind(const char *port,
 				     const char *interface_address,
 				     vanessa_socket_flag_t flag)
 {
-	int s;
-	struct sockaddr_in from;
+	int s, g;
+	struct addrinfo hints, *res;
 
-	/* Fill in informtaion for 'from' */
-	if (vanessa_socket_host_port_sockaddr_in(interface_address,
-						 port, &from, flag) < 0) {
-		VANESSA_LOGGER_DEBUG("vanessa_socket_host_port_sockaddr_in");
+	/* Get addrinfo list for the listening address */
+	bzero( &hints, sizeof hints );
+	hints.ai_flags = AI_PASSIVE;
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	if ( getaddrinfo( interface_address, port, &hints, &res ) != 0 ) {
+		VANESSA_LOGGER_DEBUG("getaddrinfo listen");
 		return (-1);
 	}
 
-	/* Make the connection */
-	s = vanessa_socket_server_bind_sockaddr_in(from, flag); 
-	if (s < 0) {
-		VANESSA_LOGGER_DEBUG("vanessa_socket_server_bind");
-		return (-1);
-	}
+	/* Loop through all returned addrinfo until we successfully listen */
+	do {
+		if ( (s = socket( res->ai_family, res->ai_socktype,
+				  res->ai_protocol )) < 0 ) {
+			VANESSA_LOGGER_DEBUG_ERRNO("socket");
+			continue;
+		}
+	        /*
+	         * Set SO_REUSEADDR on the server socket s. Variable g is used
+	         * as a scratch varable.
+	         */
+        	g = 1;
+        	if ( setsockopt( s, SOL_SOCKET, SO_REUSEADDR, (void *) &g,
+				 sizeof g) < 0 ) {
+			VANESSA_LOGGER_DEBUG_ERRNO("setsockopt");
+			close(s);
+			continue;
+		}
+#ifdef SO_BINDANY
+		g = 1;
+		if ( setsockopt( s, SOL_SOCKET, SO_BINDANY, (void *) &g, 
+				 sizeof g ) < 0 ) {
+			VANESSA_LOGGER_DEBUG_ERRNO("setsockopt");
+			close(s);
+			continue;
+		}
+#endif
+		if ( bind( s, res->ai_addr, res->ai_addrlen ) < 0 ) {
+			VANESSA_LOGGER_DEBUG_ERRNO("bind");
+			close(s);
+			continue;
+		}
+		if ( listen( s, SOMAXCONN ) == 0 ) {
+			return (s);
+		}
+		VANESSA_LOGGER_DEBUG_ERRNO("listen");
+		close(s);
+	} while ( (res = res->ai_next) != NULL );
 
-	return (s);
+	VANESSA_LOGGER_DEBUG("vanessa_socket_server_bind");
+	return (-1);
 }
 
 
@@ -277,10 +313,10 @@ vanessa_socket_closev(int *sockv)
  *                           to handle. If 0 then an number of connections 
  *                           is unlimited.
  *                           Not used if flag is VANESSA_SOCKET_NO_FORK
- *      return_from: pointer to a struct_in addr where the 
+ *      return_from: pointer to a struct sockaddr where the 
  *                   connecting client's IP address will
  *                   be placed. Ignored if NULL
- *      return_to: pointer to a in addr where the IP address the 
+ *      return_to: pointer to a struct sockaddr where the IP address the 
  *                 server accepted the connection on will be placed.
  *                 Ignored if NULL
  *      flag: If VANESSA_SOCKET_NO_FORK then the process does not fork
@@ -299,13 +335,13 @@ vanessa_socket_closev(int *sockv)
 static pid_t 
 __vanessa_socket_server_accept(int *g, int listen_socket, int *listen_socketv,
 				      const unsigned int maximum_connections,
-				      struct sockaddr_in *return_from, 
-				      struct sockaddr_in *return_to,
+				      struct sockaddr *return_from, 
+				      struct sockaddr *return_to,
 				      vanessa_socket_flag_t flag)
 {
 	unsigned int addrlen;
 	pid_t child = 0;
-	struct sockaddr_in from;
+	struct sockaddr_storage from;
 
 	extern unsigned int noconnection;
 
@@ -365,8 +401,9 @@ __vanessa_socket_server_accept(int *g, int listen_socket, int *listen_socketv,
 		}
 	}
 
+	/* 'from', 'return_to', and 'return_from' are in the same address
+	   family so the sockaddr lengths are identical. */
 	if (return_to) {
-		addrlen = sizeof(struct sockaddr_in);
 		if (getsockname (*g, (struct sockaddr *) return_to, 
 				&addrlen) < 0) { 
 			VANESSA_LOGGER_DEBUG_ERRNO("getsockname"); 
@@ -375,7 +412,7 @@ __vanessa_socket_server_accept(int *g, int listen_socket, int *listen_socketv,
 	}
 
 	if (return_from)
-		memcpy(return_from, &from, sizeof(from));
+		memcpy(return_from, &from, addrlen);
 
 	return 0;
 err:
@@ -388,8 +425,8 @@ err:
 
 int vanessa_socket_server_accept(int listen_socket,
 				      const unsigned int maximum_connections,
-				      struct sockaddr_in *return_from, 
-				      struct sockaddr_in *return_to,
+				      struct sockaddr *return_from, 
+				      struct sockaddr *return_to,
 				      vanessa_socket_flag_t flag)
 {
 	pid_t child;
@@ -431,10 +468,10 @@ int vanessa_socket_server_accept(int listen_socket,
  *                           to handle. If 0 then an number of connections 
  *                           is unlimited.
  *                           Not used if flag is VANESSA_SOCKET_NO_FORK
- *      return_from: pointer to a struct_in addr where the 
+ *      return_from: pointer to a struct sockaddr where the 
  *                   connecting client's IP address will
  *                   be placed. Ignored if NULL
- *      return_to: pointer to a in addr where the IP address the 
+ *      return_to: pointer to a struct sockaddr where the IP address the 
  *                 server accepted the connection on will be placed.
  *                 Ignored if NULL
  *      flag: If VANESSA_SOCKET_NO_FORK then the process does not fork
@@ -450,8 +487,8 @@ int vanessa_socket_server_accept(int listen_socket,
 static int
 __vanessa_socket_server_acceptv(int *g, int listen_socket, int *listen_socketv,
 			       const unsigned int maximum_connections,
-			       struct sockaddr_in *return_from, 
-			       struct sockaddr_in *return_to,
+			       struct sockaddr *return_from, 
+			       struct sockaddr *return_to,
 			       vanessa_socket_flag_t flag)
 {
 	long opt;
@@ -506,8 +543,8 @@ __vanessa_socket_server_acceptv(int *g, int listen_socket, int *listen_socketv,
 int 
 vanessa_socket_server_acceptv(int *listen_socketv,
 				      const unsigned int maximum_connections,
-				      struct sockaddr_in *return_from, 
-				      struct sockaddr_in *return_to,
+				      struct sockaddr *return_from, 
+				      struct sockaddr *return_to,
 				      vanessa_socket_flag_t flag)
 {
 	int g;
@@ -745,7 +782,9 @@ vanessa_socket_server_connect_sockaddr_in(struct sockaddr_in from,
 	}
 
 	g = vanessa_socket_server_accept(s, maximum_connections, 
-					 return_from, return_to, 0);
+					 (struct sockaddr *) return_from, 
+					 (struct sockaddr *) return_to,
+					 0);
 	if(g < 0) {
 		VANESSA_LOGGER_DEBUG("vanessa_socket_server_accept");
 		if (close(g) < 0)
