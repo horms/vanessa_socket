@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 Package: libvanessa-socket-dev
 Architecture: any
 Section: libdevel
-Depends: libvanessa-socket0 (= ${binary:Version}), libvanessa-logger-dev (>= 0.0.5)
+Depends: libvanessa-socket1 (= ${binary:Version}), libvanessa-logger-dev (>= 0.0.5)
 Description: Headers and static libraries for libvanessa_socket
  Headers and static libraries required to develop against
  libvanessa_socket.
@@ -16,7 +16,7 @@ Description: Headers and static libraries for libvanessa_socket
 Package: libvanessa-socket-pipe
 Architecture: any
 Section: devel
-Depends: libvanessa-socket0 (= ${binary:Version}), ${shlibs:Depends}
+Depends: libvanessa-socket1 (= ${binary:Version}), ${shlibs:Depends}
 Description: User space TCP/IP pipe
  A TCP/IP pipe is a user space programme that listens for TCP/IP
  connections on port on the local host and when a client connects makes a
@@ -30,7 +30,7 @@ Description: User space TCP/IP pipe
  This code is intended primarily as an example of how many of the features
  of libvanessa_socket work.
 
-Package: libvanessa-socket0
+Package: libvanessa-socket1
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}
