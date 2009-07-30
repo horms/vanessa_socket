@@ -78,7 +78,8 @@ int vanessa_socket_server_bind(const char *port,
 		if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (void *)&g,
 			       sizeof(g)) < 0) {
 			VANESSA_LOGGER_DEBUG_ERRNO("setsockopt");
-			close(s);
+			if (close(s))
+				goto err_close;
 			continue;
 		}
 #ifdef SO_BINDANY
@@ -86,24 +87,31 @@ int vanessa_socket_server_bind(const char *port,
 		if (setsockopt(s, SOL_SOCKET, SO_BINDANY, (void *)&g,
 			       sizeof(g)) < 0) {
 			VANESSA_LOGGER_DEBUG_ERRNO("setsockopt");
-			close(s);
+			if (close(s))
+				goto err_close;
 			continue;
 		}
 #endif
 		if (bind(s, res->ai_addr, res->ai_addrlen) < 0) {
 			VANESSA_LOGGER_DEBUG_ERRNO("bind");
-			close(s);
+			if (close(s))
+				goto err_close;
 			continue;
 		}
 		if (!(listen(s, SOMAXCONN))) {
 			VANESSA_LOGGER_DEBUG_ERRNO("listen");
-			close(s);
+			if (close(s))
+				goto err_close;
 			continue;
 		}
 		return s;
 	} while ((res = res->ai_next));
 
 	VANESSA_LOGGER_DEBUG("could not bind to any of the supplied addresses");
+	return -1;
+
+err_close:
+	VANESSA_LOGGER_DEBUG_ERRNO("close");
 	return -1;
 }
 
