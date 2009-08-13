@@ -51,7 +51,7 @@ int vanessa_socket_server_bind(const char *port,
 				     const char *interface_address,
 				     vanessa_socket_flag_t flag)
 {
-	int s, g;
+	int s, g, err;
 	struct addrinfo hints, *res;
 
 	/* Get addrinfo list for the listening address */
@@ -59,8 +59,14 @@ int vanessa_socket_server_bind(const char *port,
 	hints.ai_flags = AI_PASSIVE;
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
-	if ( !(getaddrinfo(interface_address, port, &hints, &res)) ) {
-		VANESSA_LOGGER_DEBUG("getaddrinfo listen");
+
+	err = getaddrinfo(interface_address, port, &hints, &res);
+	if (err) {
+		if (err == EAI_SYSTEM)
+			VANESSA_LOGGER_DEBUG_ERRNO("getaddrinfo");
+		else
+			VANESSA_LOGGER_DEBUG_UNSAFE("getaddrinfo: %s",
+						    gai_strerror(err));
 		return -1;
 	}
 
