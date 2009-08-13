@@ -179,7 +179,7 @@ int vanessa_socket_client_src_open(const char *src_host,
 				   const char *dst_port,
 				   const vanessa_socket_flag_t flag)
 {
-	int s;
+	int s, err;
 	struct addrinfo hints, *dst_res, *dst_ai, *src_res, *src_ai;
 
 	src_res = NULL;
@@ -188,8 +188,14 @@ int vanessa_socket_client_src_open(const char *src_host,
 		bzero(&hints, sizeof(hints));
 		hints.ai_family = AF_UNSPEC;
 		hints.ai_socktype = SOCK_STREAM;
-		if ((getaddrinfo(src_host, src_port, &hints, &src_res))) {
-			VANESSA_LOGGER_DEBUG("getaddrinfo src");
+		err = getaddrinfo(src_host, src_port, &hints, &src_res);
+		if (err) {
+			if (err == EAI_SYSTEM)
+				VANESSA_LOGGER_DEBUG_ERRNO("getaddrinfo src");
+			else
+				VANESSA_LOGGER_DEBUG_UNSAFE("getaddrinfo src: "
+							    "%s",
+							    gai_strerror(err));
 			return -1;
 		}
 	}
@@ -198,8 +204,13 @@ int vanessa_socket_client_src_open(const char *src_host,
 	bzero(&hints, sizeof(hints));
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
-	if ((getaddrinfo(dst_host, dst_port, &hints, &dst_res))) {
-		VANESSA_LOGGER_DEBUG("getaddrinfo dst");
+	err = getaddrinfo(dst_host, dst_port, &hints, &dst_res);
+	if (err) {
+		if (err == EAI_SYSTEM)
+			VANESSA_LOGGER_DEBUG_ERRNO("getaddrinfo dst");
+		else
+			VANESSA_LOGGER_DEBUG_UNSAFE("getaddrinfo dst: %s",
+						    gai_strerror(err));
 		return -1;
 	}
 
