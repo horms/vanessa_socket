@@ -180,7 +180,7 @@ int vanessa_socket_client_src_open(const char *src_host,
 				   const vanessa_socket_flag_t flag)
 {
 	int s;
-	struct addrinfo hints, *dst_res, *src_res, *src_ai;
+	struct addrinfo hints, *dst_res, *dst_ai, *src_res, *src_ai;
 
 	src_res = NULL;
 	/* Get sockaddr list for source address */
@@ -206,6 +206,7 @@ int vanessa_socket_client_src_open(const char *src_host,
 	/* Try all combinations of destination and source until we get a
 	 * connection.
 	 */
+	dst_ai = dst_res;
 	do {
 		/* Create socket */
 		if ( (s = socket(dst_res->ai_family, dst_res->ai_socktype,
@@ -234,17 +235,18 @@ int vanessa_socket_client_src_open(const char *src_host,
 			VANESSA_LOGGER_DEBUG_ERRNO("connect");
 		} while (src_ai && (src_ai = src_ai->ai_next));
 
-		if (close(out)) {
+		if (close(s)) {
 			VANESSA_LOGGER_DEBUG_ERRNO("close");
 			goto err;
 		}
-	} while ((dst_res = dst_res->ai_next));
+	} while (dst_ai && (dst_ai = dst_ai->ai_next));
 
 	VANESSA_LOGGER_DEBUG("vanessa_socket_client_src_open");
 err:
-	out = -1;
+	s = -1;
 out:
-	freeaddrinfo(tores);
+	freeaddrinfo(dst_res);
+	freeaddrinfo(src_res);
 	return s;
 }
 
