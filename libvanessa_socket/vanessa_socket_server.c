@@ -104,7 +104,7 @@ int vanessa_socket_server_bind(const char *port,
 				goto err_close;
 			continue;
 		}
-		if (!(listen(s, SOMAXCONN))) {
+		if ((listen(s, SOMAXCONN))) {
 			VANESSA_LOGGER_DEBUG_ERRNO("listen");
 			if (close(s))
 				goto err_close;
