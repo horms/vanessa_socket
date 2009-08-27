@@ -191,10 +191,14 @@ int vanessa_socket_client_src_open(const char *src_host,
 		err = getaddrinfo(src_host, src_port, &hints, &src_res);
 		if (err) {
 			if (err == EAI_SYSTEM)
-				VANESSA_LOGGER_DEBUG_ERRNO("getaddrinfo src");
+				VANESSA_LOGGER_DEBUG_UNSAFE("getaddrinfo src: "
+							    "\"%s\" \"%s\": %s",
+							    src_host, src_port,
+							    strerror(errno));
 			else
 				VANESSA_LOGGER_DEBUG_UNSAFE("getaddrinfo src: "
-							    "%s",
+							    "\"%s\" \"%s\": %s",
+							    src_host, src_port,
 							    gai_strerror(err));
 			return -1;
 		}
@@ -207,9 +211,14 @@ int vanessa_socket_client_src_open(const char *src_host,
 	err = getaddrinfo(dst_host, dst_port, &hints, &dst_res);
 	if (err) {
 		if (err == EAI_SYSTEM)
-			VANESSA_LOGGER_DEBUG_ERRNO("getaddrinfo dst");
+			VANESSA_LOGGER_DEBUG_UNSAFE("getaddrinfo dst: "
+						    "\"%s\" \"%s\": %s",
+						    dst_host, dst_port,
+						    strerror(errno));
 		else
-			VANESSA_LOGGER_DEBUG_UNSAFE("getaddrinfo dst: %s",
+			VANESSA_LOGGER_DEBUG_UNSAFE("getaddrinfo dst: "
+						    "\"%s\" \"%s\": %s",
+						    dst_host, dst_port,
 						    gai_strerror(err));
 		return -1;
 	}
