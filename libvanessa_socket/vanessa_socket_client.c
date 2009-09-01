@@ -184,7 +184,7 @@ int vanessa_socket_client_src_open(const char *src_host,
 
 	src_res = NULL;
 	/* Get sockaddr list for source address */
-	if (!(flag & VANESSA_SOCKET_NO_FROM)) {
+	if ((src_host || src_port) && !(flag & VANESSA_SOCKET_NO_FROM)) {
 		bzero(&hints, sizeof(hints));
 		hints.ai_family = AF_UNSPEC;
 		hints.ai_socktype = SOCK_STREAM;
