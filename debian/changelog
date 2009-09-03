@@ -2,7 +2,7 @@ vanessa-socket (0.0.8-1) unstable; urgency=low
 
   * New Upstream
 
- -- Simon Horman <horms@debian.org>  Thu, 13 Aug 2009 19:51:06 +1000
+ -- Simon Horman <horms@debian.org>  Thu, 03 Sep 2009 17:32:47 +1000
 
 vanessa-socket (0.0.7-2) unstable; urgency=low
 
