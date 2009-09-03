@@ -2,14 +2,83 @@ ChangeLog
 
 vanessa_socket
 Library to simplify handling of TCP sockets
-Copyright (C) 1999-2008  Simon Horman <horms@verge.net.au>
+Copyright (C) 1999-2009  Simon Horman <horms@verge.net.au>
 ----------------------------------------------------------------------
 
-XXX
-(XXX)
+3rd September 2009
+(Simon Horman)
 
-  * XXX
-  - Add IPv6 support. Thanks to Antonio Querubin <tony@lava.net>
+  * 0.0.8
+  - Debian: update versioned dependancy on libvanessa-logger-dev to 0.0.8
+  - Debian: Don't include GPL and LGPL preamble in Debian changelog
+  - Debian: Changes standards version to 3.8.3
+  - vanessa_socket_client_src_open(): only look up the src host and port as needed
+  - LT_CONFIG_LTDL_DIR appears to be incompatible with libtool 2
+  - getaddrinfo: report host and port in error message
+  - Build: autogen.sh: Call automake after autoconf so Makefile.in files are generated
+  - Build: Don't use AC_CONFIG_AUX_DIR
+  - vanessa_socket_client_src_open: enhance getaddrinfo() error handling
+  - vanessa_socket_server_bind(): fix listen() error handling
+  - vanessa_socket_server_bind(): fix getaddrinfo() error handling
+  - Debian: Update changelog timestamp
+  - Debian: use debhelper 7
+  - Don't track debian/Makefile
+  - Debian: Update standards version to 3.8.2
+  - Resolve various libtoolize warnings
+  - vanessa_socket_client_src_open(): missing variables and memory leak
+  - Debian: Update packaging for libvanessa-socket1
+  - Increase library interface major number from 0 to 1
+  - ipv6: Add IPv6 to changelog
+  - ipv6: Report close() errors in vanessa_socket_server_bind()
+  - ipv6: Report close() errors in vanessa_socket_server_bind()
+  - ipv6: Make return the last action of the loop in vanessa_socket_server_bind()
+  - ipv6: Coding style changes in vanessa_socket_server_bind()
+  - ipv6: addrinfo leak in vanessa_socket_client_src_open()
+  - ipv6: file descriptor leak in vanessa_socket_client_src_open()
+  - ipv6: Coding-style update for IPv6 changes
+  - ipv6: Add IPv6 support
+  - Debian: Update shlibs for 0.0.8
+  - Debian: remove stale package files
+  - Debian: Use debhelper compat version 4
+  - Debian: Don't use ./mkinstalldirs as it may not exist
+  - Remove .cvsignore files
+  - Bump revision to 0.0.8
+  - Debian: Use policy version 3.8.0 instead of 3.7.2
+  - Debian: set -e in postinst script for libvanessa-socket0 to fail on any errors
+  - Use name instead of nickname
+  - Always use email address in copyright notice
+  - Update copyright years
+  - Debian: Fix typo in description of libvanessa-adt-pipe
+  - Debian: Remove spurious dependancy of libvanessa-socket-pipe on libc6-dev
+  - Update COPYTING file to the recent text for the LGPL v2.1
+  - Update COPYTING file to the recent text for the LGPL v2.1
+  - Debian: Don't ignore errors in make rules
+  - Debian: libvanessa-socket-dev: Remove dependancy on libc6-dev
+  - Debian: Use ${binary:Version} instead of ${Source-Version}
+  - Use automake conditional to control building pipe
+  - Prune EXTRA_DIST
+  - Rename configure.in as configure.ac
+  - Remove AC_PROG_RANLIB, is is not needed
+  - Use AC_PROG_LIBTOOL instead of AM_PROC_LIBTOOL
+  - Remove acconfig.h
+  - Removed tag B
+  - update tags
+  - fewer profanities
+  - Update download URLs
+  - Convert option processing to use functions instead of macros
+  - Update prototype of __vanessa_socket_pipe_dummy_select() to match select()
+  - vanessa_socket_pipe() takes pointers to size_t, not pointers to int
+  - Exit autogen.sh with the exit value of configure if it fails
+  - vanessa_socket_pipe_config.h.in doesn't exist here
+  - Prepare for 0.0.8-rc1
+  - Use ssize_t instead of int for the byte count returned
+  - Debian packaging update: Release vanessa-socket 0.0.7-2
+  - Debian Packaging
+  - Changelog typo
+  - Add vanessa_gethostbyname
+  - Fix clearing of NONBLOCK in vanessa_socket_server_acceptv()
+  - Add vector versions of bind, accept, connect and close functions
+  - Fix vanessa_socket_pipe_read_write so it calls  libvanessa_socket/vanessa_socket.h ChangeLog
 
 22nd February 2007
 (Simon Horman)
