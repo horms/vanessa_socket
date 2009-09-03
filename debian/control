@@ -1,5 +1,5 @@
 Source: vanessa-socket
-Build-Depends: libvanessa-logger-dev (>= 0.0.7), libpopt-dev, debhelper (>= 7.0.0)
+Build-Depends: libvanessa-logger-dev (>= 0.0.8), libpopt-dev, debhelper (>= 7.0.0)
 Section: libs
 Priority: optional
 Maintainer: Simon Horman <horms@debian.org>
@@ -8,7 +8,7 @@ Standards-Version: 3.8.3
 Package: libvanessa-socket-dev
 Architecture: any
 Section: libdevel
-Depends: libvanessa-socket1 (= ${binary:Version}), libvanessa-logger-dev (>= 0.0.5)
+Depends: libvanessa-socket1 (= ${binary:Version}), libvanessa-logger-dev (>= 0.0.8)
 Description: Headers and static libraries for libvanessa_socket
  Headers and static libraries required to develop against
  libvanessa_socket.
