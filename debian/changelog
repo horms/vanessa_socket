@@ -1,3 +1,10 @@
+vanessa-socket (0.0.8-2) unstable; urgency=low
+
+  * Make definition of vanessa_socket_pipe_read_write_func match
+   its declaration. This resolves a build problem on kfreebsd-amd64.
+
+ -- Simon Horman <horms@debian.org>  Fri, 04 Sep 2009 18:09:12 +1000
+
 vanessa-socket (0.0.8-1) unstable; urgency=low
 
   * New Upstream
