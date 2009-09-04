@@ -420,7 +420,7 @@ int vanessa_socket_pipe_func(int rfd_a,
  *         -1 on error
  **********************************************************************/
 
-int vanessa_socket_pipe_read_write_func(int rfd,
+ssize_t vanessa_socket_pipe_read_write_func(int rfd,
 					int wfd,
 					unsigned char *buffer,
 					int buffer_length,
