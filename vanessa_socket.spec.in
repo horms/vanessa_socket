@@ -21,7 +21,7 @@ Summary: Simplify TCP/IP socket operations
 Name: vanessa_socket
 Version: @VERSION@
 Release: 1
-Copyright: GNU Lesser General Public Licence (examples released under the GNU General Public Licence)
+License: GNU Lesser General Public Licence (examples released under the GNU General Public Licence)
 URL: http://www.vergenet.net/linux/vanessa/
 Packager: Simon Horman <horms@verge.net.au>
 Group: Development/Libraries
@@ -51,7 +51,7 @@ Headers and static libraries required to develop against libvanessa_socket.
 %package pipe
 Summary: Trivial TCP/IP pipe build using libvanessa_adt
 Group:  Applications/System
-Copyright: GNU General Public Licence
+License: GNU General Public Licence
 Requires: %{name}-%{version}
 Provides: %{name}-pipe-%{version}
 BuildRequires: popt
