@@ -29,7 +29,7 @@ endif
 
 SUBDIRS = libvanessa_socket $(PIPE_DIR) vanessa_gethostbyname debian
 
-EXTRA_DIST = autogen.sh
+EXTRA_DIST = autogen.sh vanessa_socket.spec
 
 clean-local:
 	rm -f build-stamp
