@@ -130,8 +130,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files pipe
 %defattr(-, root, root)
-%{_bindir}/vanessa_socket_pipe
-%{_mandir}/man1/vanessa_socket_pipe.*
+%{_bindir}/*
+%{_mandir}/man1/*
 %doc vanessa_socket_pipe/COPYING
 
 %changelog
