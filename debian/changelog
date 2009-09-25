@@ -1,3 +1,9 @@
+vanessa-socket (0.0.9-1) unstable; urgency=low
+
+  * New upstream
+
+ -- Simon Horman <horms@debian.org>  Fri, 25 Sep 2009 17:16:22 +1000
+
 vanessa-socket (0.0.8-2) unstable; urgency=low
 
   * Make definition of vanessa_socket_pipe_read_write_func match
