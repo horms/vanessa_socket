@@ -1,5 +1,3 @@
-%define prefix   /usr
-
 Summary: Simplify TCP/IP socket operations
 Name: vanessa_socket
 Version: @VERSION@
