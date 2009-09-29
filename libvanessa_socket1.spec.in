@@ -8,7 +8,7 @@ Group: Development/Libraries
 Source0: ftp://vergenet.net/pub/vanessa_socket/vanessa_socket/vanessa_socket-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 Provides: %{name}-%{version}
-BuildRequires: gcc make vanessa_logger-devel >= 0.0.8
+BuildRequires: gcc make libvanessa_logger0-devel >= 0.0.8
 
 %description
 Library to simplify TCP/IP socket operations. Includes code to
@@ -19,7 +19,7 @@ clients as a server and to pipe information between sockets.
 %package devel
 Summary: Headers and static libraries for development
 Group: Development/Libraries
-Requires: %{name}-%{version} vanessa_logger-devel >= 0.0.5
+Requires: %{name}-%{version} libvanessa_logger0-devel >= 0.0.5
 Provides: %{name}-devel-%{version}
 
 %description devel
