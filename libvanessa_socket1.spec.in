@@ -1,11 +1,11 @@
 Summary: Simplify TCP/IP socket operations
-Name: vanessa_socket
+Name: libvanessa_socket1
 Version: @VERSION@
 Release: 1
 License: GNU Lesser General Public Licence (examples released under the GNU General Public Licence)
 URL: http://www.vergenet.net/linux/vanessa/
 Group: Development/Libraries
-Source0: ftp://vergenet.net/pub/vanessa_socket/vanessa_socket/%{name}-%{version}.tar.gz
+Source0: ftp://vergenet.net/pub/vanessa_socket/vanessa_socket/vanessa_socket-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 Provides: %{name}-%{version}
 BuildRequires: gcc make vanessa_logger-devel >= 0.0.8
@@ -49,7 +49,7 @@ This code is intended primarily as an example of how many of the
 features of libvanessa_socket work.
 
 %prep
-%setup
+%setup -n vanessa_socket-%{version}
 
 %build
 

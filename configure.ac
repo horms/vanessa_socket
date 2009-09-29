@@ -108,6 +108,6 @@ vanessa_socket_pipe/Makefile
 vanessa_gethostbyname/Makefile 
 vanessa_socket_pipe/vanessa_socket_pipe_config.h 
 Makefile
-vanessa_socket.spec
+libvanessa_socket1.spec
 INSTALL
 )
