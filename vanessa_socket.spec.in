@@ -8,7 +8,7 @@ Group: Development/Libraries
 Source0: ftp://vergenet.net/pub/vanessa_socket/vanessa_socket/%{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 Provides: %{name}-%{version}
-BuildPrereq: gcc make vanessa_logger-devel >= 0.0.8
+BuildRequires: gcc make vanessa_logger-devel >= 0.0.8
 Requires: gcc make vanessa_logger >= 0.0.8
 
 %description
