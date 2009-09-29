@@ -27,7 +27,7 @@ Provides: %{name}-devel-%{version}
 Headers and static libraries required to develop against libvanessa_socket.
 
 
-%package pipe
+%package -n vanessa_socket-pipe
 Summary: Trivial TCP/IP pipe build using libvanessa_adt
 Group:  Applications/System
 License: GNU General Public Licence
@@ -35,7 +35,7 @@ Requires: %{name}-%{version}
 Provides: %{name}-pipe-%{version}
 BuildRequires: popt
 
-%description pipe
+%description -n vanessa_socket-pipe
 A TCP/IP pipe is a user space programme that listens for TCP/IP connections on
 port on the local host and when a client connects makes a connection to a
 TCP/IP port, possibly on another host. Once both connections are established
@@ -85,7 +85,7 @@ ldconfig
 %{_includedir}/*.h
 %doc README COPYING ChangeLog
 
-%files pipe
+%files -n vanessa_socket-pipe
 %defattr(-, root, root)
 %{_bindir}/*
 %{_mandir}/man1/*
