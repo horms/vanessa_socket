@@ -60,6 +60,9 @@ make
 rm -rf ${RPM_BUILD_ROOT}
 make DESTDIR=$RPM_BUILD_ROOT install
 
+# Don't install libvanessa_socket.la
+[ ! -e $RPM_BUILD_ROOT/%{_libdir}/libvanessa_socket.la ] || \
+	rm $RPM_BUILD_ROOT/%{_libdir}/libvanessa_socket.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -73,11 +76,12 @@ ldconfig
 
 %files 
 %defattr(-, root, root)
-%{_libdir}/*.so*
+%{_libdir}/*.so.*
 
 %files devel
 %defattr(-, root, root)
 %{_libdir}/*.*a
+%{_libdir}/*.so
 %{_includedir}/*.h
 %doc README COPYING ChangeLog
 
