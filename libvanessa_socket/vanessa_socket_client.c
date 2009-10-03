@@ -180,7 +180,8 @@ int vanessa_socket_client_src_open(const char *src_host,
 				   const vanessa_socket_flag_t flag)
 {
 	int s, err;
-	struct addrinfo hints, *dst_res, *dst_ai, *src_res, *src_ai;
+	struct addrinfo hints, *dst_ai, *src_ai;
+	struct addrinfo *dst_res = NULL, *src_res = NULL;
 
 	src_res = NULL;
 	/* Get sockaddr list for source address */
@@ -190,6 +191,7 @@ int vanessa_socket_client_src_open(const char *src_host,
 		hints.ai_socktype = SOCK_STREAM;
 		err = getaddrinfo(src_host, src_port, &hints, &src_res);
 		if (err) {
+			src_res = NULL;
 			if (err == EAI_SYSTEM)
 				VANESSA_LOGGER_DEBUG_UNSAFE("getaddrinfo src: "
 							    "\"%s\" \"%s\": %s",
@@ -200,7 +202,7 @@ int vanessa_socket_client_src_open(const char *src_host,
 							    "\"%s\" \"%s\": %s",
 							    src_host, src_port,
 							    gai_strerror(err));
-			return -1;
+			goto err;
 		}
 	}
 
@@ -210,6 +212,7 @@ int vanessa_socket_client_src_open(const char *src_host,
 	hints.ai_socktype = SOCK_STREAM;
 	err = getaddrinfo(dst_host, dst_port, &hints, &dst_res);
 	if (err) {
+		dst_res = NULL;
 		if (err == EAI_SYSTEM)
 			VANESSA_LOGGER_DEBUG_UNSAFE("getaddrinfo dst: "
 						    "\"%s\" \"%s\": %s",
@@ -220,7 +223,7 @@ int vanessa_socket_client_src_open(const char *src_host,
 						    "\"%s\" \"%s\": %s",
 						    dst_host, dst_port,
 						    gai_strerror(err));
-		return -1;
+		goto err;
 	}
 
 	/* Try all combinations of destination and source until we get a
@@ -265,8 +268,10 @@ int vanessa_socket_client_src_open(const char *src_host,
 err:
 	s = -1;
 out:
-	freeaddrinfo(dst_res);
-	freeaddrinfo(src_res);
+	if (dst_res)
+		freeaddrinfo(dst_res);
+	if (src_res)
+		freeaddrinfo(src_res);
 	return s;
 }
 
