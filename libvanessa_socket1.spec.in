@@ -32,7 +32,15 @@ Group:  Applications/System
 License: GNU General Public Licence
 Requires: %{name}-%{version}
 Provides: %{name}-pipe-%{version}
+%if 0%{?centos_version} || 0%{?rhel_version}
 BuildRequires: popt
+%else
+%if 0%{?mandriva_version}
+BuildRequires: libpopt-devel
+%else
+BuildRequires: popt-devel
+%endif
+%endif
 
 %description -n vanessa_socket-pipe
 A TCP/IP pipe is a user space programme that listens for TCP/IP connections on
