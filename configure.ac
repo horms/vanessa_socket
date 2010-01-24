@@ -20,6 +20,7 @@ AC_INIT(libvanessa_socket/vanessa_socket.h)
 AM_CONFIG_HEADER(config.h)
 
 AC_CONFIG_MACRO_DIR([libltdl/m4])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 LT_INIT
 LTDL_INIT
 AM_INIT_AUTOMAKE(vanessa_socket, 0.0.10)
