@@ -150,7 +150,7 @@ vanessa_socket_server_bindv(char *const fromv[], vanessa_socket_flag_t flag)
 		;
 
 	s = (int *) malloc(sizeof(int) * (ns + 1));
-	if (!ns) {
+	if (!s) {
 		VANESSA_LOGGER_DEBUG_ERRNO("malloc");
 		return NULL;
 	}
