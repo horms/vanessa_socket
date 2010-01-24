@@ -138,7 +138,7 @@ static int __vanessa_socket_pipe_dummy_select(int n, fd_set *readfds,
 
 
 int vanessa_socket_pipe_func(int rfd_a, int wfd_a, int rfd_b, int wfd_b, 
-		unsigned char *buffer, int buffer_length, int idle_timeout, 
+		char *buffer, int buffer_length, int idle_timeout,
 		size_t *return_a_read_bytes, size_t *return_b_read_bytes, 
 		ssize_t(*read_func) (int fd, void *buf, size_t count, 
 			void *data), 
@@ -244,7 +244,7 @@ int vanessa_socket_pipe_func(int rfd_a, int wfd_a, int rfd_b, int wfd_b,
  **********************************************************************/
 
 ssize_t vanessa_socket_pipe_read_write_func(int rfd, int wfd, 
-		unsigned char *buffer, int buffer_length, 
+		char *buffer, int buffer_length,
 		ssize_t(*read_func) (int fd, void *buf, size_t count, 
 			void *data), 
 		ssize_t(*write_func) (int fd, const void *buf, size_t count, 
@@ -298,7 +298,7 @@ ssize_t vanessa_socket_pipe_read_write_func(int rfd, int wfd,
  *         0 otherwise
  **********************************************************************/
 
-int vanessa_socket_pipe_write_bytes_func(int fd, const unsigned char *buffer, 
+int vanessa_socket_pipe_write_bytes_func(int fd, const char *buffer,
 		const ssize_t n, 
 		ssize_t(*write_func) (int fd, const void *buf, size_t count, 
 			void *data), 

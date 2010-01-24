@@ -57,7 +57,7 @@ int main (int argc, char **argv){
   int server;
   struct sockaddr_storage peername;
   struct sockaddr_storage sockname;
-  unsigned char *buffer;
+  char *buffer;
   vanessa_logger_t *vl;
   options_t opt;
   char from_to_str[((NI_MAXHOST+NI_MAXSERV+1)*2)+2];
@@ -204,7 +204,8 @@ int main (int argc, char **argv){
   /* 
    * Buffer for reads and writes to the server
    */ 
-  if((buffer=(unsigned char *)malloc(BUFFER_SIZE*sizeof(unsigned char)))==NULL){
+  buffer = malloc(BUFFER_SIZE);
+  if(!buffer) {
     vanessa_logger_log(vl, LOG_DEBUG, "main: malloc: %s", strerror(errno));
     exit(-1);
   }
