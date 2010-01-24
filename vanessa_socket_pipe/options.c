@@ -97,17 +97,17 @@ int options(int argc, char **argv, options_t *opt){
 
   const struct poptOption pop_opt[] =
   {
-    {"connection_limit", 'c', POPT_ARG_STRING, NULL, 'c'},
-    {"debug",            'd', POPT_ARG_NONE,   NULL, 'd'},
-    {"help",             'h', POPT_ARG_NONE,   NULL, 'h'},
-    {"listen_host",      'l', POPT_ARG_STRING, NULL, 'l'},
-    {"listen_port",      'L', POPT_ARG_STRING, NULL, 'L'},
-    {"no_lookup",        'n', POPT_ARG_NONE,   NULL, 'n'},
-    {"outgoing_host",    'o', POPT_ARG_STRING, NULL, 'o'},
-    {"outgoing_port",    'O', POPT_ARG_STRING, NULL, 'O'},
-    {"quiet",            'q', 0,               NULL, 'q'},
-    {"timeout",          't', POPT_ARG_STRING, NULL, 't'},
-    {NULL,               0,   0,               NULL, 0  }
+    {"connection_limit", 'c', POPT_ARG_STRING, NULL, 'c', NULL, NULL},
+    {"debug",            'd', POPT_ARG_NONE,   NULL, 'd', NULL, NULL},
+    {"help",             'h', POPT_ARG_NONE,   NULL, 'h', NULL, NULL},
+    {"listen_host",      'l', POPT_ARG_STRING, NULL, 'l', NULL, NULL},
+    {"listen_port",      'L', POPT_ARG_STRING, NULL, 'L', NULL, NULL},
+    {"no_lookup",        'n', POPT_ARG_NONE,   NULL, 'n', NULL, NULL},
+    {"outgoing_host",    'o', POPT_ARG_STRING, NULL, 'o', NULL, NULL},
+    {"outgoing_port",    'O', POPT_ARG_STRING, NULL, 'O', NULL, NULL},
+    {"quiet",            'q', 0,               NULL, 'q', NULL, NULL},
+    {"timeout",          't', POPT_ARG_STRING, NULL, 't', NULL, NULL},
+    {NULL,               0,   0,               NULL, 0,   NULL, NULL}
   };
 
   if(argc==0 || argv==NULL) return(0);
