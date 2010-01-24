@@ -1,5 +1,5 @@
 Summary: Simplify TCP/IP socket operations
-Name: libvanessa_socket1
+Name: libvanessa_socket2
 Version: @VERSION@
 Release: 1
 License: GNU Lesser General Public Licence (examples released under the GNU General Public Licence)
