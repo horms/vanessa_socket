@@ -726,7 +726,6 @@ int vanessa_socket_server_connect(const char *port,
 
 int 
 vanessa_socket_server_connectv(char *const fromv[],
-			       const char *interface_address,
 			       const unsigned int maximum_connections,
 			       struct sockaddr_in *return_from,
 			       struct sockaddr_in *return_to,
