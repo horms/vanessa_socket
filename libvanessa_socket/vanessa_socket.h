@@ -189,22 +189,6 @@ int vanessa_socket_client_src_open(const char *src_host,
 
 
 /**********************************************************************
- * vanessa_socket_port_portno
- * port number of a service given as a string either
- * the port number or the service name as per /etc/services
- * pre: port name as per /etc/services or port number as a string
- *      flag: Flags. If the VANESSA_SOCKET_NO_LOOKUP bit is set then
- *            no service lookups will be performed. That is the
- *            port given as an argument should be an port number
- * return: port number
- *         -1 on error or if port name cannot be found in /etc/services
- **********************************************************************/
-
-long int vanessa_socket_port_portno(const char *port,
-			       const vanessa_socket_flag_t flag);
-
-
-/**********************************************************************
  * vanessa_socket_str_is_digit
  * Test if a null terminated string is composed entirely of digits (0-9)
  * pre: String
@@ -534,7 +518,8 @@ int vanessa_socket_server_bind(const char *port,
  **********************************************************************/
 
 int *
-vanessa_socket_server_bindv(char *const fromv[], vanessa_socket_flag_t flag);
+vanessa_socket_server_bindv(const const char **fromv,
+                            vanessa_socket_flag_t flag);
 
 
 /**********************************************************************
@@ -702,8 +687,8 @@ vanessa_socket_server_acceptv(int *listen_socketv,
 int vanessa_socket_server_connect(const char *port,
 				  const char *interface_address,
 				  const unsigned int maximum_connections,
-				  struct sockaddr_in *return_from,
-				  struct sockaddr_in *return_to,
+				  struct sockaddr *return_from,
+				  struct sockaddr *return_to,
 				  vanessa_socket_flag_t flag);
 
 
@@ -741,89 +726,11 @@ int vanessa_socket_server_connect(const char *port,
  **********************************************************************/
 
 int 
-vanessa_socket_server_connectv(char *const fromv[],
+vanessa_socket_server_connectv(const const char **from,
 			       const unsigned int maximum_connections,
-			       struct sockaddr_in *return_from,
-			       struct sockaddr_in *return_to,
+			       struct sockaddr *return_from,
+			       struct sockaddr *return_to,
 			       vanessa_socket_flag_t flag);
-
-
-/**********************************************************************
- * vanessa_socket_server_connect_sockaddr_in
- * Listen on a tcp port for incoming client connections 
- * When one is received fork
- * In the Child: close the listening file descriptor
- *               return the file descriptor that is 
- *               a socket connection to the client
- * In the Server: close the socket to the client and loop
- * pre: from: sockaddr_in to bind to
- *      maximum_connections: maximum number of active connections to
- *                           handle. If 0 then an number of connections
- *                           is unlimited.
- *      return_from: pointer to a struct_in addr where the 
- *                   connecting client's IP address will
- *                   be placed. Ignored if NULL
- *      return_to: pointer to a in addr where the IP address the 
- *                 server accepted the connection on will be placed.
- *                 Ignored if NULL
- *      flag: ignored
- * post: Client sockets are returned in child processes
- *       In the parent process the function doesn't exit, other 
- *       than on error.
- *       if return_from is non-null, it is seeded with clients address
- * return: open client socket, if connection is accepted.
- *         -1 on error
- **********************************************************************/
-
-int vanessa_socket_server_connect_sockaddr_in(struct sockaddr_in from,
-					      const unsigned int
-					      maximum_connections,
-					      struct sockaddr_in
-					      *return_from,
-					      struct sockaddr_in
-					      *return_to,
-					      vanessa_socket_flag_t flag);
-
-
-/**********************************************************************
- * vanessa_socket_server_connect_sockaddr_inv
- * Listen on a tcp port for incoming client connections 
- * When one is received fork
- * In the Child: close the listening file descriptor
- *               return the file descriptor that is 
- *               a socket connection to the client
- * In the Server: close the socket to the client and loop
- * pre: fromv: non-terminated pointer of sockaddr_in to bind to
- *             [sockaddr1, sockaddr2,..., sockaddrN]
- *             N.B: This would be NULL terminated, as per
- *                  vanessa_socket_server_connectv, 
- *                  but you can't have a NULL struct sockaddr_in
- *      nfrom: Number of elements in fromv
- *      maximum_connections: maximum number of active connections to 
- *                           handle. If 0 then an number of connections 
- *                           is unlimited.
- *      return_from: pointer to a struct_in addr where the 
- *                   connecting client's IP address will
- *                   be placed. Ignored if NULL
- *      return_to: pointer to a in addr where the IP address the 
- *                 server accepted the connection on will be placed.
- *                 Ignored if NULL
- *      flag: ignored
- * post: Client sockets are returned in child processes
- *       In the parent process the function doesn't exit, other 
- *       than on error.
- *       if return_from is non-null, it is seeded with clients address
- * return: open client socket, if connection is accepted.
- *         -1 on error
- **********************************************************************/
-
-int 
-vanessa_socket_server_connect_sockaddr_inv(struct sockaddr_in *fromv,
-					  size_t nfrom, const unsigned int
-		    			  maximum_connections,
-	    				  struct sockaddr_in *return_from,
-					  struct sockaddr_in *return_to,
-					  vanessa_socket_flag_t flag);
 
 
 /**********************************************************************
@@ -837,55 +744,6 @@ vanessa_socket_server_connect_sockaddr_inv(struct sockaddr_in *fromv,
  **********************************************************************/
 
 void vanessa_socket_server_reaper(void);
-
-
-/**********************************************************************
- * vanessa_socket_host_in_addr
- * A host is given as a string either as a host name or IP address
- * as a dotted quad. The host is used to seed an in_addr structure
- * with a binary representation of the IP address of the host
- * in network byte order.
- * pre: host: hostname or IP address
- *            If NULL then INADDR_ANY will be converted to network
- *            byte order and used as the address.
- *      in: pointer to an in_addr structure.
- *      flag: Flags. If the VANESSA_SOCKET_NO_LOOKUP bit is set then
- *            no hostname lookups will be performed. That is the
- *            host given as an argument should be an IP address
- * post: none
- * return: 0 on success
- *         -1 on error
- **********************************************************************/
-
-int vanessa_socket_host_in_addr(const char *host,
-				struct in_addr *in,
-				const vanessa_socket_flag_t flag);
-
-
-/**********************************************************************
- * vanessa_socket_host_port_sockaddr_in
- * A host is given as a string either as a host name or IP address
- * as a dotted quad. A port number of a service is given as either a the
- * port number of the service name as per /etc/services. This is used
- * to seed a sockaddr_in structure.
- * pre: host: hostname or IP address
- *            If NULL then INADDR_ANY will be converted to network
- *            byte order and used as the address.
- *      port: port name as per /etc/services or port number as a string
- *      addr: pointer to an sockaddr_in structure.
- *      flag: Flags. If the VANESSA_SOCKET_NO_LOOKUP bit is set then
- *            no lookups will be performed. That is the
- *            host given as an argument should be an IP address and
- *            the port should be a port number
- * post: none
- * return: 0 on success
- *         -1 on error
- **********************************************************************/
-
-int vanessa_socket_host_port_sockaddr_in(const char *host,
-					 const char *port,
-					 struct sockaddr_in *addr,
-					 const vanessa_socket_flag_t flag);
 
 
 /**********************************************************************

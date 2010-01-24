@@ -293,3 +293,30 @@ void vanessa_socket_daemon_exit_cleanly(int i)
 	vanessa_socket_daemon_close_fd();
 	exit((i > 0) ? 0 : i);
 }
+
+
+/**********************************************************************
+ * vanessa_socket_str_is_digit
+ * Test if a null terminated string is composed entirely of digits (0-9)
+ * pre: String
+ * return: 1 if string contains only digits and null terminator
+ *         0 if string is NULL
+ *         0 otherwise
+ **********************************************************************/
+
+int vanessa_socket_str_is_digit(const char *str)
+{
+	int offset;
+
+	if (str == NULL) {
+		return (0);
+	}
+
+	for (offset = strlen(str) - 1; offset > -1; offset--) {
+		if (!isdigit((int) *(str + offset))) {
+			break;
+		}
+	}
+
+	return (offset > -1 ? 0 : 1);
+}

@@ -29,10 +29,24 @@
 #include "options.h"
 
 #include <errno.h>
+#include <sys/socket.h>
 
 #define CONNECT_RETRY 3
 #define ERR_SLEEP 1
 #define IDENT "vanessa_socket_pipe"
+
+
+static size_t get_salen(const struct sockaddr *sa)
+{
+#ifdef HAVE_STRUCT_SOCKADDR_SA_LEN
+	return sa->sa_len;
+#else
+	if (sa->sa_family == AF_INET)
+		return sizeof(struct sockaddr_in);
+	else
+		return sizeof(struct sockaddr_in6);
+#endif
+}
 
 /**********************************************************************
  * Muriel the main function
@@ -41,17 +55,20 @@
 int main (int argc, char **argv){
   int client;
   int server;
-  struct sockaddr_in from;
-  struct sockaddr_in to;
+  struct sockaddr_storage peername;
+  struct sockaddr_storage sockname;
   unsigned char *buffer;
   vanessa_logger_t *vl;
   options_t opt;
-  char from_to_str[36];
-  char from_str[17];
-  char to_str[17];
+  char from_to_str[((NI_MAXHOST+NI_MAXSERV+1)*2)+2];
+  char from_host_str[NI_MAXHOST];
+  char to_host_str[NI_MAXHOST];
+  char from_serv_str[NI_MAXSERV];
+  char to_serv_str[NI_MAXSERV];
   size_t bytes_written=0;
   size_t bytes_read=0;
   int timeout=0;
+  int rc;
 
   extern int errno;
 
@@ -97,8 +114,8 @@ int main (int argc, char **argv){
     opt.listen_port, 
     opt.listen_host,
     opt.connection_limit, 
-    &from,
-    &to,
+    (struct sockaddr *) &peername,
+    (struct sockaddr *) &sockname,
     0
   ))<0){
     vanessa_logger_log(vl, LOG_DEBUG, "main: vanessa_socket_server_connect");
@@ -121,9 +138,35 @@ int main (int argc, char **argv){
    *       why two calls are required, lest the second call
    *       overwrite the result of the first
    */
-  snprintf(from_str, 17, "%s", inet_ntoa(from.sin_addr));
-  snprintf(to_str,   17, "%s", inet_ntoa(to.sin_addr));
-  snprintf(from_to_str, 36, "%s->%s ", from_str, to_str);
+  printf("peername len=%d\n", get_salen((struct sockaddr *)&peername));
+  rc = getnameinfo((struct sockaddr *)&peername,
+                   get_salen((struct sockaddr *)&peername),
+                   from_host_str, NI_MAXHOST, from_serv_str, NI_MAXSERV,
+                   NI_NUMERICHOST|NI_NUMERICSERV);
+  if (rc) {
+        VANESSA_LOGGER_DEBUG_UNSAFE("getnameinfo peername: %s",
+                                    gai_strerror(rc));
+        VANESSA_LOGGER_ERR("Fatal error formatting peername");
+        exit(-1);
+  }
+  rc = getnameinfo((struct sockaddr *)&sockname,
+                   get_salen((struct sockaddr *)&sockname),
+                   to_host_str, NI_MAXHOST, to_serv_str, NI_MAXSERV,
+                   NI_NUMERICHOST|NI_NUMERICSERV);
+  if (rc) {
+        VANESSA_LOGGER_DEBUG_UNSAFE("getnameinfo sockname: %s",
+                                    gai_strerror(rc));
+        VANESSA_LOGGER_ERR("Fatal error formatting sockname");
+        exit(-1);
+  }
+
+  strcpy(from_to_str, from_host_str);
+  strcat(from_to_str, ":");
+  strcat(from_to_str, from_serv_str);
+  strcat(from_to_str, "->");
+  strcat(from_to_str, to_host_str);
+  strcat(from_to_str, ":");
+  strcat(from_to_str, to_serv_str);
 
   /*
    * Log the session

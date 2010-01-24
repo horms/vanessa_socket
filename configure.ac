@@ -35,6 +35,8 @@ AC_CHECK_LIB(socket, socket, [ socket_lib="-lsocket" ], :)
 AC_CHECK_LIB(nsl, gethostbyname, [ nsl_lib="-lnsl" ], :)
 AC_CHECK_LIB(resolv, inet_aton, [ resolv_lib="-lresolv" ], :)
 
+AC_CHECK_MEMBERS([struct sockaddr.sa_len], [], [], [[#include <sys/socket.h>]])
+
 AC_MSG_CHECKING("for Linux style shared object linking")
 if test "$host_os" = "linux" -o "$host_os" = "linux-gnu"; then
   AC_MSG_RESULT(Yes)

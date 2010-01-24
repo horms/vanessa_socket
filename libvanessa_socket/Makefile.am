@@ -30,12 +30,9 @@ include_HEADERS = vanessa_socket.h
 libvanessa_socket_la_SOURCES = \
 vanessa_socket.h \
 vanessa_socket_client.c \
-vanessa_socket_host.c \
 vanessa_socket_daemon.c \
 vanessa_socket_handler.c \
-vanessa_socket_host_port.c \
 vanessa_socket_pipe.c \
-vanessa_socket_port.c \
 vanessa_socket_server.c \
 unused.h
 
