@@ -735,7 +735,7 @@ vanessa_socket_server_connectv(char *const fromv[],
 	int g;
 
 	s = vanessa_socket_server_bindv(fromv, flag);
-	if(s < 0) {
+	if(*s < 0) {
 		VANESSA_LOGGER_DEBUG("vanessa_socket_server_bind_sockaddr_in");
 		return (-1);
 	}
@@ -856,7 +856,7 @@ vanessa_socket_server_connect_sockaddr_inv(struct sockaddr_in *fromv,
 	int g;
 
 	s = vanessa_socket_server_bind_sockaddr_inv(fromv, nfrom, flag);
-	if(s < 0) {
+	if(*s < 0) {
 		VANESSA_LOGGER_DEBUG("vanessa_socket_server_bind_sockaddr_inv");
 		return -1;
 	}
