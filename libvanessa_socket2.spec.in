@@ -4,7 +4,7 @@ Version: @VERSION@
 Release: 1
 License: GNU Lesser General Public Licence (examples released under the GNU General Public Licence)
 URL: http://www.vergenet.net/linux/vanessa/
-Group: Development/Libraries
+Group: System Environment/Libraries
 Source0: ftp://vergenet.net/pub/vanessa_socket/vanessa_socket/vanessa_socket-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 Provides: %{name}-%{version}
@@ -18,8 +18,8 @@ clients as a server and to pipe information between sockets.
 
 %package devel
 Summary: Headers and static libraries for development
-Group: Development/Libraries
-Requires: %{name}-%{version} libvanessa_logger0-devel >= 0.0.5
+Group: System Environment/Libraries
+Requires: %{name}-%{version} libvanessa_logger0-devel >= 0.0.8
 Provides: %{name}-devel-%{version}
 
 %description devel
