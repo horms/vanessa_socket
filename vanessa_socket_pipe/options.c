@@ -27,6 +27,7 @@
  **********************************************************************/
 
 #include "options.h"
+#include "unused.h"
 
 
 /***********************************************************************
@@ -70,7 +71,7 @@ opt_p(char **opt, const char *value, const int flag)
  ***********************************************************************/
 
 static int
-opt_i(int *opt, const int value, const int flag)
+opt_i(int *opt, const int value, const int UNUSED(flag))
 {
 	*opt = value;
 	return 0;

@@ -36,8 +36,9 @@ vanessa_socket_handler.c \
 vanessa_socket_host_port.c \
 vanessa_socket_pipe.c \
 vanessa_socket_port.c \
-vanessa_socket_server.c
+vanessa_socket_server.c \
+unused.h
 
-libvanessa_socket_la_LDFLAGS    = -version-info 1:0:0
+libvanessa_socket_la_LDFLAGS    = -version-info 2:0:0
 
 libvanessa_socket_la_LIBADD = @extra_libs@ -lvanessa_logger

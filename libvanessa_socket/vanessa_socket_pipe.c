@@ -26,6 +26,7 @@
  **********************************************************************/
 
 #include "vanessa_socket.h"
+#include "unused.h"
 
 #include <errno.h>
 
@@ -46,7 +47,7 @@
  **********************************************************************/
 
 ssize_t vanessa_socket_pipe_fd_read(int fd, void *buf, size_t count,
-				    void *data)
+				    void *UNUSED(data))
 {
 	ssize_t bytes;
 
@@ -79,7 +80,7 @@ ssize_t vanessa_socket_pipe_fd_read(int fd, void *buf, size_t count,
  **********************************************************************/
 
 ssize_t vanessa_socket_pipe_fd_write(int fd, const void *buf, size_t count,
-				     void *data)
+				     void *UNUSED(data))
 {
 	size_t bytes;
 
@@ -130,7 +131,7 @@ ssize_t vanessa_socket_pipe_fd_write(int fd, const void *buf, size_t count,
 
 static int __vanessa_socket_pipe_dummy_select(int n, fd_set *readfds, 
 		fd_set *writefds, fd_set *exceptfds, struct timeval *timeout, 
-		void *data)
+		void *UNUSED(data))
 {
 	return(select(n, readfds, writefds, exceptfds, timeout));
 }

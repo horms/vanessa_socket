@@ -28,6 +28,7 @@
 #include <sys/poll.h>
 
 #include "vanessa_socket.h"
+#include "unused.h"
 
 /*Keep track of the total number of connections in the parent process*/
 unsigned int noconnection;
@@ -49,7 +50,7 @@ unsigned int noconnection;
 
 int vanessa_socket_server_bind(const char *port,
 				     const char *interface_address,
-				     vanessa_socket_flag_t flag)
+				     vanessa_socket_flag_t UNUSED(flag))
 {
 	int s, g, err;
 	struct addrinfo hints, *res;
@@ -182,7 +183,7 @@ vanessa_socket_server_bindv(char *const fromv[], vanessa_socket_flag_t flag)
  **********************************************************************/
 
 int vanessa_socket_server_bind_sockaddr_in(struct sockaddr_in from,
-					   vanessa_socket_flag_t flag)
+					   vanessa_socket_flag_t UNUSED(flag))
 {
 	int s;
 	int g;
