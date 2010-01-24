@@ -33,10 +33,10 @@ libvanessa-socket-dev.dirs \
 libvanessa-socket-dev.files \
 libvanessa-socket-pipe.dirs \
 libvanessa-socket-pipe.files \
-libvanessa-socket1.dirs \
-libvanessa-socket1.files \
-libvanessa-socket1.postinst \
-libvanessa-socket1.shlibs \
+libvanessa-socket2.dirs \
+libvanessa-socket2.files \
+libvanessa-socket2.postinst \
+libvanessa-socket2.shlibs \
 rules \
 dpkg-checkbuild
 
