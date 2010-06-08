@@ -110,6 +110,6 @@ libvanessa_socket/Makefile
 vanessa_socket_pipe/Makefile 
 vanessa_socket_pipe/vanessa_socket_pipe_config.h 
 Makefile
-libvanessa_socket1.spec
+libvanessa_socket2.spec
 INSTALL
 )
