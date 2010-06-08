@@ -1,9 +1,11 @@
-vanessa-socket (0.0.10-2) unstable; urgency=low
+vanessa-socket (0.0.11-1) unstable; urgency=low
 
-  * Explicitly link tests against libvanessa_adt
-    (closes: #556519)
+  * New Upstream
+    Includes: 
+    - Explicitly link tests against libvanessa_adt
+      (closes: #556519)
 
- -- Simon Horman <horms@debian.org>  Tue, 08 Jun 2010 12:16:25 +0900
+ -- Simon Horman <horms@debian.org>  Tue, 08 Jun 2010 16:14:51 +0900
 
 vanessa-socket (0.0.10-1) unstable; urgency=low
 
