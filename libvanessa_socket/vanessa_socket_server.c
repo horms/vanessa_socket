@@ -43,6 +43,8 @@ unsigned int noconnection;
  *                         bind to interface(es) with this address.
  *      flag: If VANESSA_SOCKET_NO_LOOKUP then no host and port lookups
  *            will be performed
+ *            If VANESSA_SOCKET_TCP_KEEPALIVE then turn on
+ *            TCP-Keepalive
  * post: Bound socket is returned
  * return: socket
  *         -1 on error
@@ -50,7 +52,7 @@ unsigned int noconnection;
 
 int vanessa_socket_server_bind(const char *port,
 				     const char *interface_address,
-				     vanessa_socket_flag_t UNUSED(flag))
+				     vanessa_socket_flag_t flag)
 {
 	int s, g, err;
 	struct addrinfo hints, *res;
@@ -88,6 +90,14 @@ int vanessa_socket_server_bind(const char *port,
 			if (close(s))
 				goto err_close;
 			continue;
+		}
+	        /* Set SO_KEEPALIVE on the server socket s.
+		 * Variable g is used as a scratch varable.
+	         */
+		if (flag & VANESSA_SOCKET_TCP_KEEPALIVE) {
+			g = 1;
+			setsockopt(s, SOL_SOCKET, SO_KEEPALIVE, (void *) &g,
+				   sizeof g);
 		}
 #ifdef SO_BINDANY
 		g = 1;
@@ -177,14 +187,15 @@ vanessa_socket_server_bindv(const const char **fromv,
  * vanessa_socket_server_bind_sockaddr_in
  * Open a socket and bind it to a port and address
  * pre: from: sockaddr_in to bind to
- *      flag: ignored
+ *      flag: If VANESSA_SOCKET_TCP_KEEPALIVE then turn on
+ *            TCP-Keepalive
  * post: Bound socket
  * return: socket
  *         -1 on error
  **********************************************************************/
 
 int vanessa_socket_server_bind_sockaddr_in(struct sockaddr_in from,
-					   vanessa_socket_flag_t UNUSED(flag))
+					   vanessa_socket_flag_t flag)
 {
 	int s;
 	int g;
@@ -206,6 +217,14 @@ int vanessa_socket_server_bind_sockaddr_in(struct sockaddr_in from,
 		if (close(s) < 0)
 			VANESSA_LOGGER_DEBUG_ERRNO("warning: close");
 		return (-1);
+	}
+	/* 
+	 * Set SO_KEEPALIVE on the server socket s. Variable g is used
+	 * as a scratch varable.
+	 */
+	if (flag & VANESSA_SOCKET_TCP_KEEPALIVE) {
+		g = 1;
+		setsockopt(s, SOL_SOCKET, SO_KEEPALIVE, (void *) &g, sizeof g);
 	}
 #ifdef SO_BINDANY
 	g = 1;

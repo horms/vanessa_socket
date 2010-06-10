@@ -108,6 +108,8 @@ int vanessa_socket_client_open(const char *host,
  *            If flag&VANESSA_SOCKET_NO_FROM then the from parameter 
  *            will not be used and the operating system will select a 
  *            source address and port
+ *            If flag&VANESSA_SOCKET_TCP_KEEPALIVE then turn on
+ *            TCP-Keepalive
  * post: socket is opened
  * return: open socket
  *         -1 on error
@@ -119,12 +121,19 @@ int vanessa_socket_client_open_src_sockaddr_in(struct sockaddr_in from,
 					       flag)
 {
 	int out;
+	int g;
 
 	/* Create socket */
 	memset((struct sockaddr *) &from, 0, sizeof(from));
 	if ((out = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		VANESSA_LOGGER_DEBUG_ERRNO("socket");
 		return (-1);
+	}
+
+	/* Turn on TCP-Keepalive */
+	if (flag & VANESSA_SOCKET_TCP_KEEPALIVE) {
+		g = 1;
+		setsockopt(out, SOL_SOCKET, SO_KEEPALIVE, (void *) &g, sizeof g);
 	}
 
 	/* Bind 'from' to socket */
@@ -168,6 +177,8 @@ int vanessa_socket_client_open_src_sockaddr_in(struct sockaddr_in from,
  *            If flag&VANESSA_SOCKET_NO_FROM then the from parameter 
  *            will not be used and the operating system will select a 
  *            source address and port
+ *            If flag&VANESSA_SOCKET_TCP_KEEPALIVE then turn on
+ *            TCP-Keepalive
  * post: socket is opened
  * return: open socket
  *         -1 on error
@@ -182,6 +193,7 @@ int vanessa_socket_client_src_open(const char *src_host,
 	int s, err;
 	struct addrinfo hints, *dst_ai, *src_ai;
 	struct addrinfo *dst_res = NULL, *src_res = NULL;
+	int g;
 
 	src_res = NULL;
 	/* Get sockaddr list for source address */
@@ -236,6 +248,13 @@ int vanessa_socket_client_src_open(const char *src_host,
 				 dst_res->ai_protocol)) < 0) {
 			VANESSA_LOGGER_DEBUG_ERRNO("socket");
 			continue;
+		}
+
+		/* Turn on TCP-Keepalive */
+		if (flag & VANESSA_SOCKET_TCP_KEEPALIVE) {
+			g = 1;
+			setsockopt(s, SOL_SOCKET, SO_KEEPALIVE, (void *) &g,
+				   sizeof g);
 		}
 
 		src_ai = src_res;

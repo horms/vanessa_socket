@@ -81,6 +81,7 @@ typedef unsigned int vanessa_socket_flag_t;
 #define VANESSA_SOCKET_NO_LOOKUP       0x00000001
 #define VANESSA_SOCKET_NO_FROM         0x00000002
 #define VANESSA_SOCKET_NO_FORK         0x00000004
+#define VANESSA_SOCKET_TCP_KEEPALIVE   0x00000008
 
 #define VANESSA_SOCKET_PROTO_MASK      0x0000ff00
 #define __VANESSA_SOCKET_PROTO(_proto)   ((_proto&0xff)<<8)
