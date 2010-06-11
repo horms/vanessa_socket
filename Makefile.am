@@ -33,3 +33,6 @@ EXTRA_DIST = autogen.sh libvanessa_socket2.spec
 
 clean-local:
 	rm -f build-stamp
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = vanessa-socket.pc

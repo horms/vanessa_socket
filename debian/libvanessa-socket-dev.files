@@ -2,6 +2,7 @@ usr/include/vanessa_socket.h
 usr/lib/libvanessa_socket.so
 usr/lib/libvanessa_socket.a
 usr/lib/libvanessa_socket.la
+usr/lib/pkgconfig/vanessa-socket.pc
 usr/share/doc/libvanessa-socket-dev/changelog.gz
 usr/share/doc/libvanessa-socket-dev/README
 
