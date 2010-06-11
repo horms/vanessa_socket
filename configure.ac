@@ -91,7 +91,6 @@ AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 
 dnl Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
 AC_TYPE_UID_T
 AC_TYPE_SIZE_T
 
