@@ -98,7 +98,5 @@ ldconfig
 %doc vanessa_socket_pipe/COPYING
 
 %changelog
-* Tue Jun  8 2010 Simon Horman <horms@verge.net.au> (0.0.9-1)
-  new release
-* Sat Sep 20 2009 Simon Horman <horms@verge.net.au> (0.0.8-1)
+* Tue Jun 22 2010 Simon Horman <horms@verge.net.au> (0.0.12-1)
   new release
