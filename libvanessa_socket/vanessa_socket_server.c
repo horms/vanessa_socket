@@ -110,6 +110,7 @@ int vanessa_socket_server_bind(const char *port,
 				goto err_close;
 			continue;
 		}
+		freeaddrinfo(res);
 		return s;
 	} while ((res = res->ai_next));
 
@@ -353,7 +354,7 @@ __vanessa_socket_server_accept(int *g, int listen_socket, int *listen_socketv,
 				      const unsigned int maximum_connections,
 				      struct sockaddr *return_from, 
 				      struct sockaddr *return_to,
-				      vanessa_socket_flag_t flag)
+				      vanessa_socket_flag_t flag, long opt)
 {
 	unsigned int addrlen;
 	pid_t child = 0;
@@ -370,7 +371,8 @@ __vanessa_socket_server_accept(int *g, int listen_socket, int *listen_socketv,
 			if(errno == EINTR || errno == ECONNABORTED) {
 				continue; /* Ignore EINTR  and ECONNABORTED */
 			}
-			if (errno == EAGAIN || errno == EWOULDBLOCK)
+			if (opt & O_NONBLOCK &&
+			    (errno == EAGAIN || errno == EWOULDBLOCK))
 				return -1; /* Don't log EAGAIN or EWOULDBLOCK */
 			VANESSA_LOGGER_DEBUG_ERRNO("accept");
 			return(-1);
@@ -447,12 +449,19 @@ int vanessa_socket_server_accept(int listen_socket,
 {
 	pid_t child;
 	int g;
+	long opt;
+
+	opt = fcntl(listen_socket, F_GETFL, NULL);
+	if (opt < 0) {
+		VANESSA_LOGGER_DEBUG_ERRNO("fcntl: F_GETFL");
+		return -1;
+	}
 
 	while (1) {
 		child = __vanessa_socket_server_accept(&g, listen_socket, NULL,
 		 				       maximum_connections, 
 						       return_from, return_to, 
-						       flag);
+						       flag, opt);
 		if (child < 0) {
 			VANESSA_LOGGER_DEBUG("__vanessa_socket_server_accept");
 			return -1;
@@ -527,14 +536,14 @@ __vanessa_socket_server_acceptv(int *g, int listen_socket, int *listen_socketv,
 							listen_socketv,
 							maximum_connections,
 							return_from, return_to,
-							flag);
+							flag, opt);
 	if (child < 0) {
-		if (errno == EAGAIN || errno == EWOULDBLOCK)
-			status = 0;
-		else {
+		status = -1;
+		if (errno == EAGAIN || errno == EWOULDBLOCK) {
+			if (opt & O_NONBLOCK)
+				status = 0;
+		} else
 			VANESSA_LOGGER_DEBUG("__vanessa_socket_server_accept");
-			status = -1;
-		}
 	}
 
 	if (!(opt & O_NONBLOCK) && child &&
@@ -607,6 +616,8 @@ vanessa_socket_server_acceptv(int *listen_socketv,
 						maximum_connections, 
 						return_from, return_to, flag);
 			if (child < 0) {
+				if (errno == EAGAIN || errno == EWOULDBLOCK)
+					continue;
 				VANESSA_LOGGER_DEBUG(
 					"__vanessa_socket_server_acceptv");
 				goto err;
