@@ -1,5 +1,5 @@
 Summary: Simplify TCP/IP socket operations
-Name: libvanessa_socket1
+Name: libvanessa_socket2
 Version: @VERSION@
 Release: 1
 License: GNU Lesser General Public Licence (examples released under the GNU General Public Licence)
@@ -19,7 +19,7 @@ clients as a server and to pipe information between sockets.
 %package devel
 Summary: Headers and static libraries for development
 Group: Development/Libraries
-Requires: %{name}-%{version} libvanessa_logger0-devel >= 0.0.5
+Requires: %{name}-%{version} libvanessa_logger0-devel >= 0.0.8
 Provides: %{name}-devel-%{version}
 
 %description devel
@@ -87,6 +87,7 @@ ldconfig
 %files devel
 %defattr(-, root, root)
 %{_libdir}/*.so
+%{_libdir}/pkgconfig/*
 %{_includedir}/*.h
 %doc README COPYING ChangeLog
 
@@ -97,5 +98,5 @@ ldconfig
 %doc vanessa_socket_pipe/COPYING
 
 %changelog
-* Sat Sep 20 2009 Simon Horman <horms@verge.net.au> (0.0.8-1)
+* Tue Jun 22 2010 Simon Horman <horms@verge.net.au> (0.0.12-1)
   new release

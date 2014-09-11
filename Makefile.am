@@ -27,9 +27,12 @@ if PIPE_BUILD
 PIPE_DIR = vanessa_socket_pipe
 endif
 
-SUBDIRS = libvanessa_socket $(PIPE_DIR) vanessa_gethostbyname debian
+SUBDIRS = libvanessa_socket $(PIPE_DIR) debian
 
-EXTRA_DIST = autogen.sh libvanessa_socket1.spec
+EXTRA_DIST = autogen.sh libvanessa_socket2.spec
 
 clean-local:
 	rm -f build-stamp
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = vanessa-socket.pc

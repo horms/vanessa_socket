@@ -3,12 +3,12 @@ Build-Depends: libvanessa-logger-dev (>= 0.0.8), libpopt-dev, debhelper (>= 7.0.
 Section: libs
 Priority: optional
 Maintainer: Simon Horman <horms@debian.org>
-Standards-Version: 3.8.3
+Standards-Version: 3.9.0
 
 Package: libvanessa-socket-dev
 Architecture: any
 Section: libdevel
-Depends: libvanessa-socket1 (= ${binary:Version}), libvanessa-logger-dev (>= 0.0.8)
+Depends: libvanessa-socket2 (= ${binary:Version}), libvanessa-logger-dev (>= 0.0.8), ${misc:Depends}
 Description: Headers and static libraries for libvanessa_socket
  Headers and static libraries required to develop against
  libvanessa_socket.
@@ -16,7 +16,7 @@ Description: Headers and static libraries for libvanessa_socket
 Package: libvanessa-socket-pipe
 Architecture: any
 Section: devel
-Depends: libvanessa-socket1 (= ${binary:Version}), ${shlibs:Depends}
+Depends: libvanessa-socket2 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Description: User space TCP/IP pipe
  A TCP/IP pipe is a user space programme that listens for TCP/IP
  connections on port on the local host and when a client connects makes a
@@ -30,10 +30,10 @@ Description: User space TCP/IP pipe
  This code is intended primarily as an example of how many of the features
  of libvanessa_socket work.
 
-Package: libvanessa-socket1
+Package: libvanessa-socket2
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Library to simplify TCP socket operations
  Library to simplify TCP/IP socket operations. Includes code to open a
  socket to a server as a client, to listen on socket for clients as a

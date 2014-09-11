@@ -20,9 +20,10 @@ AC_INIT(libvanessa_socket/vanessa_socket.h)
 AM_CONFIG_HEADER(config.h)
 
 AC_CONFIG_MACRO_DIR([libltdl/m4])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 LT_INIT
 LTDL_INIT
-AM_INIT_AUTOMAKE(vanessa_socket, 0.0.10)
+AM_INIT_AUTOMAKE(vanessa_socket, 0.0.12)
 
 AC_PROG_LIBTOOL
 AC_PROG_CC
@@ -33,6 +34,8 @@ AC_PROG_MAKE_SET
 AC_CHECK_LIB(socket, socket, [ socket_lib="-lsocket" ], :)
 AC_CHECK_LIB(nsl, gethostbyname, [ nsl_lib="-lnsl" ], :)
 AC_CHECK_LIB(resolv, inet_aton, [ resolv_lib="-lresolv" ], :)
+
+AC_CHECK_MEMBERS([struct sockaddr.sa_len], [], [], [[#include <sys/socket.h>]])
 
 AC_MSG_CHECKING("for Linux style shared object linking")
 if test "$host_os" = "linux" -o "$host_os" = "linux-gnu"; then
@@ -88,7 +91,6 @@ AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 
 dnl Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
 AC_TYPE_UID_T
 AC_TYPE_SIZE_T
 
@@ -105,9 +107,9 @@ AC_OUTPUT(
 debian/Makefile 
 libvanessa_socket/Makefile 
 vanessa_socket_pipe/Makefile 
-vanessa_gethostbyname/Makefile 
 vanessa_socket_pipe/vanessa_socket_pipe_config.h 
 Makefile
-libvanessa_socket1.spec
+libvanessa_socket2.spec
+vanessa-socket.pc
 INSTALL
 )

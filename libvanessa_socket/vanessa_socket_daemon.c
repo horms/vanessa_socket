@@ -17,20 +17,20 @@
  * Library to simplify handling of TCP sockets
  * Copyright (C) 1999-2008  Simon Horman <horms@verge.net.au>
  * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
  * 
- * This program is distributed in the hope that it will be useful, but
+ * This library is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
+ * Lesser General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307  USA
+ * 02111-1307 USA
  *
  **********************************************************************/
 
@@ -292,4 +292,31 @@ void vanessa_socket_daemon_exit_cleanly(int i)
 	}
 	vanessa_socket_daemon_close_fd();
 	exit((i > 0) ? 0 : i);
+}
+
+
+/**********************************************************************
+ * vanessa_socket_str_is_digit
+ * Test if a null terminated string is composed entirely of digits (0-9)
+ * pre: String
+ * return: 1 if string contains only digits and null terminator
+ *         0 if string is NULL
+ *         0 otherwise
+ **********************************************************************/
+
+int vanessa_socket_str_is_digit(const char *str)
+{
+	int offset;
+
+	if (str == NULL) {
+		return (0);
+	}
+
+	for (offset = strlen(str) - 1; offset > -1; offset--) {
+		if (!isdigit((int) *(str + offset))) {
+			break;
+		}
+	}
+
+	return (offset > -1 ? 0 : 1);
 }
