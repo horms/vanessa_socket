@@ -368,12 +368,12 @@ __vanessa_socket_server_accept(int *g, int listen_socket, int *listen_socketv,
 		addrlen = sizeof(from);
 		*g = accept(listen_socket, (struct sockaddr *) &from, &addrlen);
 		if (*g  < 0) {
-			if(errno == EINTR || errno == ECONNABORTED) {
-				continue; /* Ignore EINTR  and ECONNABORTED */
-			}
 			if (opt & O_NONBLOCK &&
 			    (errno == EAGAIN || errno == EWOULDBLOCK))
 				return -1; /* Don't log EAGAIN or EWOULDBLOCK */
+			if (errno == EINTR || errno == ECONNABORTED ||
+			    errno == EAGAIN || errno == EWOULDBLOCK)
+				continue; /* Ignore */
 			VANESSA_LOGGER_DEBUG_ERRNO("accept");
 			return(-1);
 		}
