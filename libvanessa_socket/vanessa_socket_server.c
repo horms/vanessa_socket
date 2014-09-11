@@ -388,7 +388,7 @@ __vanessa_socket_server_accept(int *g, int listen_socket, int *listen_socketv,
 	for(;;) {
 		addrlen = sizeof(from);
 		*g = accept(listen_socket, (struct sockaddr *) &from, &addrlen);
-		if (*g  < 0) {
+		if (!g || *g  < 0) {
 			if (opt & O_NONBLOCK &&
 			    (errno == EAGAIN || errno == EWOULDBLOCK))
 				return -1; /* Don't log EAGAIN or EWOULDBLOCK */
@@ -755,7 +755,7 @@ vanessa_socket_server_connectv(const const char **fromv,
 	int g;
 
 	s = vanessa_socket_server_bindv(fromv, flag);
-	if(*s < 0) {
+	if(!s || *s < 0) {
 		VANESSA_LOGGER_DEBUG("vanessa_socket_server_bind_sockaddr_in");
 		return (-1);
 	}
