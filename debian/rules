@@ -8,6 +8,7 @@ cfg:=--prefix=/usr --mandir=/usr/share/man
 build: checkbuild build-stamp
 build-stamp:
 	dh_testdir
+	dh_autoreconf
 
 	test -x autogen.sh && ./autogen.sh $(cfg) || ./configure $(cfg)
 	
@@ -22,6 +23,7 @@ clean:
 
 	[ ! -f Makefile ] || $(MAKE) distclean
 
+	dh_autoreconf_clean
 	dh_clean
 
 install: build
