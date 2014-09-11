@@ -3,7 +3,7 @@ Build-Depends: libvanessa-logger-dev (>= 0.0.8), libpopt-dev, debhelper (>= 7.0.
 Section: libs
 Priority: optional
 Maintainer: Simon Horman <horms@debian.org>
-Standards-Version: 3.9.0
+Standards-Version: 3.9.5
 Homepage: http://horms.net/projects/vanessa/
 
 Package: libvanessa-socket-dev
