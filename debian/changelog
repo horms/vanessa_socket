@@ -1,3 +1,18 @@
+vanessa-socket (0.0.12-2) unstable; urgency=medium
+
+  * Use autoreconf
+    (closes: #736891)
+  * Add homepage to control file
+    (closes: #594034)
+  * Empty dependency_libs in .la files
+    (closes: #633317)
+  * Update standards version to 3.9.5
+  * Provide recommended targets in debian/rules
+  * Harden build flags
+  * Build verbosely
+
+ -- Simon Horman <horms@debian.org>  Thu, 11 Sep 2014 10:27:43 +0900
+
 vanessa-socket (0.0.12-1) unstable; urgency=low
 
   * New Upstream
