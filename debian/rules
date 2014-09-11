@@ -16,9 +16,7 @@ build-stamp:
 	dh_autoreconf
 
 	test -x autogen.sh && ./autogen.sh $(cfg) || ./configure $(cfg)
-	
-	$(MAKE)
-
+	$(MAKE) V=1
 	touch build-stamp
 
 clean:
