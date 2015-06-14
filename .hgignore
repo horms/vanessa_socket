@@ -33,12 +33,10 @@ TAGS$
 ^depcomp$
 ^install-sh$
 ^libtool$
-^libvanessa_socket2.spec$
+^libperdition2.spec$
 ^ltmain.sh$
 ^missing$
 ^stamp-h1$
-^vanessa-socket.pc$
-^vanessa_socket-[0-9.]*.tar.bz2$
-^vanessa_socket-[0-9.]*.tar.gz$
-^vanessa_socket_pipe/vanessa_socket_pipe$
-^vanessa_socket_pipe/vanessa_socket_pipe_config.h$
+^perdition.pc$
+^perdition-[0-9.]*.tar.bz2$
+^perdition-[0-9.]*.tar.gz$
