@@ -3,9 +3,9 @@ Name: libvanessa_socket2
 Version: @VERSION@
 Release: 1
 License: GNU Lesser General Public Licence (examples released under the GNU General Public Licence)
-URL: http://www.vergenet.net/linux/vanessa/
+URL: http://horms.net/projects/vanessa/
 Group: Development/Libraries
-Source0: ftp://vergenet.net/pub/vanessa_socket/vanessa_socket/vanessa_socket-%{version}.tar.bz2
+Source0: http://horms.net/projects/vanessa/download/vanessa_socket/%{version}/vanessa_socket-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 Provides: %{name}-%{version}
 BuildRequires: gcc make libvanessa_logger0-devel >= 0.0.8
