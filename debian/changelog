@@ -1,3 +1,12 @@
+vanessa-socket (0.0.13-1) unstable; urgency=medium
+
+  * New Upstream
+    - Update standards version to 3.9.5
+    - Check pointers are non-NULL before checking their values
+      (closes: #716429)
+
+ -- Simon Horman <horms@debian.org>  Sun, 14 Jun 2015 13:46:55 +0900
+
 vanessa-socket (0.0.12-2) unstable; urgency=medium
 
   * Use autoreconf
