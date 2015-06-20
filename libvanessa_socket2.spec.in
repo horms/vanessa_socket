@@ -33,14 +33,10 @@ License: GNU General Public Licence
 Requires: %{name}-%{version}
 Provides: %{name}-pipe-%{version}
 
-%if 0%{?suse_version} || 0%{?fedora_version} || 0%{?centos_version} >= 600 || 0%{?rhel_version} >= 600
-BuildRequires: popt-devel
-%else
-%if 0%{?mandriva_version}
-BuildRequires: libpopt-devel
-%else
+%if 0%{?centos_version} && 0%{?centos_version} < 600 || 0%{?rhel_version} && 0%{?rhel_version} < 600
 BuildRequires: popt
-%endif
+%else
+BuildRequires: popt-devel
 %endif
 
 %description -n vanessa_socket-pipe
